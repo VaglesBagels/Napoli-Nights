@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LoginController">
+    <!-- Use the columnSpan attribute to span the Text across both columns -->
+
+    <Text text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+    <TextField fx:id="emailField" promptText="Email" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+    <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+
+    <!-- Center the buttons by setting GridPane.columnIndex to 0 and spanning 2 columns -->
+    <Button fx:id="loginButton" onAction="#onLoginButtonClick" text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+    <Button fx:id="signUpButton" onAction="#onSignUpButtonClick" text="Sign Up" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+
+    <!-- Ensure the column constraints are applied to both columns -->
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+    </columnConstraints>
+
+    <!-- Define row constraints to center content vertically and allow vertical growth -->
+    <rowConstraints>
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+    </rowConstraints>
+</GridPane>
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane alignment="CENTER" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.napolinights.SignUpController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <Text text="Sign Up" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
+        <GridPane.margin>
+            <Insets left="27.0" />
+        </GridPane.margin></Text>
+
+    <TextField fx:id="firstNameField" promptText="First Name" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+    <Label fx:id="firstNameMessageLabel" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" text="* Required field is empty" visible="false"/>
+    <TextField fx:id="lastNameField" promptText="Last Name" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+    <TextField fx:id="employeeIdField" promptText="Employee Id" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+    <TextField fx:id="emailField" promptText="Email" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+    <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+
+    <Button fx:id="signUpButton" onAction="#onSignUpButtonClick" text="Sign Up" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12">
+        <GridPane.margin>
+            <Insets />
+        </GridPane.margin></Button>
+    <Button fx:id="loginButton" onAction="#onLoginButtonClick" text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="13">
+        <GridPane.margin>
+            <Insets />
+        </GridPane.margin></Button>
+    <Button fx:id="homeButton" onAction="#onHomeButtonClick" text="Home" GridPane.columnIndex="1" GridPane.rowIndex="14">
+        <GridPane.margin>
+            <Insets left="40.0" />
+        </GridPane.margin></Button>
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+</GridPane>
