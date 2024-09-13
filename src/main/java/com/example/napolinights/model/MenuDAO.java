@@ -34,16 +34,16 @@ public class MenuDAO implements IMenuDAO {
         }
     }
 
-    public void insert(Menu menu) {
+    public void insert(MenuItem menuItem) {
         try {
             String sql = "INSERT INTO menu (category, name, description, price, imageURL) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement insertMenu = connection.prepareStatement(sql);
 
-            insertMenu.setString(1, menu.getCategory().name());
-            insertMenu.setString(2, menu.getName());
-            insertMenu.setString(3, menu.getDescription());
-            insertMenu.setDouble(4, menu.getPrice());
-            insertMenu.setString(5, menu.getImageURL());
+            insertMenu.setString(1, menuItem.getCategory().name());
+            insertMenu.setString(2, menuItem.getName());
+            insertMenu.setString(3, menuItem.getDescription());
+            insertMenu.setDouble(4, menuItem.getPrice());
+            insertMenu.setString(5, menuItem.getImageURL());
             insertMenu.execute();
 
         } catch (SQLException ex) {
@@ -51,17 +51,17 @@ public class MenuDAO implements IMenuDAO {
         }
     }
 
-    public void update(Menu menu) {
+    public void update(MenuItem menuItem) {
         try {
             String sql = "UPDATE menu SET category = ?, name = ?, description = ?, price = ?, imageURL = ? WHERE menuID = ?";
             PreparedStatement updateMenu = connection.prepareStatement(sql);
 
-            updateMenu.setString(1, menu.getCategory().name());
-            updateMenu.setString(2, menu.getName());
-            updateMenu.setString(3, menu.getDescription());
-            updateMenu.setDouble(4, menu.getPrice());
-            updateMenu.setString(5, menu.getImageURL());
-            updateMenu.setInt(6, menu.getMenuID());
+            updateMenu.setString(1, menuItem.getCategory().name());
+            updateMenu.setString(2, menuItem.getName());
+            updateMenu.setString(3, menuItem.getDescription());
+            updateMenu.setDouble(4, menuItem.getPrice());
+            updateMenu.setString(5, menuItem.getImageURL());
+            updateMenu.setInt(6, menuItem.getMenuItemID());
             updateMenu.execute();
         } catch (SQLException ex) {
             System.err.println(ex);
@@ -79,8 +79,8 @@ public class MenuDAO implements IMenuDAO {
         }
     }
 
-    public List<Menu> getAll() {
-        List<Menu> menus = new ArrayList<>();
+    public List<MenuItem> getAll() {
+        List<MenuItem> menuItems = new ArrayList<>();
         try {
             Statement getAll = connection.createStatement();
             String sql = "SELECT * from menu";
@@ -88,8 +88,8 @@ public class MenuDAO implements IMenuDAO {
 
             while (rs.next()) {
                 Category category = Category.valueOf(rs.getString("category"));
-                menus.add(
-                        new Menu(
+                menuItems.add(
+                        new MenuItem(
                                 rs.getInt("menuID"),
                                 category,
                                 rs.getString("name"),
@@ -102,10 +102,10 @@ public class MenuDAO implements IMenuDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return menus;
+        return menuItems;
     }
 
-    public Menu getById(int id) {
+    public MenuItem getById(int id) {
         try {
             String sql = "SELECT * FROM menu WHERE menuID = ?";
             PreparedStatement getMenu = connection.prepareStatement(sql);
@@ -114,7 +114,7 @@ public class MenuDAO implements IMenuDAO {
 
             if (rs.next()) {
                 Category category = Category.valueOf(rs.getString("category"));
-                return new Menu(
+                return new MenuItem(
                         rs.getInt("menuID"),
                         category,
                         rs.getString("name"),

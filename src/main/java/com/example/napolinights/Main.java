@@ -25,44 +25,44 @@ import java.util.List;
             menuDAO.createMenuTable();
 
             // Read data from CSV
-            List<Menu> menus = csvReader.readMenuFromCSV("menu_data.csv");
+            List<MenuItem> menuItems = csvReader.readMenuFromCSV("menu_data.csv");
 
             // Insert the Menu data into the database
-            for (Menu menu : menus) {
-                menuDAO.insert(menu);
+            for (MenuItem menuItem : menuItems) {
+                menuDAO.insert(menuItem);
             }
 
             // Optionally, retrieve and print all records to verify insertion
             System.out.println("All Menu Items:");
-            List<Menu> allMenus = menuDAO.getAll();
-            for (Menu menu : allMenus) {
-                System.out.println(menu);
+            List<MenuItem> allMenuItems = menuDAO.getAll();
+            for (MenuItem menuItem : allMenuItems) {
+                System.out.println(menuItem);
             }
 
             // Insert new records
-            menuDAO.insert(new Menu(Category.PIZZA, "Margherita", "Tomato, mozzarella, grana padano parmesan, cherry tomato, basil, garlic", 24.00, "margherita.jpg"));
+            menuDAO.insert(new MenuItem(Category.PIZZA, "Margherita", "Tomato, mozzarella, grana padano parmesan, cherry tomato, basil, garlic", 24.00, "margherita.jpg"));
 
             // Retrieve all records
             System.out.println("List after using menuDAO.insert (inserting new entry)");
-            List<Menu> currentMenus = menuDAO.getAll();
-            for (Menu menu : currentMenus) {
-                System.out.println(menu);
+            List<MenuItem> currentMenuItems = menuDAO.getAll();
+            for (MenuItem menuItem : currentMenuItems) {
+                System.out.println(menuItem);
             }
 
             // Retrieve a record by ID
             System.out.println("Retrieve by ID 1");
-            Menu menu = menuDAO.getById(1);
-            if (menu != null) {
-                System.out.println(menu);
+            MenuItem menuItem = menuDAO.getById(1);
+            if (menuItem != null) {
+                System.out.println(menuItem);
             } else {
                 System.out.println("Menu item not found.");
             }
 
             // Update the record
-            if (menu != null) {
-                menu.setPrice(27.50);
-                menu.setDescription("Updated description");
-                menuDAO.update(menu);
+            if (menuItem != null) {
+                menuItem.setPrice(27.50);
+                menuItem.setDescription("Updated description");
+                menuDAO.update(menuItem);
                 System.out.println("After update:");
                 System.out.println(menuDAO.getById(1));
             } else {
@@ -73,9 +73,9 @@ import java.util.List;
             menuDAO.delete(1);
 
             System.out.println("After deleting record with menuID = 1:");
-            menus = menuDAO.getAll();
-            for (Menu remainMenu : menus) {
-                System.out.println(remainMenu);
+            menuItems = menuDAO.getAll();
+            for (MenuItem remainMenuItem : menuItems) {
+                System.out.println(remainMenuItem);
             }
 
             menuDAO.close();

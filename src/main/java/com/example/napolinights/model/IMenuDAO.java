@@ -16,16 +16,16 @@ public interface IMenuDAO {
     /**
      * Inserts a new menu item into the `menu` table.
      *
-     * @param menu The `Menu` object to be inserted into the database.
+     * @param menuItem The `Menu` object to be inserted into the database.
      */
-    void insert(Menu menu);
+    void insert(MenuItem menuItem);
 
     /**
      * Updates an existing menu item in the `menu` table.
      *
-     * @param menu The `Menu` object containing updated information.
+     * @param menuItem The `Menu` object containing updated information.
      */
-    void update(Menu menu);
+    void update(MenuItem menuItem);
 
     /**
      * Deletes a menu item from the `menu` table based on the menu ID.
@@ -39,7 +39,7 @@ public interface IMenuDAO {
      *
      * @return A list of `Menu` objects representing all menu items in the database.
      */
-    List<Menu> getAll();
+    List<MenuItem> getAll();
 
     /**
      * Retrieves a menu item from the `menu` table based on the menu ID.
@@ -47,7 +47,7 @@ public interface IMenuDAO {
      * @param id The ID of the menu item to be retrieved.
      * @return A `Menu` object representing the menu item with the specified ID, or `null` if not found.
      */
-    Menu getById(int id);
+    MenuItem getById(int id);
 
     /**
      * Closes the database connection.

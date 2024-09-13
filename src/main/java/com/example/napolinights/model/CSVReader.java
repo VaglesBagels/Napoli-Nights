@@ -9,8 +9,8 @@ import java.util.List;
 
 public class CSVReader {
 
-    public List<Menu> readMenuFromCSV(String fileName) {
-        List<Menu> menuList = new ArrayList<>();
+    public List<MenuItem> readMenuFromCSV(String fileName) {
+        List<MenuItem> menuItemList = new ArrayList<>();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -43,8 +43,8 @@ public class CSVReader {
                     }
                     String imageURL = values[4].trim();
 
-                    Menu menu = new Menu(category, name, description, price, imageURL);
-                    menuList.add(menu);
+                    MenuItem menuItem = new MenuItem(category, name, description, price, imageURL);
+                    menuItemList.add(menuItem);
                 } else {
                     System.err.println("Invalid line format: " + line);
                 }
@@ -53,6 +53,6 @@ public class CSVReader {
             e.printStackTrace();
         }
 
-        return menuList;
+        return menuItemList;
     }
 }

@@ -1,14 +1,14 @@
 package com.example.napolinights.model;
 
-public class Menu {
-    private int menuID;
+public class MenuItem {
+    private int menuItemID;
     private Category category;
     private String name;
     private String description;
     private double price;
     private String imageURL;
 
-    public Menu(Category category, String name, String description, double price, String imageURL) {
+    public MenuItem(Category category, String name, String description, double price, String imageURL) {
         this.category = category;
         this.name = name;
         this.description = description;
@@ -16,8 +16,8 @@ public class Menu {
         this.imageURL = imageURL;
     }
 
-    public Menu(int menuID, Category category, String name, String description, double price, String imageURL) {
-        this.menuID = menuID;
+    public MenuItem(int menuItemID, Category category, String name, String description, double price, String imageURL) {
+        this.menuItemID = menuItemID;
         this.category = category;
         this.name = name;
         this.description = description;
@@ -26,8 +26,8 @@ public class Menu {
     }
 
     // GET functions for DB
-    public int getMenuID() {
-        return menuID;
+    public int getMenuItemID() {
+        return menuItemID;
     }
 
     public Category getCategory() {
@@ -74,7 +74,7 @@ public class Menu {
     @Override
     public String toString() {
         return "Menu{" +
-                "menuID=" + menuID +
+                "menuID=" + menuItemID +
                 ", category=" + category +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
