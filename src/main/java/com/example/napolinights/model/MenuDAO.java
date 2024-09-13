@@ -4,8 +4,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuDAO {
-    private Connection connection;
+
+/**
+ * Data Access Object (DAO) class for handling database operations related to the `Menu` table.
+ * This class provides methods to create, read, update, and delete (CRUD) menu items in the database.
+ */
+public class MenuDAO implements IMenuDAO {
+    private final Connection connection;
 
     public MenuDAO() {
         connection = DatabaseConnection.getInstance();
@@ -95,7 +100,7 @@ public class MenuDAO {
                 );
             }
         } catch (SQLException ex) {
-            System.err.println(ex);
+            ex.printStackTrace();
         }
         return menus;
     }
