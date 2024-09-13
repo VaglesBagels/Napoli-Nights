@@ -13,7 +13,7 @@ public class MenuDAO implements IMenuDAO {
     private final Connection connection;
 
     public MenuDAO() {
-        connection = DatabaseConnection.getInstance();
+        connection = SqliteConnection.getInstance();
     }
 
     public void createMenuTable() {
