@@ -1,4 +1,4 @@
-package com.example.napolinights;
+package com.example.napolinights.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;

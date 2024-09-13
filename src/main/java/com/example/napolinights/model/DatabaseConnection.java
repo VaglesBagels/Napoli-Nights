@@ -1,4 +1,4 @@
-package com.example.napolinights;
+package com.example.napolinights.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package com.example.napolinights;
+package com.example.napolinights.model;
 
 import java.sql.*;
 import java.util.ArrayList;

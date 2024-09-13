@@ -1,4 +1,4 @@
-package com.example.napolinights;
+package com.example.napolinights.model;
 
 public class OrderItems {
     private int orderItemID;

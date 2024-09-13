@@ -1,4 +1,4 @@
-package com.example.napolinights;
+package com.example.napolinights.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
