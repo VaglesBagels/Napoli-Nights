@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -15,6 +18,32 @@ public class LandingPageController {
 
     @FXML
     private Button orderButton;
+
+    @FXML
+    private ImageView logoImageView;
+
+    @FXML
+    private HBox imageBox;
+
+    // This method is automatically called after the FXML file is loaded
+    @FXML
+    public void initialize() {
+        // Your initialization code here
+        System.out.println("LandingPageController initialized");
+
+        Image image = new Image(getClass().getResource("/com/example/napolinights/images/napoli_nights_logo.png").toExternalForm());
+        if (image.isError()) {
+            System.out.println("Image not found or failed to load.");
+        } else {
+            System.out.println("Image loaded successfully.");
+            // logoImageView.fitWidthProperty().bind(imageBox.widthProperty());
+            // logoImageView.fitHeightProperty().bind(imageBox.heightProperty());
+
+            // Set maximum dimensions to prevent excessive scaling
+            // logoImageView.setPreserveRatio(true);
+
+        }
+    }
 
     @FXML
     private void handleViewMenu() {
@@ -60,6 +89,9 @@ public class LandingPageController {
 
     private void openOrderPage() {
         try {
+
+
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Order.fxml"));
             Parent orderPage = loader.load();
 

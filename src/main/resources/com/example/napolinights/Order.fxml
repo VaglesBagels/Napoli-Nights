@@ -34,7 +34,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/entree_garlic_and_cheese_focaccia.jpg"/>
+                                    <Image url="@images/menu_images/entree_garlic_and_cheese_focaccia.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -49,7 +49,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/entree_fried_Green_olives.jpg"/>
+                                    <Image url="@images/menu_images/entree_fried_Green_olives.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -92,7 +92,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/pasta_fettuccini_carbonara.jpg"/>
+                                    <Image url="@images/menu_images/pasta_fettuccini_carbonara.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -107,7 +107,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/pasta_casarecce_alla_puttanesca.jpg"/>
+                                    <Image url="@images/menu_images/pasta_casarecce_alla_puttanesca.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -144,7 +144,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/pasta_spaghetti_gamberi.jpg"/>
+                                    <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -159,7 +159,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/pasta_spaghetti_bolognese.jpg"/>
+                                    <Image url="@images/menu_images/pasta_spaghetti_bolognese.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
@@ -176,7 +176,7 @@
                             </VBox>
                             <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@/com/example/napolinights/images/menu_images/pasta_spaghetti_gamberi.jpg"/>
+                                    <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg"/>
                                 </image>
                             </ImageView>
                         </HBox>
