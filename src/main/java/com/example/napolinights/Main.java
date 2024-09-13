@@ -17,7 +17,7 @@ import java.util.List;
 
     public class Main {
         public static void main(String[] args) {
-            Connection connection = DatabaseConnection.getInstance();
+            Connection connection = SqliteConnection.getInstance();
 
             MenuDAO menuDAO = new MenuDAO();
             CSVReader csvReader = new CSVReader();

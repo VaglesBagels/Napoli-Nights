@@ -4,11 +4,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderItemsDAO {
-    private Connection connection;
+public class OrderItemsDAO implements IOrderItemsDAO {
+    private final Connection connection;
 
     public OrderItemsDAO() {
-        connection = DatabaseConnection.getInstance();
+        connection = SqliteConnection.getInstance();
     }
 
     public void createOrderItemsTable() {
