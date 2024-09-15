@@ -13,7 +13,7 @@
             <!-- Image Box with Background Image -->
             <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
                 <image>
-                    <Image url="@images/napoli_nights_logo.png" />
+                    <Image url="@images/landing_page/napoli_nights_logo.png" />
                 </image>
             </ImageView>
             <HBox fx:id="imageBox" alignment="CENTER">

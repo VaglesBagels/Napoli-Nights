@@ -31,18 +31,7 @@ public class LandingPageController {
         // Your initialization code here
         System.out.println("LandingPageController initialized");
 
-        Image image = new Image(getClass().getResource("/com/example/napolinights/images/napoli_nights_logo.png").toExternalForm());
-        if (image.isError()) {
-            System.out.println("Image not found or failed to load.");
-        } else {
-            System.out.println("Image loaded successfully.");
-            // logoImageView.fitWidthProperty().bind(imageBox.widthProperty());
-            // logoImageView.fitHeightProperty().bind(imageBox.heightProperty());
 
-            // Set maximum dimensions to prevent excessive scaling
-            // logoImageView.setPreserveRatio(true);
-
-        }
     }
 
     @FXML
