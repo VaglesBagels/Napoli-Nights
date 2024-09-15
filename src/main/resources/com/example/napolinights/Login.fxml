@@ -2,32 +2,42 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<GridPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LoginController">
-    <!-- Use the columnSpan attribute to span the Text across both columns -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LoginController"
+            style="-fx-background-color: #0e0e0e; -fx-padding: 20px; -fx-border-width: 1px; -fx-border-color: #111;">
 
-    <Text text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-    <TextField fx:id="emailField" promptText="Email" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-    <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+    <!-- Logo -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248" preserveRatio="true"
+                   style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
+            <image>
+                <Image url="@images/landing_page/napoli_nights_logo.png" />
+            </image>
+        </ImageView>
 
-    <!-- Center the buttons by setting GridPane.columnIndex to 0 and spanning 2 columns -->
-    <Button fx:id="loginButton" onAction="#onLoginButtonClick" text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-    <Button fx:id="signUpButton" onAction="#onSignUpButtonClick" text="Sign Up" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+        <!-- Login Form -->
+        <VBox spacing="15" alignment="CENTER" style="-fx-background-color: #1e1e1e; -fx-padding: 20px; -fx-border-color: lightgray;">
+            <Label text="Login" style="-fx-text-fill: white; -fx-font-size: 24px;"/>
 
-    <!-- Ensure the column constraints are applied to both columns -->
-    <columnConstraints>
-        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-    </columnConstraints>
+            <Label fx:id="lblLoginStatusMessage" visible="false" />
 
-    <!-- Define row constraints to center content vertically and allow vertical growth -->
-    <rowConstraints>
-        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-    </rowConstraints>
-</GridPane>
+            <TextField fx:id="emailField" promptText="Email address" style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
+            <Label fx:id="lblEmailMessage" text="* Required field is empty" visible="false"/>
 
+            <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
+            <Label fx:id="lblPasswordMessage" text="* Required field is empty" visible="false"/>
+
+            <!-- Login Button -->
+            <Button fx:id="btnLogin" text="Login" style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px;" onAction="#handleLogin"/>
+
+            <!-- Forgot Password Link -->
+            <Hyperlink text="Forgot password?" style="-fx-text-fill: lightgray;" onAction="#handleForgotPassword"/>
+
+            <!-- Sign Up Link -->
+            <Hyperlink fx:id="lnkSignUp" text="SignUp Here" style="-fx-text-fill: lightgray;" onAction="#handleSignUp"/>
+        </VBox>
+    </VBox>
+
+</AnchorPane>
