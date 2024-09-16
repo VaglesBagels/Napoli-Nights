@@ -1,4 +1,4 @@
-package com.example.napolinights.model.alt;
+package com.example.napolinights.model;
 
 import java.sql.SQLException;
 
@@ -6,14 +6,6 @@ import java.sql.SQLException;
  * Interface defining operations for user management in the system.
  */
 public interface IUserDAO {
-
-    /**
-     * Creates User Table in DB if it exists.
-     *
-     * @throws SQLException
-     */
-    void createUserTable() throws SQLException;
-
     /**
      * Adds a new user to the database. The user will be added as active by default.
      *

@@ -1,10 +1,8 @@
-package com.example.napolinights.model.alt;
+package com.example.napolinights.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.napolinights.model.OrderItems;
-import com.example.napolinights.model.alt.OrderDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;

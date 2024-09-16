@@ -1,8 +1,4 @@
-package com.example.napolinights.model.alt;
-
-import com.example.napolinights.model.SqliteConnection;
-import com.example.napolinights.model.alt.Order;
-import com.example.napolinights.model.OrderItems;
+package com.example.napolinights.model;
 
 import java.sql.*;
 import java.util.List;
@@ -20,13 +16,46 @@ public class OrderDAO implements IOrderDAO{
      */
     public OrderDAO(Connection connection) {
         this.connection = connection;
-        createOrdersTable();
     }
 
-    @Override
     public void createOrdersTable() {
+        try {
+            Statement createOrdersTable = connection.createStatement();
+            createOrdersTable.execute(
+                    "CREATE TABLE IF NOT EXISTS orders (" +
+                            "    order_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "    created_timestamp DATETIME NOT NULL," +
+                            "    order_paid BOOLEAN NOT NULL," +
+                            "    paid_timestamp DATETIME" +
+                            ")"
+            );
 
+            System.out.println("Orders table created");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
+
+    public void createOrderItemsTable() {
+        try {
+            Statement createOrderItemsTable = connection.createStatement();
+            createOrderItemsTable.execute(
+                    "CREATE TABLE IF NOT EXISTS order_items (" +
+                            "    order_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "    order_id VARCHAR(20) NOT NULL," +
+                            "    menu_id VARCHAR(10) NOT NULL," +
+                            "    special_instructions TEXT," +
+                            "    FOREIGN KEY (order_id) REFERENCES orders(order_id)," +
+                            "    FOREIGN KEY (menu_id) REFERENCES menu_items(menu_id)" +
+                            ")"
+            );
+
+            System.out.println("OrderItems table created");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
 
     /**
      * Adds an order and its associated order items to the database.

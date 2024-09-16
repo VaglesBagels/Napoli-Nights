@@ -1,6 +1,4 @@
-package com.example.napolinights.model.alt;
-
-import com.example.napolinights.model.SqliteConnection;
+package com.example.napolinights.model;
 
 import java.sql.*;
 import java.security.MessageDigest;
@@ -15,29 +13,27 @@ public class UserDAO implements IUserDAO {
     /**
      * Constructs a UserDAO instance with the provided database connection.
      */
-    public UserDAO(Connection connection) throws SQLException {
+    public UserDAO(Connection connection) {
         this.connection = connection;
-        createUserTable();
     }
 
-    @Override
     public void createUserTable() {
         try {
-            Statement createMenuTable = connection.createStatement();
-            createMenuTable.execute(
+            Statement createUserTable = connection.createStatement();
+            createUserTable.execute(
                 "CREATE TABLE IF NOT EXISTS users ( " +
-                        "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "user_first_name VARCHAR(50) NOT NULL, " +
-                        "user_last_name VARCHAR(50) NOT NULL, " +
-                        "mobile VARCHAR(15) NOT NULL UNIQUE, " +
-                        "email VARCHAR(100) NOT NULL UNIQUE, " +
-                        "password VARCHAR(255) NOT NULL, " +
-                        "user_role VARCHAR(20) NOT NULL, " +
-                        "user_status BOOLEAN NOT NULL" +
-                        ")"
+                    "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "user_first_name VARCHAR(50) NOT NULL, " +
+                    "user_last_name VARCHAR(50) NOT NULL, " +
+                    "mobile VARCHAR(15) NOT NULL UNIQUE, " +
+                    "email VARCHAR(100) NOT NULL UNIQUE, " +
+                    "password VARCHAR(255) NOT NULL, " +
+                    "user_role VARCHAR(20) NOT NULL, " +
+                    "user_status BOOLEAN NOT NULL" +
+                    ")"
             );
 
-            System.out.println("User database created");
+            System.out.println("User table created");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -86,12 +82,12 @@ public class UserDAO implements IUserDAO {
      * @param username The email or mobile number of the user.
      * @param password The plain-text password entered by the user.
      * @return true if the login credentials and password match, false otherwise.
-     * @throws SQLException If an er
+     * @throws SQLException If an error occurs reading from database
      * ror occurs while interacting with the database.
      */
     @Override
     public boolean verifyUserAccess(String username, String password) throws SQLException {
-        String sql = "SELECT password FROM Users WHERE (email = ? OR mobile = ?) AND user_status = TRUE";
+        String sql = "SELECT * FROM Users WHERE (email = ? OR mobile = ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
@@ -100,10 +96,16 @@ public class UserDAO implements IUserDAO {
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     String storedHashedPassword = rs.getString("password");
+                    boolean userStatus = rs.getBoolean("user_status");
+                    if (!userStatus) {
+                        throw new Exception("User is not active");
+                    }
                     return verifyPassword(password, storedHashedPassword);
                 } else {
                     return false;
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }

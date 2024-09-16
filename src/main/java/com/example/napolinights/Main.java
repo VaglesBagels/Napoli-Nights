@@ -1,7 +1,7 @@
 package com.example.napolinights;
 
 import com.example.napolinights.model.*;
-import com.example.napolinights.model.alt.UserDAO;
+import com.example.napolinights.model.UserDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,11 +22,15 @@ import java.util.List;
             Connection connection = SqliteConnection.getInstance();
 
             UserDAO userDAO = new UserDAO(connection);
-            MenuDAO menuDAO = new MenuDAO();
+            MenuDAO menuDAO = new MenuDAO(connection);
+            OrderDAO orderDAO = new OrderDAO(connection);
             CSVReader csvReader = new CSVReader();
 
+            // Initialise Tables
+            userDAO.createUserTable();
             menuDAO.createMenuTable();
-
+            orderDAO.createOrdersTable();
+            orderDAO.createOrderItemsTable();
 
             // Read data from CSV
             List<MenuItem> menuItems = csvReader.readMenuFromCSV("menu_data.csv");

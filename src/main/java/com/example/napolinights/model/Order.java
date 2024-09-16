@@ -1,6 +1,4 @@
-package com.example.napolinights.model.alt;
-
-import com.example.napolinights.model.OrderItems;
+package com.example.napolinights.model;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

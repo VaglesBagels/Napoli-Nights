@@ -1,4 +1,6 @@
-package com.example.napolinights.model;
+package com.example.napolinights.model.obsolete;
+
+import com.example.napolinights.model.OrderItems;
 
 import java.util.List;
 

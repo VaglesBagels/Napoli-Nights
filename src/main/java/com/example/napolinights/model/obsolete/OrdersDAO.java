@@ -1,11 +1,13 @@
-package com.example.napolinights.model;
+package com.example.napolinights.model.obsolete;
+
+import com.example.napolinights.model.SqliteConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrdersDAO implements IOrdersDAO {
-    private Connection connection;
+    private final Connection connection;
 
     public OrdersDAO() {
         connection = SqliteConnection.getInstance();
@@ -36,7 +38,7 @@ public class OrdersDAO implements IOrdersDAO {
             insertOrder.setString(3, order.getCustomerContact());
 
             insertOrder.execute();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.err.println(ex);
         }
     }

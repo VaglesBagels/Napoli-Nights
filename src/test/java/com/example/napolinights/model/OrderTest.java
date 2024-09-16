@@ -1,6 +1,5 @@
-package com.example.napolinights.model.alt;
+package com.example.napolinights.model;
 
-import com.example.napolinights.model.OrderItems;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

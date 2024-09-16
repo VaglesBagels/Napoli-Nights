@@ -1,15 +1,19 @@
 package com.example.napolinights.model;
 
-import java.util.Objects;
-
 public class OrderItems {
     private int orderItemID;
-    private static int orderID;
-    private static int menuID;
+    private final int orderID;
+    private final int menuID;
     private int quantity;
-    private static double itemPrice;
+    private final double itemPrice;
 
     public OrderItems(int orderID, int menuID, int quantity, double itemPrice) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Item quantity cannot be negative");
+        }
+        if (itemPrice < 0) {
+            throw new IllegalArgumentException("Item price cannot be negative");
+        }
         this.orderID = orderID;
         this.menuID = menuID;
         this.quantity = quantity;
@@ -21,7 +25,7 @@ public class OrderItems {
         this.orderItemID = orderItemID;
     }
 
-    // GET functions for DB
+    // Getter methods
     public int getOrderItemID() {
         return orderItemID;
     }
@@ -42,35 +46,13 @@ public class OrderItems {
         return itemPrice;
     }
 
-    // SET functions for DB
-// OrderItemID is determined by the DB.
-//    public void setOrderItemID(int orderItemID) {
-//        this.orderItemID = orderItemID;
-//    }
-//
-//    OrderID is determined during instancing and should not be changed.
-//    public void setOrderID(int orderID) {
-//        this.orderID = orderID;
-//    }
-//
-//
-//    public void setMenuID(int menuID) {
-//        this.menuID = menuID;
-//    }
-
+    // Setter for quantity with validation
     public void setQuantity(int quantity) {
-        if (quantity < 0 ) {
+        if (quantity < 0) {
             throw new IllegalArgumentException("Item quantity cannot be negative");
         }
         this.quantity = quantity;
     }
-// Price should not be changed after instancing.
-//    public void setItemPrice(double itemPrice) {
-//        if (itemPrice < 0 ) {
-//            throw new IllegalArgumentException("Item Price cannot be negative");
-//        }
-//        this.itemPrice = itemPrice;
-//    }
 
     @Override
     public String toString() {

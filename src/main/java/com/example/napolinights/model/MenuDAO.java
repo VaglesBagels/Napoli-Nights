@@ -11,8 +11,8 @@ import java.util.List;
 public class MenuDAO implements IMenuDAO {
     private final Connection connection;
 
-    public MenuDAO() {
-        connection = SqliteConnection.getInstance();
+    public MenuDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void createMenuTable() {
@@ -28,6 +28,7 @@ public class MenuDAO implements IMenuDAO {
                             + "imageURL TEXT"
                             + ")"
             );
+            System.out.println("Menu table created");
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
