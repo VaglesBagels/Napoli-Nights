@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Data Access Object (DAO) class for handling database operations related to the `Menu` table.
  * This class provides methods to create, read, update, and delete (CRUD) menu items in the database.

@@ -1,4 +1,6 @@
-package com.example.napolinights.model;
+package com.example.napolinights.model.alt;
+
+import com.example.napolinights.model.OrderItems;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class Order {
      *
      * @return The order ID.
      */
-    public int getOrderID() {
+    public Integer getOrderID() {
         return orderID;
     }
 
@@ -63,6 +65,12 @@ public class Order {
      * @param orderID The order ID to set.
      */
     public void setOrderID(int orderID) {
+        if (this.orderID > 0) {
+            throw new IllegalArgumentException("Order ID cannot be changed after it's been set.");
+        }
+        if (orderID == 0) {
+            throw new IllegalArgumentException("Order ID cannot be null or empty.");
+        }
         this.orderID = orderID;
     }
 

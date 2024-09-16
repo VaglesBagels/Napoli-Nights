@@ -10,4 +10,6 @@ module com.example.napolinights {
     opens com.example.napolinights.model to javafx.fxml;
     exports com.example.napolinights.controller;
     opens com.example.napolinights.controller to javafx.fxml;
+    exports com.example.napolinights.model.alt;
+    opens com.example.napolinights.model.alt to javafx.fxml;
 }

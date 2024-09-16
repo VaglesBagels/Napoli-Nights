@@ -1,5 +1,6 @@
-package com.example.napolinights.model;
+package com.example.napolinights.model.alt;
 
+import com.example.napolinights.model.OrderItems;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -89,6 +90,7 @@ public class OrderTest {
     @Test
     public void testEqualsAndHashCode() {
         Timestamp orderDate = new Timestamp(System.currentTimeMillis());
+        Order order = new Order(orderDate, "John Doe", "123456789");
         Order sameOrder = new Order(orderDate, "John Doe", "123456789");
         Order differentOrder = new Order(orderDate, "Jane Doe", "987654321");
 
@@ -101,7 +103,10 @@ public class OrderTest {
 
     @Test
     public void testToString() {
-        String expected = "Order{orderID=0, orderDate=" + order.getOrderDate() +
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Order order = new Order(now, "John Doe", "123456789");
+
+        String expected = "Order{orderID=0, orderDate=" + now +
                 ", customerName='John Doe', customerContact='123456789', orderItems=[]}";
         assertEquals(expected, order.toString());
     }

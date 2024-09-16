@@ -1,25 +1,24 @@
 package com.example.napolinights.model;
 
+import java.util.Objects;
+
 public class OrderItems {
     private int orderItemID;
-    private int orderID;
-    private int menuID;
+    private static int orderID;
+    private static int menuID;
     private int quantity;
-    private double itemPrice;
-
-    public OrderItems(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
-        this.orderItemID = orderItemID;
-        this.orderID = orderID;
-        this.menuID = menuID;
-        this.quantity = quantity;
-        this.itemPrice = itemPrice;
-    }
+    private static double itemPrice;
 
     public OrderItems(int orderID, int menuID, int quantity, double itemPrice) {
         this.orderID = orderID;
         this.menuID = menuID;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
+    }
+
+    public OrderItems(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
+        this(orderID, menuID, quantity, itemPrice);
+        this.orderItemID = orderItemID;
     }
 
     // GET functions for DB
@@ -44,25 +43,34 @@ public class OrderItems {
     }
 
     // SET functions for DB
-    public void setOrderItemID(int orderItemID) {
-        this.orderItemID = orderItemID;
-    }
-
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
-
-    public void setMenuID(int menuID) {
-        this.menuID = menuID;
-    }
+// OrderItemID is determined by the DB.
+//    public void setOrderItemID(int orderItemID) {
+//        this.orderItemID = orderItemID;
+//    }
+//
+//    OrderID is determined during instancing and should not be changed.
+//    public void setOrderID(int orderID) {
+//        this.orderID = orderID;
+//    }
+//
+//
+//    public void setMenuID(int menuID) {
+//        this.menuID = menuID;
+//    }
 
     public void setQuantity(int quantity) {
+        if (quantity < 0 ) {
+            throw new IllegalArgumentException("Item quantity cannot be negative");
+        }
         this.quantity = quantity;
     }
-
-    public void setItemPrice(double itemPrice) {
-        this.itemPrice = itemPrice;
-    }
+// Price should not be changed after instancing.
+//    public void setItemPrice(double itemPrice) {
+//        if (itemPrice < 0 ) {
+//            throw new IllegalArgumentException("Item Price cannot be negative");
+//        }
+//        this.itemPrice = itemPrice;
+//    }
 
     @Override
     public String toString() {
