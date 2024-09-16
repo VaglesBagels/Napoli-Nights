@@ -20,6 +20,7 @@ public class OrderDAO implements IOrderDAO{
      */
     public OrderDAO(Connection connection) {
         this.connection = connection;
+        createOrdersTable();
     }
 
     @Override

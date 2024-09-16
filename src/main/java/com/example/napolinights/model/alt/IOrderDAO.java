@@ -8,12 +8,6 @@ import java.util.List;
  * Defines methods for CRUD operations on Orders.
  */
 public interface IOrderDAO {
-
-    /**
-     * Creates the Orders table if it does not exist.
-     */
-    void createOrdersTable();
-
     /**
      * Adds new Order into the database.
      *

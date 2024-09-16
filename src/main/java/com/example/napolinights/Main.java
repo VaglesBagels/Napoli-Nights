@@ -25,7 +25,6 @@ import java.util.List;
             MenuDAO menuDAO = new MenuDAO();
             CSVReader csvReader = new CSVReader();
 
-            userDAO.createUserTable();
             menuDAO.createMenuTable();
 
 

@@ -15,30 +15,31 @@ public class UserDAO implements IUserDAO {
     /**
      * Constructs a UserDAO instance with the provided database connection.
      */
-    public UserDAO(Connection connection) {
+    public UserDAO(Connection connection) throws SQLException {
         this.connection = connection;
+        createUserTable();
     }
 
     @Override
-    public void createUserTable() throws SQLException {
+    public void createUserTable() {
         try {
             Statement createMenuTable = connection.createStatement();
             createMenuTable.execute(
-                    "CREATE TABLE IF NOT EXISTS users ( " +
-                            "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                            "user_first_name VARCHAR(50) NOT NULL, " +
-                            "user_last_name VARCHAR(50) NOT NULL, " +
-                            "mobile VARCHAR(15) NOT NULL UNIQUE, " +
-                            "email VARCHAR(100) NOT NULL UNIQUE, " +
-                            "password VARCHAR(255) NOT NULL, " +
-                            "user_role VARCHAR(20) NOT NULL, " +
-                            "user_status BOOLEAN NOT NULL" +
-                            ")"
+                "CREATE TABLE IF NOT EXISTS users ( " +
+                        "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "user_first_name VARCHAR(50) NOT NULL, " +
+                        "user_last_name VARCHAR(50) NOT NULL, " +
+                        "mobile VARCHAR(15) NOT NULL UNIQUE, " +
+                        "email VARCHAR(100) NOT NULL UNIQUE, " +
+                        "password VARCHAR(255) NOT NULL, " +
+                        "user_role VARCHAR(20) NOT NULL, " +
+                        "user_status BOOLEAN NOT NULL" +
+                        ")"
             );
 
             System.out.println("User database created");
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 
