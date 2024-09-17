@@ -57,16 +57,6 @@ public class MenuItemDAO implements IMenuItemDAO {
         }
     }
 
-    public void removeMenuItemById(int id) {
-        String sql = "DELETE FROM menu WHERE menuID = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            System.err.println("Error removing menu item: " + ex.getMessage());
-        }
-    }
-
     public List<MenuItem> fetchAllMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
         String sql = "SELECT * FROM menu";
@@ -88,6 +78,31 @@ public class MenuItemDAO implements IMenuItemDAO {
         }
         return menuItems;
     }
+
+    @Override
+    public List<MenuItem> fetchAllMenuItemsByCategory(Category category) {
+        List<MenuItem> menuItems = new ArrayList<>();
+        String sql = "SELECT * FROM menu WHERE category = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, category.name());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    menuItems.add(new MenuItem(
+                            rs.getInt("menuID"),
+                            category,
+                            rs.getString("name"),
+                            rs.getString("description"),
+                            rs.getDouble("price"),
+                            rs.getString("imageURL")
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error fetching menu items by category: " + ex.getMessage());
+        }
+        return menuItems;
+    }
+
 
     public MenuItem fetchMenuItemById(int id) {
         String sql = "SELECT * FROM menu WHERE menuID = ?";
