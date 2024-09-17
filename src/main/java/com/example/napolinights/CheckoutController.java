@@ -15,9 +15,6 @@ public class CheckoutController {
     private Button checkoutPayButton;
 
     @FXML
-    private ArrayList<Object[]> cartData;
-
-    @FXML
     private void handleCheckoutBackButtonClick(MouseEvent event) {
         System.out.println("Checkout back button clicked");
     }
