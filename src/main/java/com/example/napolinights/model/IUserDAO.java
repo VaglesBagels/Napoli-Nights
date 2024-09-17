@@ -31,10 +31,11 @@ public interface IUserDAO {
      * @param userId The unique ID of the user whose password is to be changed.
      * @throws SQLException If an error occurs while interacting with the database.
      */
-    User getUserDetails(int userId) throws SQLException;
+    User getUserDetailsById(int userId) throws SQLException;
 
     /**
-     * Changes the password for the specified user.
+     * Changes the password for the specif
+     * ied user.
      *
      * @param userId The unique ID of the user whose password is to be changed.
      * @param newPassword The new plain-text password to be set for the user.

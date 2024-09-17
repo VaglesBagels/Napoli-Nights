@@ -28,13 +28,6 @@ public interface IMenuItemDAO {
     void updateMenuItem(MenuItem menuItem);
 
     /**
-     * Removes a menu item from the `menu` table based on the menu ID.
-     *
-     * @param id The ID of the menu item to be removed.
-     */
-    void removeMenuItemById(int id);
-
-    /**
      * Retrieves all menu items from the `menu` table.
      *
      * @return A list of `MenuItem` objects representing all menu items in the database.
