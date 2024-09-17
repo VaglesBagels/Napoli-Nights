@@ -35,6 +35,13 @@ public interface IMenuItemDAO {
     List<MenuItem> fetchAllMenuItems();
 
     /**
+     * Retrieves all menu items from the `menu` table under a specific category.
+     *
+     * @return A list of `MenuItem` objects representing all menu items in the database.
+     */
+    List<MenuItem> fetchAllMenuItemsByCategory(Category category);
+
+    /**
      * Retrieves a menu item from the `menu` table based on the menu ID.
      *
      * @param id The ID of the menu item to be retrieved.
