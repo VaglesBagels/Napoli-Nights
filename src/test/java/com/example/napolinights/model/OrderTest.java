@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OrderTest {
 
     private Order order;
-    private OrderItems item1;
-    private OrderItems item2;
+    private OrderItem item1;
+    private OrderItem item2;
 
     @BeforeEach
     public void setUp() {
@@ -29,8 +29,8 @@ public class OrderTest {
         order = new Order(orderDate, customerName, customerContact);
 
         // Create some sample order items
-        item1 = new OrderItems(1, 1, 2, 10.5);
-        item2 = new OrderItems(2, 1, 1, 5.0);
+        item1 = new OrderItem(1, 1, 2, 10.5);
+        item2 = new OrderItem(2, 1, 1, 5.0);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class OrderTest {
         order.addOrderItem(item1);
         order.addOrderItem(item2);
 
-        List<OrderItems> items = order.getOrderItems();
+        List<OrderItem> items = order.getOrderItems();
         assertEquals(2, items.size());
         assertTrue(items.contains(item1));
         assertTrue(items.contains(item2));
@@ -72,7 +72,7 @@ public class OrderTest {
         Timestamp newOrderDate = new Timestamp(System.currentTimeMillis() + 1000);
         String newCustomerName = "Alice";
         String newCustomerContact = "111222333";
-        List<OrderItems> newItems = new ArrayList<>();
+        List<OrderItem> newItems = new ArrayList<>();
         newItems.add(item1);
 
         order.setOrderDate(newOrderDate);
@@ -161,7 +161,7 @@ public class OrderTest {
 
     @Test
     public void testSetOrderItemsWithEmptyList() {
-        List<OrderItems> emptyList = new ArrayList<>();
+        List<OrderItem> emptyList = new ArrayList<>();
         order.setOrderItems(emptyList);
         assertEquals(0, order.getOrderItems().size());
     }

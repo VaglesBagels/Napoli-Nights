@@ -97,8 +97,8 @@ public class OrderDAO implements IOrderDAO{
             }
 
             // Insert OrderItems into OrderItems table
-            List<OrderItems> orderItemsList = order.getOrderItems();
-            for (OrderItems item : orderItemsList) {
+            List<OrderItem> orderItemList = order.getOrderItems();
+            for (OrderItem item : orderItemList) {
                 orderItemStmt.setInt(1, order.getOrderID());
                 orderItemStmt.setInt(2, item.getMenuID());
                 orderItemStmt.setInt(3, item.getQuantity());
@@ -170,7 +170,7 @@ public class OrderDAO implements IOrderDAO{
             throw new IllegalArgumentException("Order must have at least one order item.");
         }
 
-        for (OrderItems item : order.getOrderItems()) {
+        for (OrderItem item : order.getOrderItems()) {
             if (item == null) {
                 throw new IllegalArgumentException("Order item cannot be null.");
             }

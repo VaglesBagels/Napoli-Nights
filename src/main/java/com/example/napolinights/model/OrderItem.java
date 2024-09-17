@@ -1,18 +1,18 @@
 package com.example.napolinights.model;
 
-public class OrderItems {
+public class OrderItem {
     private int orderItemID;
     private final int orderID;
     private final int menuID;
     private int quantity;
     private final double itemPrice;
 
-    public OrderItems(int orderID, int menuID, int quantity, double itemPrice) {
-        if (quantity < 0) {
-            throw new IllegalArgumentException("Item quantity cannot be negative");
+    public OrderItem(int orderID, int menuID, int quantity, double itemPrice) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Item quantity must be greater than 0.");
         }
-        if (itemPrice < 0) {
-            throw new IllegalArgumentException("Item price cannot be negative");
+        if (itemPrice <= 0) {
+            throw new IllegalArgumentException("Item price must be greater than 0.");
         }
         this.orderID = orderID;
         this.menuID = menuID;
@@ -20,7 +20,7 @@ public class OrderItems {
         this.itemPrice = itemPrice;
     }
 
-    public OrderItems(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
+    public OrderItem(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
         this(orderID, menuID, quantity, itemPrice);
         this.orderItemID = orderItemID;
     }
@@ -43,20 +43,23 @@ public class OrderItems {
     }
 
     public double getItemPrice() {
+        if (itemPrice <= 0) {
+            throw new IllegalArgumentException("Item price must be greater than 0.");
+        }
         return itemPrice;
     }
 
     // Setter for quantity with validation
     public void setQuantity(int quantity) {
-        if (quantity < 0) {
-            throw new IllegalArgumentException("Item quantity cannot be negative");
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Item quantity must be greater than 0.");
         }
         this.quantity = quantity;
     }
 
     @Override
     public String toString() {
-        return "OrderItems{" +
+        return "OrderItem{" +
                 "orderItemID=" + orderItemID +
                 ", orderID=" + orderID +
                 ", menuID=" + menuID +

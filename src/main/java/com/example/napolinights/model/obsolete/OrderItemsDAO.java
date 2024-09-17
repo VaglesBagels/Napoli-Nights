@@ -1,6 +1,6 @@
 package com.example.napolinights.model.obsolete;
 
-import com.example.napolinights.model.OrderItems;
+import com.example.napolinights.model.OrderItem;
 import com.example.napolinights.model.SqliteConnection;
 
 import java.sql.*;
@@ -33,7 +33,7 @@ public class OrderItemsDAO implements IOrderItemsDAO {
         }
     }
 
-    public void insert(OrderItems orderItem) {
+    public void insert(OrderItem orderItem) {
         try {
             String sql = "INSERT INTO OrderItems (orderID, menuID, quantity, itemPrice) VALUES (?, ?, ?, ?)";
             PreparedStatement insertOrderItem = connection.prepareStatement(sql);
@@ -49,7 +49,7 @@ public class OrderItemsDAO implements IOrderItemsDAO {
         }
     }
 
-    public void update(OrderItems orderItem) {
+    public void update(OrderItem orderItem) {
         try {
             String sql = "UPDATE OrderItems SET orderID = ?, menuID = ?, quantity = ?, itemPrice = ? WHERE orderItemID = ?";
             PreparedStatement updateOrderItem = connection.prepareStatement(sql);
@@ -79,8 +79,8 @@ public class OrderItemsDAO implements IOrderItemsDAO {
         }
     }
 
-    public List<OrderItems> getAll() {
-        List<OrderItems> orderItemsList = new ArrayList<>();
+    public List<OrderItem> getAll() {
+        List<OrderItem> orderItemList = new ArrayList<>();
         try {
             Statement getAll = connection.createStatement();
             String sql = "SELECT * FROM OrderItems";
@@ -93,8 +93,8 @@ public class OrderItemsDAO implements IOrderItemsDAO {
                 int quantity = rs.getInt("quantity");
                 double itemPrice = rs.getDouble("itemPrice");
 
-                orderItemsList.add(
-                        new OrderItems(
+                orderItemList.add(
+                        new OrderItem(
                                 orderItemID,
                                 orderID,
                                 menuID,
@@ -106,10 +106,10 @@ public class OrderItemsDAO implements IOrderItemsDAO {
         } catch (SQLException ex) {
             System.err.println(ex);
         }
-        return orderItemsList;
+        return orderItemList;
     }
 
-    public OrderItems getById(int id) {
+    public OrderItem getById(int id) {
         try {
             String sql = "SELECT * FROM OrderItems WHERE orderItemID = ?";
             PreparedStatement getOrderItem = connection.prepareStatement(sql);
@@ -123,7 +123,7 @@ public class OrderItemsDAO implements IOrderItemsDAO {
                 int quantity = rs.getInt("quantity");
                 double itemPrice = rs.getDouble("itemPrice");
 
-                return new OrderItems(orderItemID, orderID, menuID, quantity, itemPrice);
+                return new OrderItem(orderItemID, orderID, menuID, quantity, itemPrice);
             }
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());

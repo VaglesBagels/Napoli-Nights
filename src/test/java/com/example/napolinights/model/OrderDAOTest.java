@@ -39,8 +39,8 @@ public class OrderDAOTest {
         // Arrange
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Order order = new Order(now, "John Doe", "123-456-7890");
-        List<OrderItems> items = new ArrayList<>();
-        items.add(new OrderItems(123, 1, 2, 19.99));
+        List<OrderItem> items = new ArrayList<>();
+        items.add(new OrderItem(123, 1, 2, 19.99));
         order.setOrderItems(items);
 
         // Mock ResultSet to return generated keys
@@ -81,8 +81,8 @@ public class OrderDAOTest {
         // Arrange
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Order order = new Order(now, "John Doe", "123-456-7890");
-        List<OrderItems> items = new ArrayList<>();
-        items.add(new OrderItems(1, 2, 3, 19.99));
+        List<OrderItem> items = new ArrayList<>();
+        items.add(new OrderItem(1, 2, 3, 19.99));
         order.setOrderItems(items);
 
         // Mock failure to insert order
@@ -100,8 +100,8 @@ public class OrderDAOTest {
         // Arrange
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Order order = new Order(now, "John Doe", "123-456-7890");
-        List<OrderItems> items = new ArrayList<>();
-        items.add(new OrderItems(1, 2, 3, 19.99));
+        List<OrderItem> items = new ArrayList<>();
+        items.add(new OrderItem(1, 2, 3, 19.99));
         order.setOrderItems(items);
 
         // Mock successful order insert but failure to retrieve ID
@@ -120,8 +120,8 @@ public class OrderDAOTest {
         // Arrange
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Order order = new Order(now, "John Doe", "123-456-7890");
-        List<OrderItems> items = new ArrayList<>();
-        items.add(new OrderItems(1, 2, 3, 19.99));
+        List<OrderItem> items = new ArrayList<>();
+        items.add(new OrderItem(1, 2, 3, 19.99));
         order.setOrderItems(items);
 
         // Mock successful order insert and ID retrieval
@@ -183,20 +183,5 @@ public class OrderDAOTest {
             orderDAO.addOrder(order);
         });
         assertEquals("Order must have at least one order item.", thrown.getMessage());
-    }
-
-    @Test
-    public void testAddOrderInvalidItem() {
-        // Arrange
-        Order order = new Order(new Timestamp(System.currentTimeMillis()), "John Doe", "123-456-7890");
-        List<OrderItems> items = new ArrayList<>();
-        items.add(new OrderItems(1, 2, 0, 19.99)); // Invalid quantity
-        order.setOrderItems(items);
-
-        // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            orderDAO.addOrder(order);
-        });
-        assertEquals("Order item quantity must be greater than 0.", thrown.getMessage());
     }
 }

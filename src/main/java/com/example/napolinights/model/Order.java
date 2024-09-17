@@ -14,7 +14,7 @@ public class Order {
     private Timestamp orderDate;
     private String customerName;
     private String customerContact;
-    private List<OrderItems> orderItems;
+    private List<OrderItem> orderItems;
 
     /**
      * Constructs a new Order with the specified date, customer name, and contact.
@@ -43,7 +43,7 @@ public class Order {
      * @param orderItems      The list of items associated with this order.
      * @throws NullPointerException if any of the required parameters are null.
      */
-    public Order(int orderID, Timestamp orderDate, String customerName, String customerContact, List<OrderItems> orderItems) {
+    public Order(int orderID, Timestamp orderDate, String customerName, String customerContact, List<OrderItem> orderItems) {
         this(orderDate, customerName, customerContact);
         this.orderID = orderID;
         this.orderItems = new ArrayList<>(orderItems);
@@ -137,37 +137,37 @@ public class Order {
     /**
      * Gets the list of items associated with the order.
      *
-     * @return A list of {@link OrderItems} associated with the order.
+     * @return A list of {@link OrderItem} associated with the order.
      */
-    public List<OrderItems> getOrderItems() {
+    public List<OrderItem> getOrderItems() {
         return new ArrayList<>(orderItems); // Defensive copy
     }
 
     /**
      * Sets the list of items associated with the order.
      *
-     * @param orderItems The list of {@link OrderItems} to set.
+     * @param orderItems The list of {@link OrderItem} to set.
      */
-    public void setOrderItems(List<OrderItems> orderItems) {
+    public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = new ArrayList<>(Objects.requireNonNull(orderItems, "Order items cannot be null")); // Defensive copy
     }
 
     /**
      * Adds an item to the order.
      *
-     * @param item The {@link OrderItems} to add.
+     * @param item The {@link OrderItem} to add.
      */
-    public void addOrderItem(OrderItems item) {
-        OrderItems itemToAdd = Objects.requireNonNull(item, "Order item cannot be null");
+    public void addOrderItem(OrderItem item) {
+        OrderItem itemToAdd = Objects.requireNonNull(item, "Order item cannot be null");
         orderItems.add(itemToAdd);
     }
 
     /**
      * Removes an item from the order.
      *
-     * @param item The {@link OrderItems} to remove.
+     * @param item The {@link OrderItem} to remove.
      */
-    public void removeOrderItem(OrderItems item) {
+    public void removeOrderItem(OrderItem item) {
         orderItems.remove(item);
     }
 

@@ -1,6 +1,6 @@
 package com.example.napolinights.model.obsolete;
 
-import com.example.napolinights.model.OrderItems;
+import com.example.napolinights.model.OrderItem;
 
 import java.util.List;
 
@@ -19,14 +19,14 @@ public interface IOrderItemsDAO {
      *
      * @param orderItem The OrderItem object to be inserted.
      */
-    void insert(OrderItems orderItem);
+    void insert(OrderItem orderItem);
 
     /**
      * Updates an existing OrderItem in the database.
      *
      * @param orderItem The OrderItem object with updated values.
      */
-    void update(OrderItems orderItem);
+    void update(OrderItem orderItem);
 
     /**
      * Deletes an OrderItem from the database by its ID.
@@ -40,7 +40,7 @@ public interface IOrderItemsDAO {
      *
      * @return A list of all OrderItems.
      */
-    List<OrderItems> getAll();
+    List<OrderItem> getAll();
 
     /**
      * Retrieves an OrderItem from the database by its ID.
@@ -48,7 +48,7 @@ public interface IOrderItemsDAO {
      * @param id The ID of the OrderItem to be retrieved.
      * @return The OrderItem with the specified ID, or null if not found.
      */
-    OrderItems getById(int id);
+    OrderItem getById(int id);
 
     /**
      * Closes the database connection.
