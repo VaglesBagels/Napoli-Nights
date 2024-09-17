@@ -15,6 +15,14 @@ public class CheckoutController {
     private Button checkoutPayButton;
 
     @FXML
+    private CartItem[] cartItems;
+
+    private double totalPrice = 0.0;
+
+    @FXML
+    private int totalQuantity = 0;
+
+    @FXML
     private void handleCheckoutBackButtonClick(MouseEvent event) {
         System.out.println("Checkout back button clicked");
     }
@@ -25,8 +33,18 @@ public class CheckoutController {
     }
 
     public void receiveData(CartItem[] data) {
+        cartItems = data;
         for (CartItem item : data) {
             System.out.println(item.getName() + " " + item.getPrice() + " " + item.getQuantity());
+        }
+        calculateTotal();
+        System.out.println(totalPrice + " " + totalQuantity);
+    }
+
+    private void calculateTotal() {
+        for (CartItem item : cartItems) {
+            totalPrice += item.getPrice() * item.getQuantity();  // Price * Quantity
+            totalQuantity += item.getQuantity();  // Total quantity
         }
     }
 }
