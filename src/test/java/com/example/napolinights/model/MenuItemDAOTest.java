@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDAOTest {
@@ -90,7 +89,7 @@ public class MenuItemDAOTest {
 
         assertNotNull(items);
         assertEquals(1, items.size());
-        MenuItem item = items.get(0); // Use get(0) instead of getFirst
+        MenuItem item = items.getFirst(); // Use get(0) instead of getFirst
         assertEquals(1, item.getMenuItemID());
         assertEquals(Category.PIZZA, item.getCategory());
         assertEquals("Margherita", item.getName());
