@@ -34,8 +34,7 @@ public interface IUserDAO {
     User getUserDetailsById(int userId) throws SQLException;
 
     /**
-     * Changes the password for the specif
-     * ied user.
+     * Changes the password for the specified user.
      *
      * @param userId The unique ID of the user whose password is to be changed.
      * @param newPassword The new plain-text password to be set for the user.

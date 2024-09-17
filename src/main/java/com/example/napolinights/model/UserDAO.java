@@ -111,7 +111,7 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public User getUserDetails(int userId) throws SQLException {
+    public User getUserDetailsById(int userId) throws SQLException {
         String sql = "SELECT * FROM Users WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId); // Correct parameter index
