@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -50,6 +51,9 @@ public class OrderController {
     private double totalPrice = 0.00;
 
     private int quantity = 1; // Default quantity
+
+    @FXML
+    private Button checkoutButton;
 
     @FXML
     private void initialize() {
@@ -278,6 +282,21 @@ public class OrderController {
     }
 
 
+    @FXML
+    private void HandleCheckoutButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Checkout.fxml"));
+            Parent checkoutPage = loader.load();
 
+            Stage stage = (Stage)this.checkoutButton.getScene().getWindow();
+            stage.setTitle("Checkout");
+            Scene scene = new Scene(checkoutPage);
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
