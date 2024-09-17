@@ -27,7 +27,9 @@ public class CheckoutController {
         System.out.println("Checkout pay button clicked");
     }
 
-    public void receiveData(ArrayList<Object[]> data) {
-//        System.out.println(data);
+    public void receiveData(CartItem[] data) {
+        for (CartItem item : data) {
+            System.out.println(item.getName() + " " + item.getPrice() + " " + item.getQuantity());
+        }
     }
 }

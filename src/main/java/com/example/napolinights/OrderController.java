@@ -307,25 +307,37 @@ public class OrderController {
 
     @FXML
     public void passCartData() {
-        for (int i = 0; i < orderSection.getChildren().size(); i++) {
+
+        int cartLength = orderSection.getChildren().size();
+
+        CartItem[] item = new CartItem[cartLength];
+        for (int i = 0; i < cartLength; i++) {
             HBox itemBox = (HBox) orderSection.getChildren().get(i);
             Label nameLabel = (Label) itemBox.getChildren().get(3);  // Name label is the 4th element (index 3)
             Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
-            Label quantityLabel = (Label) itemBox.getChildren().get(1);  // Quantity label is the 3rd element (index 1)
-            System.out.println(nameLabel.getText() + ", " +  parsePrice(priceLabel.getText()) + ", " + parseQuantity(quantityLabel.getText()));
+            Label quantityLabel = (Label) itemBox.getChildren().get(1);  // Quantity label is the 2nd element (index 1)
+
+            String name = nameLabel.getText();
+            double price = parseItemPrice(priceLabel.getText());
+            int quantity = parseItemQuantity(quantityLabel.getText());
+            item[i] = new CartItem(name, price,quantity);
+
+            System.out.println(name + ", " +  price + ", " + quantity);
 
         }
-//        checkoutController.receiveData();
+        checkoutController.receiveData(item);
     }
 
-    private double parsePrice(String string){
+    private double parseItemPrice(String string){
         double itemPrice = Double.parseDouble(string.replace("$", ""));
         return itemPrice;
     }
 
-    private int parseQuantity(String string) {
+    private int parseItemQuantity(String string) {
         int quantity = Integer.parseInt(string);
         return quantity;
     }
+
+
 }
 
