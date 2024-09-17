@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class OrderController {
 
@@ -263,9 +264,9 @@ public class OrderController {
         // Iterate over all items in the orderSection to calculate total price
         for (int i = 0; i < orderSection.getChildren().size(); i++) {
             HBox itemBox = (HBox) orderSection.getChildren().get(i);
-            Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
+            Label nameLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
 
-            double itemPrice = Double.parseDouble(priceLabel.getText().replace("$", ""));
+            double itemPrice = Double.parseDouble(nameLabel.getText().replace("$", ""));
             totalPrice += itemPrice;
         }
 
@@ -282,11 +283,16 @@ public class OrderController {
     }
 
 
+    private CheckoutController checkoutController;
+
     @FXML
     private void HandleCheckoutButton() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Checkout.fxml"));
             Parent checkoutPage = loader.load();
+            checkoutController = loader.getController();
+
+            passCartData();
 
             Stage stage = (Stage)this.checkoutButton.getScene().getWindow();
             stage.setTitle("Checkout");
@@ -297,6 +303,29 @@ public class OrderController {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void passCartData() {
+        for (int i = 0; i < orderSection.getChildren().size(); i++) {
+            HBox itemBox = (HBox) orderSection.getChildren().get(i);
+            Label nameLabel = (Label) itemBox.getChildren().get(3);  // Name label is the 4th element (index 3)
+            Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
+            Label quantityLabel = (Label) itemBox.getChildren().get(1);  // Quantity label is the 3rd element (index 1)
+            System.out.println(nameLabel.getText() + ", " +  parsePrice(priceLabel.getText()) + ", " + parseQuantity(quantityLabel.getText()));
+
+        }
+//        checkoutController.receiveData();
+    }
+
+    private double parsePrice(String string){
+        double itemPrice = Double.parseDouble(string.replace("$", ""));
+        return itemPrice;
+    }
+
+    private int parseQuantity(String string) {
+        int quantity = Integer.parseInt(string);
+        return quantity;
     }
 }
 
