@@ -42,13 +42,14 @@
                               <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1" />
                               <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tax (15%)" GridPane.rowIndex="2" />
                               <Text layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="x items" GridPane.columnIndex="1" />
+<!--                               Quantity -->
+                              <Text fx:id="quantityText" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1" />
 <!--                               Subtotal -->
-                              <Text layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fx:id="subtotalPriceText" layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 <!--                              Tax -->
-                               <Text layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                               <Text fx:id="taxText" layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 <!--                              Total -->
-                               <Text layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                               <Text fx:id="totalPriceText" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <Button fx:id="checkoutBackButton" mnemonicParsing="false" text="Back" />
