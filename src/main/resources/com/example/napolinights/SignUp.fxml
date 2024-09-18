@@ -22,6 +22,8 @@
         <!-- Signup Form -->
         <VBox spacing="15" alignment="CENTER" style="-fx-background-color: #1e1e1e; -fx-padding: 20px; -fx-border-color: lightgray;">
 
+            <Label fx:id="lblSignUpStatusMessage" visible="false" />
+
             <!-- Input Fields -->
             <TextField fx:id="emailField" promptText="Email address" style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;"/>
             <Label fx:id="lblEmailMessage" text="* Required field is empty" visible="false"/>
@@ -39,6 +41,10 @@
 
             <!-- Signup Button -->
             <Button text="Sign Up" style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px;" onAction="#handleSignUp"/>
+
+            <!-- Login Link -->
+            <Hyperlink fx:id="lnkLogin" text="Already Signed Up? Login Here" style="-fx-text-fill: lightgray;" onAction="#handleLogin"/>
+
         </VBox>
     </VBox>
 
