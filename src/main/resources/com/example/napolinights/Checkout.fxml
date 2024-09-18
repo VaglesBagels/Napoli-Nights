@@ -20,7 +20,12 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 1em;">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Cart" />
+                        <VBox prefHeight="76.0" prefWidth="595.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Cart" />
+                              <ListView fx:id="cartListView" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
                      </children></HBox>
                   <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>

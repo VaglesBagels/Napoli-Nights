@@ -3,7 +3,10 @@ package com.example.napolinights;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -51,6 +54,7 @@ public class CheckoutController {
         cartItems = data;
         for (CartItem item : data) {
             System.out.println(item.getName() + " " + item.getPrice() + " " + item.getQuantity());
+            AddItemToListView(item);
         }
         calculatePrices();
         setText();
@@ -97,6 +101,34 @@ public class CheckoutController {
 
     private void setTotalPriceText() {
         totalPriceText.setText("$" + totalPrice);
+    }
+
+    @FXML
+    private ListView<VBox> cartListView;
+
+    public void AddItemToListView(CartItem item) {
+        VBox cartItemBox = new VBox();
+
+        HBox itemDetailsBox = new HBox(10);
+
+        // Add product name
+        Label nameLabel = new Label(item.getName());
+
+        // Add product price
+        Label priceLabel = new Label("Price: $" + item.getPrice());
+
+        // Add product quantity
+        Label quantityLabel = new Label("Quantity: " + item.getQuantity());
+
+        // Add all elements to the HBox
+        itemDetailsBox.getChildren().addAll(nameLabel, priceLabel, quantityLabel);
+
+        // Add HBox to VBox (so we can extend and add other details if needed)
+        cartItemBox.getChildren().add(itemDetailsBox);
+
+        // Add VBox to the ListView
+        cartListView.getItems().add(cartItemBox);
+
     }
 
 }
