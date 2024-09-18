@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class OrderController {
 
@@ -50,6 +52,9 @@ public class OrderController {
     private double totalPrice = 0.00;
 
     private int quantity = 1; // Default quantity
+
+    @FXML
+    private Button checkoutButton;
 
     @FXML
     private void initialize() {
@@ -259,9 +264,9 @@ public class OrderController {
         // Iterate over all items in the orderSection to calculate total price
         for (int i = 0; i < orderSection.getChildren().size(); i++) {
             HBox itemBox = (HBox) orderSection.getChildren().get(i);
-            Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
+            Label nameLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
 
-            double itemPrice = Double.parseDouble(priceLabel.getText().replace("$", ""));
+            double itemPrice = Double.parseDouble(nameLabel.getText().replace("$", ""));
             totalPrice += itemPrice;
         }
 
@@ -277,6 +282,61 @@ public class OrderController {
         priceLabel.setText(String.format("$%.2f", updatedPrice));
     }
 
+
+    private CheckoutController checkoutController;
+
+    @FXML
+    private void HandleCheckoutButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Checkout.fxml"));
+            Parent checkoutPage = loader.load();
+            checkoutController = loader.getController();
+
+            passCartData();
+
+            Stage stage = (Stage)this.checkoutButton.getScene().getWindow();
+            stage.setTitle("Checkout");
+            Scene scene = new Scene(checkoutPage);
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void passCartData() {
+
+        int cartLength = orderSection.getChildren().size();
+
+        CartItem[] item = new CartItem[cartLength];
+        for (int i = 0; i < cartLength; i++) {
+            HBox itemBox = (HBox) orderSection.getChildren().get(i);
+            Label nameLabel = (Label) itemBox.getChildren().get(3);  // Name label is the 4th element (index 3)
+            Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
+            Label quantityLabel = (Label) itemBox.getChildren().get(1);  // Quantity label is the 2nd element (index 1)
+
+            String name = nameLabel.getText();
+            double price = parseItemPrice(priceLabel.getText());
+            int quantity = parseItemQuantity(quantityLabel.getText());
+            item[i] = new CartItem(name, price,quantity);
+
+            System.out.println(name + ", " +  price + ", " + quantity);
+
+        }
+        checkoutController.receiveData(item);
+    }
+
+    private double parseItemPrice(String string){
+        double itemPrice = Double.parseDouble(string.replace("$", ""));
+        return itemPrice;
+    }
+
+    private int parseItemQuantity(String string) {
+        int quantity = Integer.parseInt(string);
+        return quantity;
+    }
 
 
 }

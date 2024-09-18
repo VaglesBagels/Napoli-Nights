@@ -179,15 +179,16 @@
                     </TilePane>
                 </VBox>
             </VBox>
-        <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray;" prefWidth="400"
-              >
-            <VBox fx:id="orderSection" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="10" alignment="CENTER">
+            <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray;" prefWidth="400"
+            >
+                <VBox fx:id="orderSection" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="10" alignment="CENTER">
+                </VBox>
+                <Label text="Total (Inc GST)" style="-fx-font-size: 18px;"/>
+                <Label fx:id="lblTotalPrice" text="\$0.00" style="-fx-font-size: 16px;"/>
+                <Button text="Store closed" style="-fx-font-size: 14px;"/>
+                <Label text="Currently not taking online orders" style="-fx-font-size: 14px;"/>
+                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" />
             </VBox>
-            <Label text="Total (Inc GST)" style="-fx-font-size: 18px;"/>
-            <Label fx:id="lblTotalPrice" text="\$0.00" style="-fx-font-size: 16px;"/>
-            <Button text="Store closed" style="-fx-font-size: 14px;"/>
-            <Label text="Currently not taking online orders" style="-fx-font-size: 14px;"/>
-        </VBox>
         </HBox>
 
     </VBox>
@@ -195,4 +196,4 @@
 
 
 </AnchorPane>
-<!--</BorderPane>-->
+        <!--</BorderPane>-->
