@@ -40,7 +40,7 @@
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cart items" />
                               <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1" />
-                              <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tax (15%)" GridPane.rowIndex="2" />
+                              <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GST (10%)" GridPane.rowIndex="2" />
                               <Text layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3" />
 <!--                               Quantity -->
                               <Text fx:id="quantityText" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1" />

@@ -88,7 +88,7 @@ public class CheckoutController {
     }
 
     private void setSubtotalPriceText() {
-        subtotalPriceText.setText(subtotalPrice + " items");
+        subtotalPriceText.setText("$" + subtotalPrice);
     }
 
     private void setTaxText() {
@@ -98,7 +98,5 @@ public class CheckoutController {
     private void setTotalPriceText() {
         totalPriceText.setText("$" + totalPrice);
     }
-
-
 
 }
