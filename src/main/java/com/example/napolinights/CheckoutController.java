@@ -1,6 +1,9 @@
 package com.example.napolinights;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -8,7 +11,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CheckoutController {
@@ -48,6 +53,7 @@ public class CheckoutController {
     @FXML
     private void handleCheckoutPayButtonClick(MouseEvent event) {
         System.out.println("Checkout pay button clicked");
+        openOrderConfirmationPage();
     }
 
     public void receiveData(CartItem[] data) {
@@ -129,6 +135,21 @@ public class CheckoutController {
         // Add VBox to the ListView
         cartListView.getItems().add(cartItemBox);
 
+    }
+
+    private void openOrderConfirmationPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
+            Parent landingPage = loader.load();
+
+            Stage stage = (Stage) this.checkoutPayButton.getScene().getWindow();
+            stage.setTitle("Napoli Nights");
+            Scene scene = new Scene(landingPage);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

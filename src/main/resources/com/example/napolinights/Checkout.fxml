@@ -69,7 +69,7 @@
                                  </VBox.margin></Button>
                            </children>
                         </VBox>
-                        <Button fx:id="checkoutPayButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Pay at counter">
+                        <Button fx:id="checkoutPayButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Pay at counter" onMouseClicked="#handleCheckoutPayButtonClick">
                            <HBox.margin>
                               <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                            </HBox.margin>
