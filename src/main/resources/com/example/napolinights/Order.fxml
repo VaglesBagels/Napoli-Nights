@@ -1,101 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <!--<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.napolinights.OrderController">-->
-<!--</BorderPane>-->
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.napolinights.OrderController">
-    <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-        <ToolBar AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" xmlns:fx="http://javafx.com/fxml">
-            <Hyperlink fx:id="lnkEntree" onAction="#handleMenuOptionClick" text="Entree" />
-            <Hyperlink fx:id="lnkMains" onAction="#handleMenuOptionClick" text="Mains" />
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.OrderController">
+    <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <ToolBar xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <Hyperlink text="Entree" fx:id="lnkEntree" onAction="#handleMenuOptionClick"/>
+            <Hyperlink text="Mains" fx:id="lnkMains" onAction="#handleMenuOptionClick"/>
         </ToolBar>
 
         <!-- Content Wrapper for Left and Right Sections -->
-        <HBox alignment="TOP_LEFT" spacing="20">
+        <HBox spacing="20" alignment="TOP_LEFT">
             <!-- Left Section: Menu Items -->
             <VBox prefWidth="600" style="-fx-padding: 10;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                <VBox fx:id="entreeSection" alignment="TOP_LEFT" spacing="10" visible="true" VBox.vgrow="ALWAYS">
+                <VBox fx:id="entreeSection" visible="true" VBox.vgrow="ALWAYS" alignment="TOP_LEFT" spacing="10">
                     <!-- Center area for the menu items -->
-                    <TilePane alignment="CENTER" hgap="20" prefColumns="2" style="-fx-border-color: red;" vgap="20">
+                    <TilePane hgap="20" vgap="20" alignment="CENTER"
+                              style="-fx-border-color: red;" prefColumns="2">
                         <!-- First row of entrees -->
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox fx:id="tHbox1" alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox fx:id="tHbox1" spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Garlic and cheese focaccia" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Freshly cooked to order topped with Australian garlic, mozzarella cheese &amp; Italian herbs." />
-                                    <Label style="-fx-font-size: 16px;" text="\$18.00" />
+                                    <Label text="Garlic and cheese focaccia" style="-fx-font-size: 18px;"/>
+                                    <Label text="Freshly cooked to order topped with Australian garlic, mozzarella cheese &amp; Italian herbs."
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$18.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fx:id="imgView1" fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/entree_garlic_and_cheese_focaccia.jpg" />
+                                        <Image url="@images/menu_images/entree_garlic_and_cheese_focaccia.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
                         </VBox>
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Fried Green Olives" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="lightly crumbed and filled with veal farce and served with a delicious truffle mayo" />
-                                    <Label style="-fx-font-size: 16px;" text="\$24.00" />
+                                    <Label text="Fried Green Olives" style="-fx-font-size: 18px;"/>
+                                    <Label text="lightly crumbed and filled with veal farce and served with a delicious truffle mayo"
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$24.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/entree_fried_Green_olives.jpg" />
+                                        <Image url="@images/menu_images/entree_fried_Green_olives.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
                         </VBox>
                         <!-- Second row of entrees -->
                         <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <Label style="-fx-font-size: 18px;" text="Bruschetta" />
-                            <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Diced tomato, red onion, evo oil, oregano and balsamic glaze" />
-                            <Label style="-fx-font-size: 16px;" text="\$18.00" />
+                            <Label text="Bruschetta" style="-fx-font-size: 18px;"/>
+                            <Label text="Diced tomato, red onion, evo oil, oregano and balsamic glaze"
+                                   style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                            <Label text="\$18.00" style="-fx-font-size: 16px;"/>
                         </VBox>
                         <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <Label style="-fx-font-size: 18px;" text="Polenta fingers" />
-                            <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Description goes here..." />
-                            <Label style="-fx-font-size: 16px;" text="\$20.00" />
+                            <Label text="Polenta fingers" style="-fx-font-size: 18px;"/>
+                            <Label text="Description goes here..."
+                                   style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                            <Label text="\$20.00" style="-fx-font-size: 16px;"/>
                         </VBox>
                         <!-- Third row of entrees -->
                         <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <Label style="-fx-font-size: 18px;" text="Calamari" />
-                            <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Fresh local calamari, lightly fried served on a bed of salad with a side of garlic aioli" />
-                            <Label style="-fx-font-size: 16px;" text="\$20.00" />
+                            <Label text="Calamari" style="-fx-font-size: 18px;"/>
+                            <Label text="Fresh local calamari, lightly fried served on a bed of salad with a side of garlic aioli"
+                                   style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                            <Label text="\$20.00" style="-fx-font-size: 16px;"/>
                         </VBox>
                     </TilePane>
                 </VBox>
-                <VBox fx:id="mainsSection" alignment="TOP_LEFT" spacing="10" visible="false" VBox.vgrow="ALWAYS">
-                    <TilePane alignment="CENTER" hgap="20" prefColumns="2" style="-fx-border-color: red;" vgap="20">
+                <VBox fx:id="mainsSection" visible="false" VBox.vgrow="ALWAYS" alignment="TOP_LEFT" spacing="10">
+                    <TilePane hgap="20" vgap="20" alignment="CENTER"
+                              style="-fx-border-color: red;" prefColumns="2">
                         <!-- First row of mains -->
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Fettuccini Carbonara" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="crisp double smoked bacon in a lush sauce of cream, grana padano parmsean, white whine, garlic &amp; agg yolk." />
-                                    <Label style="-fx-font-size: 16px;" text="\$28.00" />
+                                    <Label text="Fettuccini Carbonara" style="-fx-font-size: 18px;"/>
+                                    <Label text="crisp double smoked bacon in a lush sauce of cream, grana padano parmsean, white whine, garlic &amp; agg yolk."
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$28.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/pasta_fettuccini_carbonara.jpg" />
+                                        <Image url="@images/menu_images/pasta_fettuccini_carbonara.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
                         </VBox>
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Casarecce alla Puttanesca" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="sauteed cherry tomatoes, red onion, kalamata olives, baby capers, cooked in a light Napoli sauce." />
-                                    <Label style="-fx-font-size: 16px;" text="\$28.00" />
+                                    <Label text="Casarecce alla Puttanesca" style="-fx-font-size: 18px;"/>
+                                    <Label text="sauteed cherry tomatoes, red onion, kalamata olives, baby capers, cooked in a light Napoli sauce."
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$28.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/pasta_casarecce_alla_puttanesca.jpg" />
+                                        <Image url="@images/menu_images/pasta_casarecce_alla_puttanesca.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
@@ -103,64 +110,68 @@
 
                         <!-- Second row of mains -->
                         <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Penne con pollo" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Slow cooked Napoli sauce, chicken, creamy mushrooms, sundried tomato" />
-                                    <Label style="-fx-font-size: 16px;" text="\$32.00" />
+                                    <Label text="Penne con pollo" style="-fx-font-size: 18px;"/>
+                                    <Label text="Slow cooked Napoli sauce, chicken, creamy mushrooms, sundried tomato"
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$32.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                             </HBox>
                         </VBox>
                         <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Spaghetti Napoli" />
-                                    <Label style="-fx-font-size: 16px;" text="\$20.00" />
+                                    <Label text="Spaghetti Napoli" style="-fx-font-size: 18px;"/>
+                                    <Label text="\$20.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                             </HBox>
                         </VBox>
 
                         <!-- Third row of mains -->
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Spaghetti gamberi" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="locally sourced king prawns shelled in house, sauteed in olive oil with baby heirloom tomatoes in a San Marzano tomato suace, garlic, lilliput capers topped with &quot;pan grattato&quot;." />
-                                    <Label style="-fx-font-size: 16px;" text="\$38.00" />
+                                    <Label text="Spaghetti gamberi" style="-fx-font-size: 18px;"/>
+                                    <Label text="locally sourced king prawns shelled in house, sauteed in olive oil with baby heirloom tomatoes in a San Marzano tomato suace, garlic, lilliput capers topped with &quot;pan grattato&quot;."
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$38.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg" />
+                                        <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
                         </VBox>
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Spaghetti Bolognese" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Our home recipe made with grass fed beef mince and organic pork" />
-                                    <Label style="-fx-font-size: 16px;" text="\$28.00" />
+                                    <Label text="Spaghetti Bolognese" style="-fx-font-size: 18px;"/>
+                                    <Label text="Our home recipe made with grass fed beef mince and organic pork"
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$28.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/pasta_spaghetti_bolognese.jpg" />
+                                        <Image url="@images/menu_images/pasta_spaghetti_bolognese.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
                         </VBox>
 
                         <!-- Fourth row of mains -->
-                        <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                            <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;" onMouseClicked="#handleMenuItemClick">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
                                 <VBox spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
-                                    <Label style="-fx-font-size: 18px;" text="Fettuccine funghi" />
-                                    <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Cooked in a creamy fresh local mushroom and truffle sauce topped with fresh parsley and italian Parmesean D.O.P." />
-                                    <Label style="-fx-font-size: 16px;" text="\$30.00" />
+                                    <Label text="Fettuccine funghi" style="-fx-font-size: 18px;"/>
+                                    <Label text="Cooked in a creamy fresh local mushroom and truffle sauce topped with fresh parsley and italian Parmesean D.O.P."
+                                           style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                                    <Label text="\$30.00" style="-fx-font-size: 16px;"/>
                                 </VBox>
                                 <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg" />
+                                        <Image url="@images/menu_images/pasta_spaghetti_gamberi.jpg"/>
                                     </image>
                                 </ImageView>
                             </HBox>
@@ -168,15 +179,16 @@
                     </TilePane>
                 </VBox>
             </VBox>
-        <VBox prefWidth="400" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray;">
-            <VBox fx:id="orderSection" alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+            <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray;" prefWidth="400"
+            >
+                <VBox fx:id="orderSection" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="10" alignment="CENTER">
+                </VBox>
+                <Label text="Total (Inc GST)" style="-fx-font-size: 18px;"/>
+                <Label fx:id="lblTotalPrice" text="\$0.00" style="-fx-font-size: 16px;"/>
+                <Button text="Store closed" style="-fx-font-size: 14px;"/>
+                <Label text="Currently not taking online orders" style="-fx-font-size: 14px;"/>
+                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" />
             </VBox>
-            <Label style="-fx-font-size: 18px;" text="Total (Inc GST)" />
-            <Label fx:id="lblTotalPrice" style="-fx-font-size: 16px;" text="\$0.00" />
-            <Button style="-fx-font-size: 14px;" text="Store closed" />
-            <Label style="-fx-font-size: 14px;" text="Currently not taking online orders" />
-            <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" />
-        </VBox>
         </HBox>
 
     </VBox>
@@ -184,3 +196,4 @@
 
 
 </AnchorPane>
+        <!--</BorderPane>-->
