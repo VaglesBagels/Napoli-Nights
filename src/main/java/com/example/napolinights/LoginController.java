@@ -1,5 +1,6 @@
 package com.example.napolinights;
 
+import com.example.napolinights.model.SqliteConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import com.example.napolinights.model.UserDAO;
 
 public class LoginController {
 
@@ -48,7 +53,7 @@ public class LoginController {
 
             if (isValid) {
                 // Login processing here
-                login();
+                login(email, password);
             } else {
                 System.out.println("Login failed due to validation errors.");
             }
@@ -116,16 +121,28 @@ public class LoginController {
         return isValid;
     }
 
-    private void login() {
+    private void login(String email, String password) throws SQLException {
         System.out.println("Login here");
-        if (true) {
-            openLandingPage();
+        Connection connection = SqliteConnection.getInstance();
+        UserDAO userDAO = new UserDAO(connection);
+        boolean userHasAccess = userDAO.verifyUserAccess(email, password);
+        if (userHasAccess) {
+            lblLoginStatusMessage.setStyle("");
+            lblLoginStatusMessage.setText(null);
+            lblLoginStatusMessage.setVisible(false);
+            openStaffLandingPage();
+        }
+        else {
+            lblLoginStatusMessage.setText("Incorrect Username or Password. Please try again.");
+            lblLoginStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            lblLoginStatusMessage.setVisible(true);
+            throw new SQLException("Login failed due to validation errors.");
         }
     }
 
-    private void openLandingPage() {
+    private void openStaffLandingPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/LandingPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/StaffLandingPage.fxml"));
             Parent landingPage = loader.load();
 
             Stage stage = (Stage) this.btnLogin.getScene().getWindow();

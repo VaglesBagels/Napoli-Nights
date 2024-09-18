@@ -1,4 +1,5 @@
 module com.example.napolinights {
+    requires java.sql;
     requires javafx.controls;
     requires javafx.fxml;
 

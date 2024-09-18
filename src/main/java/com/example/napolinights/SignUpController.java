@@ -1,10 +1,21 @@
 package com.example.napolinights;
 
+import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.UserDAO;
+import com.example.napolinights.model.User;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SignUpController {
@@ -40,6 +51,12 @@ public class SignUpController {
     private TextField mobileField;
 
     @FXML
+    private Label lblSignUpStatusMessage;
+
+    @FXML
+    private Hyperlink lnkLogin;
+
+    @FXML
     private void handleSignUp() {
         try {
             // Gather data from the form
@@ -57,8 +74,11 @@ public class SignUpController {
             );
 
             if (isValid) {
+                User userToSave = new User(0, firstName, lastName, mobile, email, password, "Staff", true);
+
                 // Save to database
-                saveUserData();
+                saveUserData(userToSave);
+                openLoginPage();
                 // showAlert(AlertType.INFORMATION, "Signup Successful", "You have successfully signed up!");
             } else {
                 System.out.println("Login failed due to validation errors.");
@@ -67,6 +87,7 @@ public class SignUpController {
         } catch (Exception ex) {
             System.out.println("Sign Up Failed. An error occurred during Sign-Up. Please try again.");
             System.out.println(ex.getMessage());
+
             // showAlert(AlertType.ERROR, "Signup Failed", "An error occurred during Sign-Up. Please try again.");
         }
 
@@ -140,8 +161,8 @@ public class SignUpController {
     }
 
     @FXML
-    private void onLoginButtonClick() {
-        // Add navigation to login page logic here
+    private void handleLogin() {
+        openLoginPage();
     }
 
     @FXML
@@ -150,8 +171,45 @@ public class SignUpController {
     }
 
     // Stub method to handle user data saving
-    private void saveUserData() { //User user) {
+    private void saveUserData(User user) {
         System.out.println("User data saved!"); // + user);
+        Connection connection = SqliteConnection.getInstance();
+        UserDAO userDAO = new UserDAO(connection);
+
+        try {
+            userDAO.addUser(user);
+            System.out.println("User data saved to the database!");
+        } catch (SQLException ex) {
+            System.out.println("Error encountered while signing up the user!");
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void openLoginPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Login.fxml"));
+            Parent menuPage = loader.load();
+
+            Stage stage = (Stage) this.lnkLogin.getScene().getWindow();
+            stage.setTitle("Sign Up here");
+            Scene scene = new Scene(menuPage);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setSignUpStatusMessage(String errorMessage) {
+        if (errorMessage != null) {
+            lblSignUpStatusMessage.setText(errorMessage);
+            lblSignUpStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            lblSignUpStatusMessage.setVisible(true);
+        } else {
+            lblSignUpStatusMessage.setStyle("");
+            lblSignUpStatusMessage.setText(null);
+            lblSignUpStatusMessage.setVisible(false);
+        }
     }
 }
 
