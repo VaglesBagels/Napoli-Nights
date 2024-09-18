@@ -2,7 +2,9 @@ package com.example.napolinights;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -19,8 +21,21 @@ public class CheckoutController {
 
     private double totalPrice = 0.0;
 
-    @FXML
     private int totalQuantity = 0;
+
+    private double tax = 0.0;
+
+    private double subtotalPrice;
+
+
+    @FXML
+    private Text quantityText;
+    @FXML
+    private Text subtotalPriceText;
+    @FXML
+    private Text taxText;
+    @FXML
+    private Text totalPriceText;
 
     @FXML
     private void handleCheckoutBackButtonClick(MouseEvent event) {
@@ -37,14 +52,53 @@ public class CheckoutController {
         for (CartItem item : data) {
             System.out.println(item.getName() + " " + item.getPrice() + " " + item.getQuantity());
         }
-        calculateTotal();
+        calculatePrices();
+        setText();
         System.out.println(totalPrice + " " + totalQuantity);
+
     }
 
-    private void calculateTotal() {
+    private void calculatePrices() {
         for (CartItem item : cartItems) {
             totalPrice += item.getPrice() * item.getQuantity();  // Price * Quantity
             totalQuantity += item.getQuantity();  // Total quantity
         }
+        calculateTax();
+        calculateSubtotal();
     }
+
+    private void setText() {
+        setQuantityText();
+        setSubtotalPriceText();
+        setTaxText();
+        setTotalPriceText();
+    }
+
+    private void calculateTax() {
+//        10% GST tax
+        tax = totalPrice * 0.10;
+    }
+
+    private void calculateSubtotal() {
+        subtotalPrice = totalPrice - tax;
+    }
+
+    private void setQuantityText() {
+        quantityText.setText(totalQuantity + " items");
+    }
+
+    private void setSubtotalPriceText() {
+        subtotalPriceText.setText(subtotalPrice + " items");
+    }
+
+    private void setTaxText() {
+        taxText.setText("$" + tax);
+    }
+
+    private void setTotalPriceText() {
+        totalPriceText.setText("$" + totalPrice);
+    }
+
+
+
 }
