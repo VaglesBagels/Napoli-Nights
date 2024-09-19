@@ -137,18 +137,30 @@ public class CheckoutController {
 
     }
 
-    private void openOrderConfirmationPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
-            Parent landingPage = loader.load();
+    private boolean emptyCart() {
+        if (cartItems.length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-            Stage stage = (Stage) this.checkoutPayButton.getScene().getWindow();
-            stage.setTitle("Napoli Nights");
-            Scene scene = new Scene(landingPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void openOrderConfirmationPage() {
+        if (emptyCart()) {
+            System.out.println("empty cart");
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
+                Parent landingPage = loader.load();
+
+                Stage stage = (Stage) this.checkoutPayButton.getScene().getWindow();
+                stage.setTitle("Napoli Nights");
+                Scene scene = new Scene(landingPage);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
