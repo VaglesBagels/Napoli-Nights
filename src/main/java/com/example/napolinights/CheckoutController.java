@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -12,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,6 +58,11 @@ public class CheckoutController {
     }
 
     @FXML
+    private void handleCheckoutPayButtonClick(MouseEvent event) {
+        System.out.println("Checkout pay button clicked");
+        openOrderConfirmationPage();
+    }
+
     private void HandlePayAtCounterButton() {
 
         // Calculate prices including tax if they are not already calculated
@@ -156,5 +163,57 @@ public class CheckoutController {
         // Add VBox to the ListView
         cartListView.getItems().add(cartItemBox);
 
+    }
+
+    private boolean emptyCart() {
+        if (cartItems.length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void openOrderConfirmationPage() {
+        if (emptyCart()) {
+            showEmptyCartError();
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
+                Parent landingPage = loader.load();
+
+                Stage stage = (Stage) this.checkoutPayButton.getScene().getWindow();
+                stage.setTitle("Napoli Nights");
+                Scene scene = new Scene(landingPage);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showEmptyCartError() {
+//        Alert alert = new Alert(Alert.AlertType.ERROR);
+//        alert.setTitle("Checkout Error");
+//        alert.setHeaderText(null);
+//        alert.setContentText("Your cart is empty! Please add items before checking out.");
+//        alert.showAndWait();
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EmptyCartError.fxml"));
+            VBox dialogRoot = fxmlLoader.load();
+
+            // Create a new stage for the dialog
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Checkout Error");
+
+            // Block interactions with other windows while this is open
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.showAndWait();  // Wait for the dialog to be closed before continuing
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
