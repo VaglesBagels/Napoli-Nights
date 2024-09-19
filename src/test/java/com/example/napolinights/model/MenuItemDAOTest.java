@@ -39,35 +39,35 @@ public class MenuItemDAOTest {
 
     @Test
     public void testAddMenuItem() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
 
         MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Classic cheese pizza", 8.99, "imageURL");
         menuItemDAO.addMenuItem(menuItem);
 
-        verify(pstmt).setString(1, "PIZZA");
-        verify(pstmt).setString(2, "Margherita");
-        verify(pstmt).setString(3, "Classic cheese pizza");
-        verify(pstmt).setDouble(4, 8.99);
-        verify(pstmt).setString(5, "imageURL");
-        verify(pstmt).executeUpdate();
+        verify(stmt).setString(1, "PIZZA");
+        verify(stmt).setString(2, "Margherita");
+        verify(stmt).setString(3, "Classic cheese pizza");
+        verify(stmt).setDouble(4, 8.99);
+        verify(stmt).setString(5, "imageURL");
+        verify(stmt).executeUpdate();
     }
 
     @Test
     public void testUpdateMenuItem() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
 
         MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Updated description", 9.99, "newImageURL");
         menuItemDAO.updateMenuItem(menuItem);
 
-        verify(pstmt).setString(1, "PIZZA");
-        verify(pstmt).setString(2, "Margherita");
-        verify(pstmt).setString(3, "Updated description");
-        verify(pstmt).setDouble(4, 9.99);
-        verify(pstmt).setString(5, "newImageURL");
-        verify(pstmt).setInt(6, 1);
-        verify(pstmt).executeUpdate();
+        verify(stmt).setString(1, "PIZZA");
+        verify(stmt).setString(2, "Margherita");
+        verify(stmt).setString(3, "Updated description");
+        verify(stmt).setDouble(4, 9.99);
+        verify(stmt).setString(5, "newImageURL");
+        verify(stmt).setInt(6, 1);
+        verify(stmt).executeUpdate();
     }
 
     @Test
@@ -100,10 +100,10 @@ public class MenuItemDAOTest {
 
     @Test
     public void testFetchMenuItemById() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
+        PreparedStatement stmt = mock(PreparedStatement.class);
         ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(pstmt.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(true).thenReturn(false); // simulate one row
         when(resultSet.getInt("menuID")).thenReturn(1);
@@ -126,10 +126,10 @@ public class MenuItemDAOTest {
 
     @Test
     public void testFetchMenuItemByIdNotFound() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
+        PreparedStatement stmt = mock(PreparedStatement.class);
         ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(pstmt.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(false); // simulate no rows found
 
@@ -140,10 +140,10 @@ public class MenuItemDAOTest {
 
     @Test
     public void testFetchAllMenuItemsByCategory() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
+        PreparedStatement stmt = mock(PreparedStatement.class);
         ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(pstmt.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(true).thenReturn(false); // simulate one row
         when(resultSet.getInt("menuID")).thenReturn(1);
@@ -168,10 +168,10 @@ public class MenuItemDAOTest {
 
     @Test
     public void testFetchAllMenuItemsByCategoryNoResults() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
+        PreparedStatement stmt = mock(PreparedStatement.class);
         ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(pstmt.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(false); // simulate no rows found
 
@@ -183,9 +183,9 @@ public class MenuItemDAOTest {
 
     @Test
     public void testFetchAllMenuItemsByCategorySQLException() throws Exception {
-        PreparedStatement pstmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(pstmt.executeQuery()).thenThrow(new SQLException("Database error"));
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
+        when(stmt.executeQuery()).thenThrow(new SQLException("Database error"));
 
         List<MenuItem> items = menuItemDAO.fetchAllMenuItemsByCategory(Category.PIZZA);
 

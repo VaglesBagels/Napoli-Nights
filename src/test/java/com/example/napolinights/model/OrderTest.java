@@ -114,9 +114,7 @@ public class OrderTest {
 
     @Test
     public void testAddNullOrderItem() {
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            order.addOrderItem(null);
-        });
+        Exception exception = assertThrows(NullPointerException.class, () -> order.addOrderItem(null));
         assertEquals("Order item cannot be null", exception.getMessage());
     }
 
@@ -129,33 +127,25 @@ public class OrderTest {
 
     @Test
     public void testSetOrderDateToNull() {
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            order.setOrderDate(null);
-        });
+        Exception exception = assertThrows(NullPointerException.class, () -> order.setOrderDate(null));
         assertEquals("Order date cannot be null", exception.getMessage());
     }
 
     @Test
     public void testSetCustomerNameToNull() {
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            order.setCustomerName(null);
-        });
+        Exception exception = assertThrows(NullPointerException.class, () -> order.setCustomerName(null));
         assertEquals("Customer name cannot be null", exception.getMessage());
     }
 
     @Test
     public void testSetCustomerContactToEmptyString() {
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            order.setCustomerContact("");
-        });
+        Exception exception = assertThrows(NullPointerException.class, () -> order.setCustomerContact(""));
         assertEquals("Customer contact cannot be an empty string", exception.getMessage());
     }
 
     @Test
     public void testSetOrderItemsToNull() {
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            order.setOrderItems(null);
-        });
+        Exception exception = assertThrows(NullPointerException.class, () -> order.setOrderItems(null));
         assertEquals("Order items cannot be null", exception.getMessage());
     }
 

@@ -89,9 +89,7 @@ public class OrderDAOTest {
         when(mockOrderStmt.executeUpdate()).thenReturn(0);
 
         // Act & Assert
-        SQLException thrown = assertThrows(SQLException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        SQLException thrown = assertThrows(SQLException.class, () -> orderDAO.addOrder(order));
         assertEquals("Creating order failed, no rows affected.", thrown.getMessage());
     }
 
@@ -109,9 +107,7 @@ public class OrderDAOTest {
         when(mockResultSet.next()).thenReturn(false);
 
         // Act & Assert
-        SQLException thrown = assertThrows(SQLException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        SQLException thrown = assertThrows(SQLException.class, () -> orderDAO.addOrder(order));
         assertEquals("Creating order failed, no ID obtained.", thrown.getMessage());
     }
 
@@ -133,18 +129,14 @@ public class OrderDAOTest {
         doThrow(new SQLException("Invalid order data")).when(mockOrderItemStmt).executeBatch();
 
         // Act & Assert
-        SQLException thrown = assertThrows(SQLException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        SQLException thrown = assertThrows(SQLException.class, () -> orderDAO.addOrder(order));
         assertEquals("Invalid order data", thrown.getMessage());
     }
 
     @Test
     public void testValidateOrderNullOrder() {
         // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            orderDAO.addOrder(null);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> orderDAO.addOrder(null));
         assertEquals("Order cannot be null.", thrown.getMessage());
     }
 
@@ -154,9 +146,7 @@ public class OrderDAOTest {
         Order order = new Order(new Timestamp(System.currentTimeMillis()), "", "123-456-7890");
 
         // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> orderDAO.addOrder(order));
         assertEquals("Customer name cannot be null or empty.", thrown.getMessage());
     }
 
@@ -166,9 +156,7 @@ public class OrderDAOTest {
         Order order = new Order(new Timestamp(System.currentTimeMillis()), "John Doe", "");
 
         // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> orderDAO.addOrder(order));
         assertEquals("Customer contact cannot be null or empty.", thrown.getMessage());
     }
 
@@ -179,9 +167,7 @@ public class OrderDAOTest {
         order.setOrderItems(new ArrayList<>());
 
         // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            orderDAO.addOrder(order);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> orderDAO.addOrder(order));
         assertEquals("Order must have at least one order item.", thrown.getMessage());
     }
 }

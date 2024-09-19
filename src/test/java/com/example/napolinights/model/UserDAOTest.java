@@ -71,9 +71,7 @@ public class UserDAOTest {
     public void testVerifyUserAccessWhenUserInactive() throws SQLException {
         mockVerifyUserAccess("password123", true, false);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            userDAO.verifyUserAccess("john.doe@example.com", "password123");
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> userDAO.verifyUserAccess("john.doe@example.com", "password123"));
 
         assertEquals("java.lang.Exception: User is not active", exception.getMessage());
     }
@@ -95,9 +93,7 @@ public class UserDAOTest {
         when(mockConnection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenThrow(new SQLException("Database error"));
 
-        SQLException thrown = assertThrows(SQLException.class, () -> {
-            userDAO.addUser(user);
-        });
+        SQLException thrown = assertThrows(SQLException.class, () -> userDAO.addUser(user));
 
         assertEquals("Database error", thrown.getMessage());
     }
