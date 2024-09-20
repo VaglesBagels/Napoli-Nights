@@ -55,4 +55,46 @@ public class CSVReader {
 
         return menuItemList;
     }
+
+    public List<User> readUserDataFromCSV(String fileName) {
+        List<User> userList = new ArrayList<>();
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            // Skip header line
+            String line = reader.readLine(); // Read and discard header line
+
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+                if (values.length == 7) {
+                    // Assuming the columns in the CSV are: FirstName, LastName, Mobile, Email, Password, UserRole, Status
+                    String firstName = values[0].trim();
+                    String lastName = values[1].trim();
+                    String mobile = values[2].trim();
+                    String email = values[3].trim();
+                    String password = values[4].trim();
+                    String userRole = values[5].trim();
+                    boolean status;
+                    try {
+                        status = Boolean.parseBoolean(values[6].trim());
+                    } catch (Exception e) {
+                        System.err.println("Invalid status in CSV: " + values[6]);
+                        continue; // Skip this entry if status is invalid
+                    }
+
+                    User user = new User(0, firstName, lastName, mobile, email, password, userRole, status);
+                    userList.add(user);
+                } else {
+                    System.err.println("Invalid line format: " + line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
 }

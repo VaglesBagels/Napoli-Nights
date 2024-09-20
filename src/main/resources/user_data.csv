@@ -1,0 +1,4 @@
+FirstName, LastName, Mobile, Email, Password, UserRole, Status
+Ada, Minister, 0400000000, adam@napoli.com.au, admin, Admin, true
+Leigh, Vatipp, 0400000003, leight.vatipp@someemail.com.au, 12345678, Staff, true
+Alfred, Dente, 0400000004, nute@qutmail.com.au, 123456789, Staff, true
