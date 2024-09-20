@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CSVReader {
 
-    /*public List<MenuItem> readMenuFromCSV(String fileName) {
+    public List<MenuItem> readMenuFromCSV(String fileName) {
         List<MenuItem> menuItemList = new ArrayList<>();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
@@ -54,7 +54,7 @@ public class CSVReader {
         }
 
         return menuItemList;
-    }*/
+    }
 
     public List<User> readUserDataFromCSV(String fileName) {
         List<User> userList = new ArrayList<>();
