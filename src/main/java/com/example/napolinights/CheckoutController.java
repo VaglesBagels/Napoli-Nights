@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class CheckoutController {
 
     private double subtotalPrice;
 
-
     @FXML
     private Text quantityText;
     @FXML
@@ -52,10 +52,35 @@ public class CheckoutController {
         System.out.println("Checkout back button clicked");
     }
 
+    public void transferCartItems(OrderConfirmationController orderConfirmationController) {
+        ObservableList<VBox> items = cartListView.getItems();
+        orderConfirmationController.setCartItems(items);
+    }
+
     @FXML
     private void handleCheckoutPayButtonClick(MouseEvent event) {
         System.out.println("Checkout pay button clicked");
         openOrderConfirmationPage();
+    }
+    @FXML
+    private void handleCheckoutPayButtonClick() {
+        // Calculate prices including tax if they are not already calculated
+        setTotalPriceText();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
+            Parent orderConfirmationPage = loader.load();
+            OrderConfirmationController orderConfirmationController = loader.getController();
+            orderConfirmationController.setTotalPrice(totalPrice); // Set total price
+            transferCartItems(orderConfirmationController); // Transfer Cart Items
+
+            Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
+            stage.setTitle("Order Confirmation");
+            Scene scene = new Scene(orderConfirmationPage);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void receiveData(CartItem[] data) {
