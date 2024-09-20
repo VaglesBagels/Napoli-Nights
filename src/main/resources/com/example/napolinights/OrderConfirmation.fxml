@@ -28,7 +28,7 @@
       </Label>
       <VBox fx:id="OrderDetails" layoutX="13.0" layoutY="158.0" prefHeight="49.0" prefWidth="195.0">
          <children>
-            <Label text="Order Number:" />
+            <Label fx:id="orderNumberLabel" text="Order Number:" />
             <Label prefHeight="17.0" prefWidth="193.0" text="Payment Method: Pay At Counter" />
          </children>
       </VBox>

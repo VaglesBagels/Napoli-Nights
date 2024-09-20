@@ -62,26 +62,26 @@ public class CheckoutController {
         System.out.println("Checkout pay button clicked");
         openOrderConfirmationPage();
     }
-    @FXML
-    private void handleCheckoutPayButtonClick() {
-        // Calculate prices including tax if they are not already calculated
-        setTotalPriceText();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
-            Parent orderConfirmationPage = loader.load();
-            OrderConfirmationController orderConfirmationController = loader.getController();
-            orderConfirmationController.setTotalPrice(totalPrice); // Set total price
-            transferCartItems(orderConfirmationController); // Transfer Cart Items
-
-            Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
-            stage.setTitle("Order Confirmation");
-            Scene scene = new Scene(orderConfirmationPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @FXML
+//    private void handleCheckoutPayButtonClick() {
+//        // Calculate prices including tax if they are not already calculated
+//        setTotalPriceText();
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
+//            Parent orderConfirmationPage = loader.load();
+//            OrderConfirmationController orderConfirmationController = loader.getController();
+//            orderConfirmationController.setTotalPrice(totalPrice); // Set total price
+//            transferCartItems(orderConfirmationController); // Transfer Cart Items
+//
+//            Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
+//            stage.setTitle("Order Confirmation");
+//            Scene scene = new Scene(orderConfirmationPage);
+//            stage.setScene(scene);
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void receiveData(CartItem[] data) {
         cartItems = data;
@@ -176,13 +176,18 @@ public class CheckoutController {
         if (emptyCart()) {
             showEmptyCartError();
         } else {
+            // Calculate prices including tax if they are not already calculated
+            setTotalPriceText();
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
-                Parent landingPage = loader.load();
+                Parent orderConfirmationPage = loader.load();
+                OrderConfirmationController orderConfirmationController = loader.getController();
+                orderConfirmationController.setTotalPrice(totalPrice); // Set total price
+                transferCartItems(orderConfirmationController); // Transfer Cart Items
 
-                Stage stage = (Stage) this.checkoutPayButton.getScene().getWindow();
-                stage.setTitle("Napoli Nights");
-                Scene scene = new Scene(landingPage);
+                Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
+                stage.setTitle("Order Confirmation");
+                Scene scene = new Scene(orderConfirmationPage);
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
