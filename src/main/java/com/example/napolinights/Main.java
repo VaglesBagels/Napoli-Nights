@@ -1,6 +1,7 @@
 package com.example.napolinights;
 
 import com.example.napolinights.model.*;
+import com.example.napolinights.model.CSVReader;
 import com.example.napolinights.model.UserDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
