@@ -35,10 +35,4 @@ jobs:
 
       # Step 5: Run Unit Tests
       - name: Run Unit Tests
-        run: mvn test -X  # Enable full debug logging
-
-      # Step 6: Display Surefire Reports
-      - name: Display Surefire Reports
-        run: |
-          ls -la target/surefire-reports
-          cat target/surefire-reports/*.txt
+        run: mvn test
