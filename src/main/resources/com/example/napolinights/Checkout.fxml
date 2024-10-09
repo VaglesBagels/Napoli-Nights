@@ -6,34 +6,37 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefWidth="697.0" style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.CheckoutController">
+<AnchorPane style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.CheckoutController">
     <children>
         <!-- VBox to Center Image and Buttons -->
         <VBox alignment="CENTER" layoutY="-86.0" prefWidth="697.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
             <!-- Image Box with Background Image -->
-            <ImageView fx:id="logoImageView" fitHeight="112.0" fitWidth="200.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px;">
-                <image>
-                    <Image url="@images/landing_page/napoli_nights_logo.png" />
-                </image>
-            </ImageView>
-            <HBox fx:id="imageBox" alignment="CENTER" prefHeight="297.0" prefWidth="697.0">
-            <VBox prefHeight="255.0" prefWidth="697.0" style="-fx-background-color: FFFFFF;">
+            <HBox alignment="CENTER" minHeight="150" prefHeight="100.0">
+                <children>
+                    <!-- Image Box with Background Image -->
+                    <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px;">
+                        <image>
+                            <Image url="@images/landing_page/napoli_nights_logo.png" />
+                        </image>
+                    </ImageView>
+                </children>
+            </HBox>
+            <HBox fx:id="imageBox" alignment="CENTER" prefHeight="530.0" prefWidth="697.0">
+            <VBox prefHeight="297.0" prefWidth="1233.0" style="-fx-background-color: white;">
                <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 1em;">
+                  <HBox prefHeight="540.0" prefWidth="1200.0" style="-fx-padding: 1em;">
                      <children>
-                        <VBox prefHeight="76.0" prefWidth="698.0">
+                        <VBox prefHeight="115.0" prefWidth="614.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Cart">
                                  <font>
                                     <Font size="20.0" />
                                  </font></Text>
-                              <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="88.0" prefWidth="673.0" />
+                              <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="423.0" prefWidth="614.0" />
+                              <Button fx:id="checkoutBackButton" mnemonicParsing="false" text="Back" />
                            </children>
                         </VBox>
-                     </children></HBox>
-                  <HBox alignment="BOTTOM_CENTER" prefHeight="149.0" prefWidth="697.0">
-                     <children>
-                        <VBox prefHeight="133.0" prefWidth="474.0">
+                        <VBox alignment="CENTER" prefHeight="273.0" prefWidth="546.0" style="-fx-padding: 25;">
                            <children>
                               <GridPane alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="356.0">
                                 <columnConstraints>
@@ -63,25 +66,21 @@
                                      <Text fx:id="totalPriceText" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
-                              <Button fx:id="checkoutBackButton" mnemonicParsing="false" text="Back">
-                                 <VBox.margin>
-                                    <Insets left="5.0" top="15.0" />
-                                 </VBox.margin></Button>
+                              <HBox prefHeight="64.0" prefWidth="224.0" style="-fx-padding: 25;">
+                                 <children>
+                                    <Button fx:id="checkoutPayButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMouseClicked="#handleCheckoutPayButtonClick" text="Pay at counter">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                        <Button fx:id="checkoutPayButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Pay at counter" onMouseClicked="#handleCheckoutPayButtonClick">
-                           <HBox.margin>
-                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                        </Button>
-                     </children>
-                  </HBox>
+                     </children></HBox>
                </children>
             </VBox>
 

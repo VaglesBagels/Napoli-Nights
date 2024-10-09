@@ -7,12 +7,12 @@
 <!--<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.napolinights.OrderController">-->
 <!--</BorderPane>-->
 
-<AnchorPane style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.OrderController">
+<AnchorPane minHeight="700.0" style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.OrderController">
     <VBox spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <HBox alignment="CENTER" minHeight="150" prefHeight="100.0">
             <children>
                 <!-- Image Box with Background Image -->
-                <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="283.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px;">
+                <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px;">
                     <image>
                         <Image url="@images/landing_page/napoli_nights_logo.png" />
                     </image>
@@ -21,7 +21,7 @@
         </HBox>
 
 <!--        Area after NAV -->
-        <VBox style="-fx-background-color: white;">
+        <VBox prefHeight="540.0" prefWidth="1200.0" style="-fx-background-color: white;">
         <ToolBar AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" xmlns:fx="http://javafx.com/fxml">
             <Hyperlink fx:id="lnkEntree" onAction="#handleMenuOptionClick" text="Entree" />
             <Hyperlink fx:id="lnkMains" onAction="#handleMenuOptionClick" text="Mains" />
@@ -92,7 +92,7 @@
                 <VBox fx:id="mainsSection" alignment="TOP_LEFT" spacing="10" visible="false" VBox.vgrow="ALWAYS">
                     <children>
                 <ScrollPane>
-                    <TilePane alignment="CENTER" hgap="20" prefColumns="1" style="-fx-border-color: red;" vgap="20" prefTileWidth="700">
+                    <TilePane alignment="CENTER" hgap="20" prefColumns="1" prefTileWidth="700" style="-fx-border-color: red;" vgap="20">
                         <!-- First row of mains -->
                         <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
                             <HBox alignment="CENTER_LEFT" spacing="10">
