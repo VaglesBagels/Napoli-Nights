@@ -3,30 +3,42 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LandingPageController">
+<AnchorPane style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LandingPageController">
     <children>
         <!-- VBox to Center Image and Buttons -->
         <VBox alignment="CENTER" layoutY="-86.0" prefWidth="604.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <!-- Image Box with Background Image -->
-            <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
-                <image>
-                    <Image url="@images/landing_page/napoli_nights_logo.png" />
-                </image>
-            </ImageView>
+             <HBox alignment="CENTER" minHeight="150" prefHeight="100.0">
+                <children>
+                      <!-- Image Box with Background Image -->
+                      <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px;">
+                          <image>
+                              <Image url="@images/landing_page/napoli_nights_logo.png" />
+                          </image>
+                      </ImageView>
+                </children>
+             </HBox>
             <HBox fx:id="imageBox" alignment="CENTER">
-
-                <!-- White Box -->
-                <Rectangle fx:id="whiteBox" fill="white" height="400" width="1200" />
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-2.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-3.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-4.jpg" />
+                </ImageView>
             </HBox>
 
             <!-- Welcome Message Centrally Aligned -->
             <Text fx:id="welcomeText" style="-fx-font-size: 20px; -fx-fill: white;" text="Welcome to Napoli Pizza!" />
 
             <!-- Horizontal Box for Buttons -->
-            <HBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER" minHeight="63.0" spacing="10">
 
                 <Button fx:id="menuButton" onAction="#handleViewMenu" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #84AE87; -fx-text-fill: white;" text="View Menu">
                     <font>
