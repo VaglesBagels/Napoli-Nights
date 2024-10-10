@@ -28,15 +28,18 @@
                      <children>
                         <VBox prefHeight="115.0" prefWidth="614.0">
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="100.0">
+                              <VBox prefHeight="495.0" prefWidth="614.0" spacing="5.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Cart">
                                        <font>
-                                          <Font size="20.0" />
+                                          <Font size="34.0" />
                                        </font>
                                     </Text>
-                                    <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="423.0" prefWidth="614.0" />
-                                    <Button fx:id="checkoutBackButton" mnemonicParsing="false" text="Back" />
+                                    <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="380.0" prefWidth="614.0" />
+                                    <Button fx:id="checkoutBackButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" style="-fx-background-color: none; -fx-border-color: black; -fx-border-radius: 6px;" text="Back">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Button>
                                  </children>
                               </VBox>
                            </children>
@@ -57,25 +60,46 @@
       
       <!--                            CART OVERVIEW GRID-->
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cart items" />
-                                    <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1" />
-                                    <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GST (10%)" GridPane.rowIndex="2" />
-                                    <Text layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cart items">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
+                                    <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
+                                    <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GST (10%)" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
+                                    <Text layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
       <!--                               Quantity -->
-                                    <Text fx:id="quantityText" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1" />
+                                    <Text fx:id="quantityText" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
       <!--                               Subtotal -->
-                                    <Text fx:id="subtotalPriceText" layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Text fx:id="subtotalPriceText" layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
       <!--                              Tax -->
-                                     <Text fx:id="taxText" layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                     <Text fx:id="taxText" layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Text>
       <!--                              Total -->
                                      <Text fx:id="totalPriceText" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
                               <HBox prefHeight="64.0" prefWidth="224.0" style="-fx-padding: 25;">
                                  <children>
-                                    <Button fx:id="checkoutPayButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMouseClicked="#handleCheckoutPayButtonClick" text="Pay at counter">
+                                    <Button fx:id="checkoutPayButton" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#handleCheckoutPayButtonClick" prefHeight="67.0" prefWidth="207.0" style="-fx-background-color: #8fc493;" text="Pay at counter">
                                        <font>
-                                          <Font size="17.0" />
+                                          <Font name="System Bold" size="16.0" />
                                        </font>
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
