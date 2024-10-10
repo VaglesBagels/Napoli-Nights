@@ -4,6 +4,8 @@ import java.sql.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+//TODO: Move password hashing to User class.
+
 /**
  * Implementation of the IUserDAO interface for managing user data in a database.
  */
@@ -87,6 +89,12 @@ public class UserDAO implements IUserDAO {
      */
     @Override
     public boolean verifyUserAccess(String username, String password) throws SQLException {
+        // TODO: Refactor this to accept a username & hashedPassword.
+        //  SQL statement extended to return a record only if it finds a match from
+        //  the username & password & userStatus is active.
+        //  Otherwise it throws a "Username/Password rejected message" Exception
+        //  Method should return the User record rather than a boolean
+
         String sql = "SELECT * FROM Users WHERE (email = ? OR mobile = ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

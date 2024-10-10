@@ -73,17 +73,43 @@ public class OrderTest {
         String newCustomerName = "Alice";
         String newCustomerContact = "111222333";
         List<OrderItem> newItems = new ArrayList<>();
+        Timestamp newPaidDate = new Timestamp(System.currentTimeMillis() - 1000);
         newItems.add(item1);
 
         order.setOrderDate(newOrderDate);
         order.setCustomerName(newCustomerName);
         order.setCustomerContact(newCustomerContact);
         order.setOrderItems(newItems);
+        order.setPaidDate(newPaidDate);
 
         assertEquals(newOrderDate, order.getOrderDate());
         assertEquals(newCustomerName, order.getCustomerName());
         assertEquals(newCustomerContact, order.getCustomerContact());
         assertEquals(newItems, order.getOrderItems());
+        assertEquals(newPaidDate, order.getPaidDate());
+        assertTrue(order.isPaid());
+    }
+
+    @Test
+    public void testSetPaidDateNull() {
+        order.setPaidDate(null);
+        assertNull(order.getPaidDate());
+        assertFalse(order.isPaid());
+    }
+
+    @Test
+    public void testSetPaidDateInFuture() {
+        Timestamp futureDate = new Timestamp(System.currentTimeMillis() + 100000);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> order.setPaidDate(futureDate));
+        assertEquals("Paid date cannot be in the future.", exception.getMessage());
+    }
+
+    @Test
+    public void testSetPaidDateValid() {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        order.setPaidDate(now);
+        assertEquals(now, order.getPaidDate());
+        assertTrue(order.isPaid());
     }
 
     @Test
@@ -106,7 +132,7 @@ public class OrderTest {
         Order order = new Order(now, "John Doe", "123456789");
 
         String expected = "Order{orderID=0, orderDate=" + now +
-                ", customerName='John Doe', customerContact='123456789', orderItems=[]}";
+                ", customerName='John Doe', customerContact='123456789', orderItems=[], isPaid=false, paidDate=null}";
         assertEquals(expected, order.toString());
     }
 
@@ -133,14 +159,14 @@ public class OrderTest {
 
     @Test
     public void testSetCustomerNameToNull() {
-        Exception exception = assertThrows(NullPointerException.class, () -> order.setCustomerName(null));
-        assertEquals("Customer name cannot be null", exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> order.setCustomerName(null));
+        assertEquals("Customer name cannot be null or empty.", exception.getMessage());
     }
 
     @Test
     public void testSetCustomerContactToEmptyString() {
-        Exception exception = assertThrows(NullPointerException.class, () -> order.setCustomerContact(""));
-        assertEquals("Customer contact cannot be an empty string", exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> order.setCustomerContact(""));
+        assertEquals("Customer contact cannot be null or empty.", exception.getMessage());
     }
 
     @Test

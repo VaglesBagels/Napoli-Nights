@@ -1,6 +1,7 @@
 package com.example.napolinights.model;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,8 @@ public class Order {
     private String customerName;
     private String customerContact;
     private List<OrderItem> orderItems;
+    private boolean isPaid;
+    private Timestamp paidDate;
 
     /**
      * Constructs a new Order with the specified date, customer name, and contact.
@@ -26,10 +29,11 @@ public class Order {
      * @throws NullPointerException if any of the parameters are null.
      */
     public Order (Timestamp orderDate, String customerName, String customerContact) {
-        this.orderDate = Objects.requireNonNull(orderDate, "Order date cannot be null");;
-        this.customerName = Objects.requireNonNull(customerName, "Customer name cannot be null");;
-        this.customerContact = Objects.requireNonNull(customerContact, "Customer contact cannot be null");
-        this.orderItems = new ArrayList<>();
+        this.orderDate = Objects.requireNonNull(orderDate, "Order date cannot be null");
+        setCustomerName(customerName);
+        setCustomerContact(customerContact);
+        this.orderItems = new ArrayList<>(); // Initialise orderItems
+        this.isPaid = false;
     }
 
     /**
@@ -43,11 +47,51 @@ public class Order {
      * @param orderItems      The list of items associated with this order.
      * @throws NullPointerException if any of the required parameters are null.
      */
-    public Order(int orderID, Timestamp orderDate, String customerName, String customerContact, List<OrderItem> orderItems) {
+    public Order(int orderID, Timestamp orderDate, String customerName, String customerContact, List<OrderItem> orderItems, Timestamp paidDate) {
         this(orderDate, customerName, customerContact);
-        this.orderID = orderID;
-        this.orderItems = new ArrayList<>(orderItems);
+        setOrderID(orderID);
+        setOrderItems(orderItems);
+        setPaidDate(paidDate);
     }
+
+    /**
+     * Sets the paid date of the order and marks the order as paid.
+     * Ensures that the paid date is not in the future.
+     *
+     * @param paidDate The timestamp when the order was paid. Can be null to unset the payment status.
+     * @throws IllegalArgumentException if paidDate is in the future.
+     */
+    void setPaidDate(Timestamp paidDate) {
+        if (paidDate != null) {
+            if (paidDate.after(Timestamp.from(Instant.now()))) {
+                throw new IllegalArgumentException("Paid date cannot be in the future.");
+            }
+            this.isPaid = true;
+            this.paidDate = paidDate;
+        } else {
+            this.isPaid = false;
+            this.paidDate = null;
+        }
+    }
+
+    /**
+     * Gets the paid status of the order.
+     *
+     * @return true if the order is paid; false otherwise.
+     */
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    /**
+     * Gets the paid date of the order.
+     *
+     * @return The timestamp when the order was paid, or null if the order is unpaid.
+     */
+    public Timestamp getPaidDate() {
+        return paidDate;
+    }
+
     /**
      * Gets the unique identifier of the order.
      *
@@ -67,7 +111,7 @@ public class Order {
             throw new IllegalArgumentException("Order ID cannot be changed after it's been set.");
         }
         if (orderID == 0) {
-            throw new IllegalArgumentException("Order ID cannot be null or empty.");
+            throw new IllegalArgumentException("Order ID must be greater than 0.");
         }
         this.orderID = orderID;
     }
@@ -107,7 +151,10 @@ public class Order {
      * @throws NullPointerException if customerName is null.
      */
     public void setCustomerName(String customerName) {
-        this.customerName = Objects.requireNonNull(customerName, "Customer name cannot be null");
+        if (customerName == null || customerName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer name cannot be null or empty.");
+        }
+        this.customerName = customerName;
     }
 
     /**
@@ -126,12 +173,10 @@ public class Order {
      * @throws NullPointerException if customerContact is null.
      */
     public void setCustomerContact(String customerContact) {
-        Objects.requireNonNull(customerContact, "Customer contact cannot be null");
-        if (customerContact.trim().isEmpty()) {
-            throw new NullPointerException("Customer contact cannot be an empty string");
+        if (customerContact == null || customerContact.trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer contact cannot be null or empty.");
         }
         this.customerContact = customerContact;
-
     }
 
     /**
@@ -158,8 +203,7 @@ public class Order {
      * @param item The {@link OrderItem} to add.
      */
     public void addOrderItem(OrderItem item) {
-        OrderItem itemToAdd = Objects.requireNonNull(item, "Order item cannot be null");
-        orderItems.add(itemToAdd);
+        orderItems.add(Objects.requireNonNull(item, "Order item cannot be null"));
     }
 
     /**
@@ -184,6 +228,8 @@ public class Order {
                 ", customerName='" + customerName + '\'' +
                 ", customerContact='" + customerContact + '\'' +
                 ", orderItems=" + orderItems +
+                ", isPaid=" + isPaid +
+                ", paidDate=" + paidDate +
                 '}';
     }
 

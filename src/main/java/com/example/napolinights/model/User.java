@@ -1,4 +1,7 @@
 package com.example.napolinights.model;
+// TODO: Need to refactor this class with respects to the password validation and security.
+//  Hashing the password should belong to this class (or create a Password class) and not UserDAO.
+//  Passwords should not be stored in plain text at all even when creating a new class.
 
 /**
  * Class representing a user in the system.
@@ -27,7 +30,7 @@ public class User {
         this.userLastName = userLastName;
         this.mobile = mobile;
         this.email = email;
-        this.password = password != null ? password : ""; // Handle null password
+        this.password = password != null ? password : ""; // Handle null password.
         this.userRole = "staff";  // Default role
         this.userStatus = true; // Default status
     }
@@ -49,6 +52,7 @@ public class User {
         this.userId = userId;
         this.userRole = userRole;
         this.userStatus = userStatus;
+        this.password = password;  // When reading from DB password is already hashed.
     }
 
     public int getUserId() { return userId; }
@@ -79,6 +83,7 @@ public class User {
 
     public void setEmail(String email) { this.email = email; }
 
+    // This function should be removed as there is no need to get the hashed password.
     public String getPassword() { return password; }
 
     public void setPassword(String password) {
