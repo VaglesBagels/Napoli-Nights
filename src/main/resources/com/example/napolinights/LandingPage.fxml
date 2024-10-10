@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.LandingPageController">
@@ -21,9 +20,18 @@
                 </children>
              </HBox>
             <HBox fx:id="imageBox" alignment="CENTER">
-
-                <!-- White Box -->
-                <Rectangle fx:id="whiteBox" fill="white" height="400" width="1200" />
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-2.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-3.jpg" />
+                </ImageView>
+                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                    <Image url="@images/landing_page/hero-image-4.jpg" />
+                </ImageView>
             </HBox>
 
             <!-- Welcome Message Centrally Aligned -->
