@@ -230,14 +230,17 @@
 
             </VBox>
 
-            <VBox prefHeight="350.0" prefWidth="386.0" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray; -fx-max-height: 350;">
+            <VBox prefHeight="350.0" prefWidth="386.0" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray; -fx-max-height: 350;" translateX="-10.0">
                 <VBox fx:id="orderSection" alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                 </VBox>
                 <Label style="-fx-font-size: 18px;" text="Total (Inc GST)" />
                 <Label fx:id="lblTotalPrice" style="-fx-font-size: 16px;" text="\$0.00" />
-                <Button style="-fx-font-size: 14px;" text="Store closed" />
-                <Label style="-fx-font-size: 14px;" text="Currently not taking online orders" />
-                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" />
+<!--                <Button style="-fx-font-size: 14px;" text="Store closed" />-->
+<!--                <Label style="-fx-font-size: 14px;" text="Currently not taking online orders" />-->
+                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" prefHeight="67.0" prefWidth="207.0" style="-fx-background-color: #8fc493;" text="Checkout">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font></Button>
             </VBox>
 
         </HBox>
