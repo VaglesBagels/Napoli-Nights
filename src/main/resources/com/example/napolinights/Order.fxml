@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <!--<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.napolinights.OrderController">-->
 <!--</BorderPane>-->
@@ -23,8 +25,22 @@
 <!--        Area after NAV -->
         <VBox prefHeight="540.0" prefWidth="1200.0" style="-fx-background-color: white;">
         <ToolBar AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" xmlns:fx="http://javafx.com/fxml">
-            <Hyperlink fx:id="lnkEntree" onAction="#handleMenuOptionClick" text="Entree" />
-            <Hyperlink fx:id="lnkMains" onAction="#handleMenuOptionClick" text="Mains" />
+            <Button mnemonicParsing="false">
+               <graphic>
+                  <Hyperlink fx:id="lnkEntree" onAction="#handleMenuOptionClick" text="Entree" textAlignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Hyperlink>
+               </graphic>
+            </Button>
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false">
+               <graphic>
+                  <Hyperlink fx:id="lnkMains" onAction="#handleMenuOptionClick" text="Mains" textAlignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Hyperlink>
+               </graphic>
+            </Button>
         </ToolBar>
 
         <!-- Content Wrapper for Left and Right Sections -->
@@ -36,7 +52,7 @@
                   <children>
                        <!-- Center area for the menu items -->
                        <ScrollPane>
-                       <TilePane alignment="CENTER" hgap="20" prefColumns="1" style="-fx-border-color: red;" vgap="20">
+                       <TilePane alignment="CENTER" hgap="20" prefColumns="1" prefHeight="712.0" prefWidth="775.0" style="-fx-border-color: red;" vgap="20">
                            <!-- First row of entrees -->
                            <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
                                <HBox fx:id="tHbox1" alignment="CENTER_LEFT" spacing="10">
@@ -83,6 +99,9 @@
                                <Label style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Fresh local calamari, lightly fried served on a bed of salad with a side of garlic aioli" />
                                <Label style="-fx-font-size: 16px;" text="\$20.00" />
                            </VBox>
+                           <padding>
+                              <Insets bottom="15.0" top="15.0" />
+                           </padding>
 
                        </TilePane>
                        </ScrollPane>
@@ -92,7 +111,7 @@
                 <VBox fx:id="mainsSection" alignment="TOP_LEFT" spacing="10" visible="false" VBox.vgrow="ALWAYS">
                     <children>
                 <ScrollPane>
-                    <TilePane alignment="CENTER" hgap="20" prefColumns="1" prefTileWidth="700" style="-fx-border-color: red;" vgap="20">
+                    <TilePane alignment="CENTER" hgap="20" prefColumns="1" prefTileWidth="700" prefWidth="775.0" style="-fx-border-color: red;" vgap="20">
                         <!-- First row of mains -->
                         <VBox onMouseClicked="#handleMenuItemClick" spacing="5" style="-fx-border-color: lightgray; -fx-padding: 10;">
                             <HBox alignment="CENTER_LEFT" spacing="10">
@@ -201,6 +220,9 @@
                                 </ImageView>
                             </HBox>
                         </VBox>
+                           <padding>
+                              <Insets bottom="15.0" top="15.0" />
+                           </padding>
                     </TilePane>
                 </ScrollPane>
                     </children>
@@ -208,7 +230,7 @@
 
             </VBox>
 
-            <VBox prefWidth="400" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray; -fx-max-height: 350;">
+            <VBox prefHeight="350.0" prefWidth="386.0" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray; -fx-max-height: 350;">
                 <VBox fx:id="orderSection" alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                 </VBox>
                 <Label style="-fx-font-size: 18px;" text="Total (Inc GST)" />
