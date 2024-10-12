@@ -67,6 +67,7 @@ public class OrderController {
             System.out.println("One or both amongst lnkEntree and lnkMains are null");
         }
 
+        showSection(entreeSection);
     }
 
     @FXML
@@ -202,10 +203,13 @@ public class OrderController {
         System.out.println(sectionToShow.getId());
         // Hide all sections
         entreeSection.setVisible(false);
+        entreeSection.setManaged(false);
         mainsSection.setVisible(false);
+        mainsSection.setManaged(false);
 
         // Show selected section
         sectionToShow.setVisible(true);
+        sectionToShow.setManaged(true);
     }
 
     public void updateSelectedItem(String itemName, String itemPrice, Integer itemQty) {
