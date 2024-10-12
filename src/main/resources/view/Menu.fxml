@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.napolinights.controller.MenuController">
+    <content>
+        <!-- Main VBox where the categories and menu items will be added dynamically -->
+        <VBox fx:id="contentAnchorPane" layoutX="10.0" layoutY="10.0" spacing="20.0" prefWidth="800.0">
+            <!-- Initially, the VBox is empty. Content will be added dynamically in the controller. -->
+        </VBox>
+    </content>
+</ScrollPane>
