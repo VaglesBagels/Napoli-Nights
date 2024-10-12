@@ -22,14 +22,14 @@ public interface IOrderDAO {
      *
      * @param order The Order object with updated values.
      */
-    void updateOrder(Order order);
+    void updateOrder(Order order) throws SQLException ;
 
     /**
      * Retrieves all Orders from the database.
      *
      * @return A list of all Orders.
      */
-    List<Order> getAllOrders();
+    List<Order> fetchAllOrders() throws SQLException ;
 
     /**
      * Retrieves an Order IOrdersDAO the database by its ID.
@@ -37,7 +37,7 @@ public interface IOrderDAO {
      * @param id The ID of the Order to be retrieved.
      * @return The Order with the specified ID, or null if not found.
      */
-    Order getOrderById(int id);
+    Order getOrderById(int id) throws SQLException ;
 
     /**
      * Closes the database connection.
