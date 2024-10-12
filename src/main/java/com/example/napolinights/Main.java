@@ -74,7 +74,9 @@ public class Main extends Application {
 
 
     private void openLandingPage(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/napolinights/LandingPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/LandingPage.fxml"));
+        // Parent root = FXMLLoader.load(getClass().getResource("/view/LandingPage.fxml"));
+
         primaryStage.setTitle("Napoli Pizza");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

@@ -1,2 +1,27 @@
 Category,Name,Description,Price,imageURL
-Entree, Garlic Bread, "sourdough with garlic and herbs", 8.00, garlic_bread.jpg
+Entree,	Garlic and cheese focaccia, "Freshly cooked to order topped with Australian garlic, mozzarella cheese & Italian herbs.", 18, entree_garlic_and_cheese_focaccia.jpg
+Entree,	Fried Green Olives, "lightly crumbed and filled with veal farce and served with a delicious truffle mayo", 	24, entree_fried_Green_olives.jpg
+Entree,	Bruschetta, "Diced tomato, red onion, evo oil, oregano and balsamic glaze", 18.00,null
+Entree,	Polenta fingers,"Polenta fingers description", 20.00,null
+Entree,	Calamari, "Fresh local calamari, lightly fried served on a bed of salad with a side of garlic aioli", 20.00,null
+Pasta,	Spaghetti gamberi, "locally sourced king prawns shelled in house, sauteed in olive oil with baby heirloom tomatoes in a San Marzano tomato suace, garlic, lilliput capers topped with "pan grattato".", 38, pasta_spaghetti_gamberi.jpg
+Pasta,	Fettuccini Carbonara, "crisp double smoked bacon in a lush sauce of cream, grana padano parmsean, white whine, garlic & agg yolk.", 28.00, pasta_fettuccini_carbonara.jpg
+Pasta,	Casarecce alla Puttanesca, "sauteed cherry tomatoes, red onion, kalamata olives, baby capers, cooked in a light Napoli sauce.", 28.00, pasta_casarecce_alla_puttanesca.jpg
+Pasta,	Penne con pollo, "Slow cooked Napoli sauce, chicken, creamy mushrooms, sundried tomato", 32.00,null
+Pasta,	Spaghetti Napoli,"Spaghetti Napoli description", 20.00,null
+Pasta,	Spaghetti Bolognese, "Our home recipe made with grass fed beef mince and organic pork", 28.00, pasta_spaghetti_bolognese.jpg
+Pasta,	Fettuccine funghi, "Cooked in a creamy fresh local mushroom and truffle sauce topped with fresh parsley and italian Parmesean D.O.P.", 30.00, pasta_fettuccine_funghi.jpg
+Pizza,	Margherita, "Tomato, mozzarella, grana padano parmesan, cherry tomato, basil, garlic", 24.00, pizza_margherita.jpg
+Pizza,	Tropicana, "Triple smoked ham, pineapple on a tomato and mozzarella base.", 25.00, pizza_tropicana.jpg
+Pizza,	Romana, "Salami, red onion, roasted capsicum, kalamata olives on a tomato and mozzarella base.", 28.00, pizza_romana.jpg
+Pizza,	Capricciosa, "Salami, triple smoked ham, mushroom, Kalamata olives on tomato and mozzarella base", 28.00,null
+Pizza,	Little lamb, "Slow cooked lamb shoulder, sundried tomato, olives, red onion, crumbed halloumi, tzatziki on a tomato and mozzarella base.", 32, pizza_little_lamb.jpg
+Pizza,	Napoli's, "Triple smoked ham, truffle sauce, mushrooms, crumbled halloumi on a tomato and mozzarella base.", 32, pizza_napolis.jpg
+Pizza,	Three little pigs, "Tomato, mozzarella, salami, Italian pork sausage, 12h slow cooked bbq pulled pork, oregano", 30, pizza_three_little_pigs.jpg
+Pizza,	Daisy, "Daisy description", 28,null
+Pizza,	Roast potato, "Rosemary roast potato, Italian sausage, smoked mozzarella, parmesan, fior di latte mozzarella and tomato base.", 32.00, pizza_roast_potato.jpg
+Pizza,	Chicken and Pumpkin,"Chicken and Pumpkin description", 30,null
+Dessert, TAKE/AWAY TIRAMISU, "Tiramisu dessert description", 18.00,null
+Dessert, Bombolini, "Fresh Italian style doughnuts filled with Nutella. 16 (2 pieces)", 16.00,null
+Beverages,	Coke,"Coke description", 6.00,null
+Beverages,	Coke Zero,"Coke Zero - No Sugar", 6.00,null
