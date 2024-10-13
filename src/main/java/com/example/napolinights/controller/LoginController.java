@@ -116,9 +116,9 @@ public class LoginController {
         System.out.println("Attempting login");
         Connection connection = SqliteConnection.getInstance();
         UserDAO userDAO = new UserDAO(connection);
-        boolean userHasAccess = userDAO.verifyUserAccess(email, password);
-
-        if (userHasAccess) {
+        User user = userDAO.verifyUserAccess(email, password);  //VerifyUserAccess Returns a User object when successful.
+        //boolean userHasAccess = userDAO.verifyUserAccess(email, password);
+        if (user != null && user.isUserActive()) {
             lblLoginStatusMessage.setStyle("");
             lblLoginStatusMessage.setText(null);
             lblLoginStatusMessage.setVisible(false);

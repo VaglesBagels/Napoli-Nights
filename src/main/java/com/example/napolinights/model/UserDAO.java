@@ -1,10 +1,6 @@
 package com.example.napolinights.model;
 
 import java.sql.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-//TODO: Move password hashing to User class.
 
 /**
  * Implementation of the IUserDAO interface for managing user data in a database.
@@ -14,27 +10,30 @@ public class UserDAO implements IUserDAO {
 
     /**
      * Constructs a UserDAO instance with the provided database connection.
+     *
+     * @param connection the database connection to use for operations
      */
     public UserDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Creates the user table in the database if it does not already exist.
+     */
     public void createUserTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS users ( " +
+                "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_first_name VARCHAR(50) NOT NULL, " +
+                "user_last_name VARCHAR(50) NOT NULL, " +
+                "mobile VARCHAR(15) NOT NULL UNIQUE, " +
+                "email VARCHAR(100) NOT NULL UNIQUE, " +
+                "password VARCHAR(255) NOT NULL, " +
+                "user_role VARCHAR(20) NOT NULL, " +
+                "user_status BOOLEAN NOT NULL" +
+                ")";
         try {
-            Statement createUserTable = connection.createStatement();
-            createUserTable.execute(
-                "CREATE TABLE IF NOT EXISTS users ( " +
-                    "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "user_first_name VARCHAR(50) NOT NULL, " +
-                    "user_last_name VARCHAR(50) NOT NULL, " +
-                    "mobile VARCHAR(15) NOT NULL UNIQUE, " +
-                    "email VARCHAR(100) NOT NULL UNIQUE, " +
-                    "password VARCHAR(255) NOT NULL, " +
-                    "user_role VARCHAR(20) NOT NULL, " +
-                    "user_status BOOLEAN NOT NULL" +
-                    ")"
-            );
-
+            Statement stmt = connection.createStatement();
+            stmt.execute(sql);
             System.out.println("User table created");
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -53,12 +52,12 @@ public class UserDAO implements IUserDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, user.getUserFirstName());
-            statement.setString(2, user.getUserLastName());
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
             statement.setString(3, user.getMobile());
             statement.setString(4, user.getEmail());
-            statement.setString(5, hashPassword(user.getPassword()));
-            statement.setString(6, user.getUserRole());
+            statement.setString(5, user.getPassword());
+            statement.setString(6, user.getRole());
             statement.setBoolean(7, user.isUserActive());
 
             int affectedRows = statement.executeUpdate();
@@ -69,7 +68,7 @@ public class UserDAO implements IUserDAO {
             // Retrieve the generated userID
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    user.setUserId(generatedKeys.getInt(1)); // Assume userID is an int
+                    user.setId(generatedKeys.getInt(1)); // Assume userID is an int
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
@@ -83,34 +82,33 @@ public class UserDAO implements IUserDAO {
      *
      * @param username The email or mobile number of the user.
      * @param password The plain-text password entered by the user.
-     * @return true if the login credentials and password match, false otherwise.
-     * @throws SQLException If an error occurs reading from database
-     * ror occurs while interacting with the database.
+     * @return A User object if the login credentials and password match.
+     * @throws SQLException If an error occurs while reading from the database.
+     * @throws Exception If the user does not exist or the password is invalid.
      */
     @Override
-    public boolean verifyUserAccess(String username, String password) throws SQLException {
-        // TODO: Refactor this to accept a username & hashedPassword.
-        //  SQL statement extended to return a record only if it finds a match from
-        //  the username & password & userStatus is active.
-        //  Otherwise it throws a "Username/Password rejected message" Exception
-        //  Method should return the User record rather than a boolean
-
-        String sql = "SELECT * FROM Users WHERE (email = ? OR mobile = ?)";
+    public User verifyUserAccess(String username, String password) throws SQLException {
+        String sql = "SELECT * FROM Users WHERE (email = ? OR mobile = ?) and password = ? and user_status = true";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
             statement.setString(2, username);
+            statement.setString(3, User.hashPassword(password));
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    String storedHashedPassword = rs.getString("password");
-                    boolean userStatus = rs.getBoolean("user_status");
-                    if (!userStatus) {
-                        throw new Exception("User is not active");
-                    }
-                    return verifyPassword(password, storedHashedPassword);
+                    return new User(
+                            rs.getInt("user_id"),
+                            rs.getString("user_first_name"),
+                            rs.getString("user_last_name"),
+                            rs.getString("mobile"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("user_role"),
+                            rs.getBoolean("user_status")
+                    );
                 } else {
-                    return false;
+                    throw new Exception("Invalid password or user does not exist.");
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -118,6 +116,14 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+    /**
+     * Retrieves the user details for the specified user ID.
+     *
+     * @param userId The unique ID of the user to retrieve.
+     * @return A User object containing the user's details.
+     * @throws SQLException If an error occurs while interacting with the database
+     *                      or if the user is not found.
+     */
     @Override
     public User getUserDetailsById(int userId) throws SQLException {
         String sql = "SELECT * FROM Users WHERE user_id = ?";
@@ -156,7 +162,7 @@ public class UserDAO implements IUserDAO {
         String sql = "UPDATE Users SET password = ? WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, hashPassword(newPassword));
+            statement.setString(1, User.hashPassword(newPassword));
             statement.setInt(2, userId);
 
             int affectedRows = statement.executeUpdate();
@@ -164,36 +170,5 @@ public class UserDAO implements IUserDAO {
                 throw new SQLException("Updating password failed, no rows affected.");
             }
         }
-    }
-
-    /**
-     * Hashes the provided plain-text password using the SHA-256 algorithm.
-     *
-     * @param password The plain-text password to be hashed.
-     * @return The hashed password in hexadecimal format.
-     */
-    public static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedBytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashedBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
-        }
-    }
-
-    /**
-     * Verifies if the provided plain-text password matches the hashed password.
-     *
-     * @param password The plain-text password.
-     * @param hashedPassword The stored hashed password.
-     * @return true if the passwords match, false otherwise.
-     */
-    private boolean verifyPassword(String password, String hashedPassword) {
-        return hashPassword(password).equals(hashedPassword);
     }
 }
