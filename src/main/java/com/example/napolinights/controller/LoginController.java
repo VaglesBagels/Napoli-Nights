@@ -1,6 +1,7 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,10 +16,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.example.napolinights.model.UserDAO;
-
+/**
+ * Controller class for the Login page. Handles user login, validation,
+ * and navigation to the appropriate pages (e.g., sign-up, staff landing page).
+ */
 public class LoginController {
 
+    // FXML elements from the Login page
     @FXML
     private TextField emailField;
 
@@ -40,65 +44,45 @@ public class LoginController {
     @FXML
     private Label lblLoginStatusMessage;
 
+    /**
+     * Event handler for the login button click.
+     * Validates the input fields and attempts to log in the user.
+     */
     @FXML
     private void handleLogin() {
         try {
             String email = emailField.getText();
             String password = passwordField.getText();
 
-            boolean isValid = validateFields(
-                    email,
-                    password
-            );
+            // Validate the email and password fields
+            boolean isValid = validateFields(email, password);
 
+            // Proceed with login if validation is successful
             if (isValid) {
-                // Login processing here
                 login(email, password);
             } else {
                 System.out.println("Login failed due to validation errors.");
             }
 
         } catch (Exception ex) {
-            System.out.println("Login Failed. An error occured during login. PLease try again.");
+            System.out.println("Login Failed. An error occurred during login. Please try again.");
             System.out.println(ex.getMessage());
         }
     }
 
-    @FXML
-    private void handleForgotPassword() {
-        System.out.println("Handle Forgot password here");
-    }
-
-    @FXML
-    private void handleSignUp() {
-        openSignUpPage();
-    }
-
-    private void openSignUpPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
-            Parent menuPage = loader.load();
-
-            Stage stage = (Stage) this.lnkSignUp.getScene().getWindow();
-            stage.setTitle("Sign Up here");
-            Scene scene = new Scene(menuPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean validateFields(
-        String email,
-        String password
-    ) {
+    /**
+     * Validates the email and password input fields.
+     * @param email The email entered by the user.
+     * @param password The password entered by the user.
+     * @return true if both fields are valid, false otherwise.
+     */
+    private boolean validateFields(String email, String password) {
         boolean isValid = true;
 
-        // Basic validation check (add more as needed)
+        // Check if email field is empty
         if (email.trim().isEmpty()) {
             emailField.setStyle("-fx-border-color: red;");
-            lblEmailMessage.setStyle("-fx-text-fill: red");
+            lblEmailMessage.setStyle("-fx-text-fill: red;");
             lblEmailMessage.setVisible(true);
             isValid = false;
         } else {
@@ -107,9 +91,10 @@ public class LoginController {
             lblEmailMessage.setVisible(false);
         }
 
+        // Check if password field is empty
         if (password.trim().isEmpty()) {
             passwordField.setStyle("-fx-border-color: red;");
-            lblPasswordMessage.setStyle("-fx-text-fill: red");
+            lblPasswordMessage.setStyle("-fx-text-fill: red;");
             lblPasswordMessage.setVisible(true);
             isValid = false;
         } else {
@@ -121,32 +106,83 @@ public class LoginController {
         return isValid;
     }
 
+    /**
+     * Attempts to log in the user with the provided email and password.
+     * @param email The email entered by the user.
+     * @param password The password entered by the user.
+     * @throws SQLException if login fails due to validation errors.
+     */
     private void login(String email, String password) throws SQLException {
-        System.out.println("Login here");
+        System.out.println("Attempting login");
         Connection connection = SqliteConnection.getInstance();
         UserDAO userDAO = new UserDAO(connection);
         boolean userHasAccess = userDAO.verifyUserAccess(email, password);
+
         if (userHasAccess) {
             lblLoginStatusMessage.setStyle("");
             lblLoginStatusMessage.setText(null);
             lblLoginStatusMessage.setVisible(false);
-            openStaffLandingPage();
-        }
-        else {
+            openStaffLandingPage(); // Proceed to staff landing page if login is successful
+        } else {
             lblLoginStatusMessage.setText("Incorrect Username or Password. Please try again.");
             lblLoginStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
             lblLoginStatusMessage.setVisible(true);
-            throw new SQLException("Login failed due to validation errors.");
+            throw new SQLException("Login failed due to incorrect credentials.");
         }
     }
 
+    /**
+     * Event handler for the "Forgot Password" hyperlink.
+     * Currently just prints a message to the console.
+     */
+    @FXML
+    private void handleForgotPassword() {
+        System.out.println("Handle Forgot Password here");
+    }
+
+    /**
+     * Event handler for the "Sign Up" hyperlink.
+     * Opens the Sign Up page when clicked.
+     */
+    @FXML
+    private void handleSignUp() {
+        openSignUpPage();
+    }
+
+    /**
+     * Opens the Sign Up page (SignUp.fxml).
+     */
+    private void openSignUpPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
+            Parent signUpPage = loader.load();
+
+            Stage stage = (Stage) this.lnkSignUp.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setTitle("Sign Up");
+
+            Scene scene = new Scene(signUpPage);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Opens the Staff Landing Page (StaffLandingPage.fxml) after a successful login.
+     */
     private void openStaffLandingPage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StaffLandingPage.fxml"));
             Parent landingPage = loader.load();
 
             Stage stage = (Stage) this.btnLogin.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
             stage.setTitle("Napoli Nights");
+
             Scene scene = new Scene(landingPage);
             stage.setScene(scene);
             stage.show();

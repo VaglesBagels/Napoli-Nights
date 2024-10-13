@@ -27,8 +27,9 @@ public class StaffLandingPageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/IncomingOrders.fxml"));
             Parent ordersPage = loader.load();
-
             Stage stage = (Stage) viewOrdersButton.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
             stage.setTitle("Incoming Orders");
             Scene scene = new Scene(ordersPage);
             stage.setScene(scene);
@@ -42,8 +43,9 @@ public class StaffLandingPageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Reports.fxml"));
             Parent reportsPage = loader.load();
-
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
             stage.setTitle("Reports");
             Scene scene = new Scene(reportsPage);
             stage.setScene(scene);
