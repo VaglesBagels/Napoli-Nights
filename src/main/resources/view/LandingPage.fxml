@@ -25,16 +25,16 @@
             <HBox fx:id="imageBox" alignment="CENTER">
                 <!-- Background Image -->
                 <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
-                    <Image url="@../com/example/napolinights/images/landing_page/hero-image.jpg" />
+                    <Image url="@../com/example/napolinights/images/landing_page/hero_image.jpg" />
                 </ImageView>
                 <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
-                    <Image url="@../com/example/napolinights/images/landing_page/hero-image-2.jpg" />
+                    <Image url="@../com/example/napolinights/images/landing_page/hero_image_2.jpg" />
                 </ImageView>
                 <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
-                    <Image url="@../com/example/napolinights/images/landing_page/hero-image-3.jpg" />
+                    <Image url="@../com/example/napolinights/images/landing_page/hero_image_3.jpg" />
                 </ImageView>
                 <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
-                    <Image url="@../com/example/napolinights/images/landing_page/hero-image-4.jpg" />
+                    <Image url="@../com/example/napolinights/images/landing_page/hero_image_4.jpg" />
                 </ImageView>
             </HBox>
 
