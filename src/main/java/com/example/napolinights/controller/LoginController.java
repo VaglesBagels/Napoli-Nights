@@ -1,6 +1,7 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -125,8 +126,9 @@ public class LoginController {
         System.out.println("Login here");
         Connection connection = SqliteConnection.getInstance();
         UserDAO userDAO = new UserDAO(connection);
-        boolean userHasAccess = userDAO.verifyUserAccess(email, password);
-        if (userHasAccess) {
+        User user = userDAO.verifyUserAccess(email, password);  //VerifyUserAccess Returns a User object when successful.
+        //boolean userHasAccess = userDAO.verifyUserAccess(email, password);
+        if (user != null && user.isUserActive()) {
             lblLoginStatusMessage.setStyle("");
             lblLoginStatusMessage.setText(null);
             lblLoginStatusMessage.setVisible(false);

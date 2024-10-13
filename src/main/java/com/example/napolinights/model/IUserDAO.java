@@ -19,11 +19,11 @@ public interface IUserDAO {
      * and password.
      *
      * @param loginCredential The email or mobile number of the user.
-     * @param password The plain-text password entered by the user.
+     * @param password        The plain-text password entered by the user.
      * @return true if the login credentials and password match, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database.
      */
-    boolean verifyUserAccess(String loginCredential, String password) throws SQLException;
+    User verifyUserAccess(String loginCredential, String password) throws SQLException;
 
     /**
      * Retrieves the details for the specified user.
