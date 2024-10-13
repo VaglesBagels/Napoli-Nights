@@ -92,6 +92,8 @@ public class LandingPageController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            System.out.println("Error occurred while opening the Menu page.");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -117,6 +119,8 @@ public class LandingPageController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            System.out.println("Error occurred while opening the Order page.");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -142,6 +146,8 @@ public class LandingPageController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            System.out.println("Error occurred while opening the Login page.");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
