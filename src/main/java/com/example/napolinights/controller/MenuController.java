@@ -53,7 +53,7 @@ public class MenuController {
         Platform.runLater(() -> {
             Stage stage = (Stage) menuScrollPane.getScene().getWindow();
             stage.setMinWidth(800);
-            stage.setMinHeight(750);
+            stage.setMinHeight(600);
         });
     }
 
