@@ -48,8 +48,25 @@ public class CheckoutController {
     private Text totalPriceText;
 
     @FXML
-    private void handleCheckoutBackButtonClick(MouseEvent event) {
+    private void handleCheckoutBackButtonClick() {
         System.out.println("Checkout back button clicked");
+        goBack();
+    }
+
+    private void goBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Order.fxml"));
+            Parent OrderPage = loader.load();
+            // Add null check
+
+                Stage stage = (Stage) checkoutBackButton.getScene().getWindow();
+                stage.setTitle("Order Page");
+                Scene scene = new Scene(OrderPage);
+                stage.setScene(scene);
+                stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void transferCartItems(OrderConfirmationController orderConfirmationController) {
@@ -220,7 +237,4 @@ public class CheckoutController {
             ex.printStackTrace();
         }
     }
-
-
-
 }

@@ -23,6 +23,7 @@ public class StaffLandingPageController {
         viewReportsButton.setOnAction(event -> openReportsPage());
     }
 
+    @FXML
     private void openIncomingOrdersPage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/IncomingOrders.fxml"));
@@ -33,6 +34,8 @@ public class StaffLandingPageController {
             Scene scene = new Scene(ordersPage);
             stage.setScene(scene);
             stage.show();
+
+            IncomingOrdersController controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }

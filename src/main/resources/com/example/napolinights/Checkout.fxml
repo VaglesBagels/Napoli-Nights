@@ -36,7 +36,7 @@
                                        </font>
                                     </Text>
                                     <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="380.0" prefWidth="614.0" />
-                                    <Button fx:id="checkoutBackButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" style="-fx-background-color: none; -fx-border-color: black; -fx-border-radius: 6px;" text="Back">
+                                    <Button fx:id="checkoutBackButton" mnemonicParsing="false" onAction="#handleCheckoutBackButtonClick" prefHeight="50.0" prefWidth="118.0" style="-fx-background-color: none; -fx-border-color: black; -fx-border-radius: 6px;" text="Back">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Button>
