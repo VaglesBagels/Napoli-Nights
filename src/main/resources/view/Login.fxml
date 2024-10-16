@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<!-- Root layout of the Login Page, using AnchorPane as the main layout container -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.LoginController"
+            style="-fx-background-color: #0e0e0e; -fx-padding: 20px; -fx-border-width: 1px; -fx-border-color: #111;">
+
+    <!-- VBox to center the Logo and Login Form -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <!-- Napoli Nights Logo Section -->
+        <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248" preserveRatio="true"
+                   style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
+            <image>
+                <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
+            </image>
+        </ImageView>
+
+        <!-- Login Form Section -->
+        <VBox spacing="15" alignment="CENTER"
+              style="-fx-background-color: #1e1e1e; -fx-padding: 20px; -fx-border-color: lightgray;">
+
+            <!-- Login Title -->
+            <Label text="Login" style="-fx-text-fill: white; -fx-font-size: 24px;"/>
+
+            <!-- Login Status Message (Initially Hidden) -->
+            <Label fx:id="lblLoginStatusMessage" visible="false"/>
+
+            <!-- Email Field -->
+            <TextField fx:id="emailField" promptText="Email address"
+                       style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
+
+            <!-- Email Validation Message (Initially Hidden) -->
+            <Label fx:id="lblEmailMessage" text="* Required field is empty" visible="false"/>
+
+            <!-- Password Field -->
+            <PasswordField fx:id="passwordField" promptText="Password"
+                           style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
+
+            <!-- Password Validation Message (Initially Hidden) -->
+            <Label fx:id="lblPasswordMessage" text="* Required field is empty" visible="false"/>
+
+            <!-- Login Button (Triggers login action) -->
+            <Button fx:id="btnLogin" text="Login"
+                    style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px;"
+                    onAction="#handleLogin"/>
+
+            <!-- Forgot Password Hyperlink -->
+            <Hyperlink text="Forgot password?" style="-fx-text-fill: lightgray;" onAction="#handleForgotPassword"/>
+
+            <!-- Sign Up Hyperlink (Navigates to Sign Up page) -->
+            <Hyperlink fx:id="lnkSignUp" text="SignUp Here" style="-fx-text-fill: lightgray;" onAction="#handleSignUp"/>
+        </VBox>
+    </VBox>
+
+</AnchorPane>
+

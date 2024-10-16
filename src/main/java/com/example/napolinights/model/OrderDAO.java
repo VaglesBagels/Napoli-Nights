@@ -1,6 +1,7 @@
 package com.example.napolinights.model;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ public class OrderDAO implements IOrderDAO{
                     "CREATE TABLE IF NOT EXISTS orders (" +
                             "    order_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                             "    created_timestamp DATETIME NOT NULL," +
+                            "    customer_name TEXT NOT NULL," +
+                            "    customer_contact TEXT NOT NULL," +
                             "    order_paid BOOLEAN NOT NULL," +
                             "    paid_timestamp DATETIME" +
                             ")"
@@ -42,8 +45,10 @@ public class OrderDAO implements IOrderDAO{
             createOrderItemsTable.execute(
                     "CREATE TABLE IF NOT EXISTS order_items (" +
                             "    order_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "    order_id VARCHAR(20) NOT NULL," +
-                            "    menu_id VARCHAR(10) NOT NULL," +
+                            "    order_id INTEGER NOT NULL," +
+                            "    menu_id INTEGER NOT NULL," +
+                            "    quantity INTEGER NOT NULL," +
+                            "    item_price DOUBLE NOT NULL," +
                             "    special_instructions TEXT," +
                             "    FOREIGN KEY (order_id) REFERENCES orders(order_id)," +
                             "    FOREIGN KEY (menu_id) REFERENCES menu_items(menu_id)" +
@@ -124,27 +129,139 @@ public class OrderDAO implements IOrderDAO{
             // Restore auto-commit mode
             connection.setAutoCommit(true);
         }
-
     }
 
+    /**
+     * Updates an existing order in the database.
+     * The method updates the customer information, payment status, and payment timestamp based on the provided order.
+     *
+     * @param order The order object containing updated order details.
+     * @throws SQLException If an SQL error occurs during the update operation.
+     */
     @Override
-    public void updateOrder(Order order) {
+    public void updateOrder(Order order) throws SQLException {
+        String updateOrderSQL = "UPDATE orders SET customer_name = ?, customer_contact = ?, order_paid = ?, paid_timestamp = ? WHERE order_id = ?";
+        try (PreparedStatement orderStmt = connection.prepareStatement(updateOrderSQL)) {
+            orderStmt.setString(1, order.getCustomerName());
+            orderStmt.setString(2, order.getCustomerContact());
+            orderStmt.setBoolean(3, order.isPaid());
+            orderStmt.setTimestamp(4, order.getPaidDate());
+            orderStmt.setInt(5, order.getOrderID());
 
+            int affectedRows = orderStmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating order failed, no rows affected.");
+            }
+        }
     }
 
+    /**
+     * Fetches all orders from the database.
+     * This method retrieves all orders, including their timestamps, customer information, and payment status.
+     *
+     * @return A list of all orders in the database.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
     @Override
-    public List<Order> getAllOrders() {
-        return List.of();
+    public List<Order> fetchAllOrders() throws SQLException {
+        String fetchAllOrdersSQL = "SELECT * FROM orders";
+        List<Order> orders = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(fetchAllOrdersSQL)) {
+
+            while (rs.next()) {
+                Order order = new Order(
+                        rs.getTimestamp("created_timestamp"),
+                        rs.getString("customer_name"),
+                        rs.getString("customer_contact")
+                );
+                order.setOrderID(rs.getInt("order_id"));
+                order.setPaidDate(rs.getTimestamp("paid_timestamp"));
+                orders.add(order);
+            }
+        }
+        return orders;
     }
 
+    /**
+     * Fetches all orders from the database that were created on a specific date.
+     * This method retrieves orders where the `created_timestamp` matches the specified date.
+     *
+     * @param date The date (as a {@link Timestamp}) to filter orders by. Only orders created on this date will be returned.
+     * @return A list of orders created on the specified date.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
+    public List<Order> fetchAllOrdersByDate(Timestamp date) throws SQLException {
+        if (date == null) {
+            throw new SQLException("The SQL statement cannot be prepared with a null date");
+        }
+
+        String fetchOrdersByDateSQL = "SELECT * FROM orders WHERE DATE(created_timestamp) = DATE(?)";
+        List<Order> orders = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(fetchOrdersByDateSQL)) {
+            stmt.setTimestamp(1, date);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order(
+                            rs.getTimestamp("created_timestamp"),
+                            rs.getString("customer_name"),
+                            rs.getString("customer_contact")
+                    );
+                    order.setOrderID(rs.getInt("order_id"));
+                    order.setPaidDate(rs.getTimestamp("paid_timestamp"));
+                    orders.add(order);
+                }
+            }
+        }
+
+        return orders;
+    }
+
+
+    /**
+     * Fetches a specific order by its ID.
+     * The method retrieves the order details from the database based on the provided order ID.
+     *
+     * @param id The ID of the order to retrieve.
+     * @return The order object if found, or null if no order exists with the given ID.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
     @Override
-    public Order getOrderById(int id) {
-        return null;
+    public Order getOrderById(int id) throws SQLException {
+        String getOrderByIdSQL = "SELECT * FROM orders WHERE order_id = ?";
+        Order order = null;
+
+        try (PreparedStatement stmt = connection.prepareStatement(getOrderByIdSQL)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    order = new Order(
+                            rs.getTimestamp("created_timestamp"),
+                            rs.getString("customer_name"),
+                            rs.getString("customer_contact")
+                    );
+                    order.setOrderID(rs.getInt("order_id"));
+                    order.setPaidDate(rs.getTimestamp("paid_timestamp"));
+                }
+            }
+        }
+        return order;
     }
 
     @Override
     public void closeConnection() {
-
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connection closed.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to close connection: " + e.getMessage());
+        }
     }
 
     /**
@@ -182,4 +299,5 @@ public class OrderDAO implements IOrderDAO{
             }
         }
     }
+
 }

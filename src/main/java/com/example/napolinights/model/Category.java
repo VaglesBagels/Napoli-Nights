@@ -8,6 +8,7 @@ public enum Category {
     PASTA,
     PIZZA,
     DESSERT,
+    BEVERAGES,
     NON_ALCOHOLIC_DRINKS,
     COCKTAILS
 }
