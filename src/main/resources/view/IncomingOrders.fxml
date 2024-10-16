@@ -12,12 +12,12 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.IncomingOrdersController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.IncomingOrdersController">
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141412" height="151.0" layoutX="-11.0" layoutY="-22.0" stroke="#ffffff00" strokeType="INSIDE" width="653.0" />
         <ImageView fx:id="logoImageView" fitHeight="121.0" fitWidth="230.0" layoutX="247.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@images/landing_page/napoli_nights_logo.png" />
+                <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
             </image>
         </ImageView>
         <AnchorPane layoutX="19.0" layoutY="172.0">

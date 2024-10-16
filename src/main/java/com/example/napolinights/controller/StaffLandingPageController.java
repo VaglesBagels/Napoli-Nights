@@ -26,7 +26,7 @@ public class StaffLandingPageController {
     @FXML
     private void openIncomingOrdersPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/IncomingOrders.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/IncomingOrders.fxml"));
             Parent ordersPage = loader.load();
             Stage stage = (Stage) viewOrdersButton.getScene().getWindow();
             stage.setMinWidth(800);
