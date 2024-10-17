@@ -39,7 +39,7 @@ public class UserDAOTest {
     @Test
     public void testAddUser() throws SQLException {
         User user = new User("John", "Doe", "1234567890", "john.doe@example.com", "password123");
-        mockAddUserDatabaseInteraction(user);
+        mockAddUserDatabaseInteraction();
 
         userDAO.addUser(user);
 
@@ -98,9 +98,8 @@ public class UserDAOTest {
         when(mockResultSet.next()).thenReturn(false);
 
         // Call the method and assert exception
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userDAO.verifyUserAccess(username, password);
-        });
+        SQLException exception = assertThrows(SQLException.class, () ->
+                userDAO.verifyUserAccess(username, hashedPassword));
 
         assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
     }
@@ -110,6 +109,7 @@ public class UserDAOTest {
     public void testVerifyUserAccessWithInvalidCredentials() throws SQLException {
         String username = "test@example.com";
         String password = "wrongPassword";
+        String hashedPassword = User.hashPassword(password);
 
         // Mock behavior for the prepared statement and result set
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
@@ -117,9 +117,8 @@ public class UserDAOTest {
         when(mockResultSet.next()).thenReturn(false); // Simulate no user found
 
         // Call the method and assert exception
-        Exception exception = assertThrows(Exception.class, () -> {
-            userDAO.verifyUserAccess(username, password);
-        });
+        SQLException exception = assertThrows(SQLException.class, () ->
+                userDAO.verifyUserAccess(username, hashedPassword));
 
         assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
     }
@@ -133,11 +132,11 @@ public class UserDAOTest {
 
         SQLException thrown = assertThrows(SQLException.class, () -> userDAO.addUser(user));
 
-        assertEquals("Database error", thrown.getMessage());
+        assertEquals("Error adding user: Database error", thrown.getMessage());
     }
 
     // Helper Methods
-    private void mockAddUserDatabaseInteraction(User user) throws SQLException {
+    private void mockAddUserDatabaseInteraction() throws SQLException {
         when(mockConnection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(mockPreparedStatement);
         when(mockPreparedStatement.executeUpdate()).thenReturn(1);
@@ -155,28 +154,5 @@ public class UserDAOTest {
         verify(mockPreparedStatement).setString(6, user.getRole());
         verify(mockPreparedStatement).setBoolean(7, user.isUserActive());
         verify(mockPreparedStatement).executeUpdate();
-    }
-
-    private void mockVerifyUserAccess(String password, boolean userExists, boolean userActive) throws SQLException {
-        // Mocking the preparation of the SQL statement
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-
-        // Mocking the execution of the query to return the result set
-        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-
-        // Determine if the user exists
-        when(mockResultSet.next()).thenReturn(userExists);
-
-        if (userExists) {
-            // When the user exists, return a hashed password and user status
-            when(mockResultSet.getInt("user_id")).thenReturn(1); // Assuming user ID is 1 for this mock
-            when(mockResultSet.getString("user_first_name")).thenReturn("John");
-            when(mockResultSet.getString("user_last_name")).thenReturn("Doe");
-            when(mockResultSet.getString("mobile")).thenReturn("1234567890");
-            when(mockResultSet.getString("email")).thenReturn("john.doe@example.com");
-            when(mockResultSet.getString("password")).thenReturn(User.hashPassword(password)); // Hashed password
-            when(mockResultSet.getString("user_role")).thenReturn("staff");
-            when(mockResultSet.getBoolean("user_status")).thenReturn(userActive);
-        }
     }
 }

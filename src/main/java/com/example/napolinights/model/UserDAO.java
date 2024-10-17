@@ -66,13 +66,14 @@ public class UserDAO implements IUserDAO {
             }
 
             // Retrieve the generated userID
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    user.setId(generatedKeys.getInt(1)); // Assume userID is an int
-                } else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
-                }
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getInt(1)); // Assume userID is an int
+            } else {
+                throw new SQLException("Creating user failed, no ID obtained.");
             }
+        } catch (SQLException e) {
+            throw new SQLException("Error adding user: " + e.getMessage(), e);
         }
     }
 
@@ -83,8 +84,7 @@ public class UserDAO implements IUserDAO {
      * @param username The email or mobile number of the user.
      * @param password The plain-text password entered by the user.
      * @return A User object if the login credentials and password match.
-     * @throws SQLException If an error occurs while reading from the database.
-     * @throws Exception If the user does not exist or the password is invalid.
+     * @throws SQLException If user does not exist or an error occurs while reading from the database.
      */
     @Override
     public User verifyUserAccess(String username, String password) throws SQLException {
@@ -95,25 +95,23 @@ public class UserDAO implements IUserDAO {
             statement.setString(2, username);
             statement.setString(3, User.hashPassword(password));
 
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return new User(
-                            rs.getInt("user_id"),
-                            rs.getString("user_first_name"),
-                            rs.getString("user_last_name"),
-                            rs.getString("mobile"),
-                            rs.getString("email"),
-                            rs.getString("password"),
-                            rs.getString("user_role"),
-                            rs.getBoolean("user_status")
-                    );
-                } else {
-                    throw new SQLException("Invalid password or user does not exist.");
-                }
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_first_name"),
+                        rs.getString("user_last_name"),
+                        rs.getString("mobile"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("user_role"),
+                        rs.getBoolean("user_status")
+                );
+            } else {
+                throw new SQLException("Invalid password or user does not exist.");
             }
-            //} catch (Exception e) {
-            //    throw new RuntimeException(e);
-            //}
+        } catch (SQLException e) {
+            throw new SQLException("Error verifying user access: " + e.getMessage(), e);
         }
     }
 
@@ -131,23 +129,24 @@ public class UserDAO implements IUserDAO {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId); // Correct parameter index
 
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    // Retrieve user details and create User object
-                    return new User(
-                            rs.getInt("user_id"),
-                            rs.getString("user_first_name"),
-                            rs.getString("user_last_name"),
-                            rs.getString("mobile"),
-                            rs.getString("email"),
-                            rs.getString("password"),
-                            rs.getString("user_role"),
-                            rs.getBoolean("user_status")
-                    );
-                } else {
-                    throw new SQLException("User not found with ID: " + userId);
-                }
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                // Retrieve user details and create User object
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_first_name"),
+                        rs.getString("user_last_name"),
+                        rs.getString("mobile"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("user_role"),
+                        rs.getBoolean("user_status")
+                );
+            } else {
+                throw new SQLException("User not found with ID: " + userId);
             }
+        } catch (SQLException e) {
+            throw new SQLException("Error retrieving user: " + e.getMessage(), e);
         }
     }
 
@@ -170,6 +169,8 @@ public class UserDAO implements IUserDAO {
             if (affectedRows == 0) {
                 throw new SQLException("Updating password failed, no rows affected.");
             }
+        } catch (SQLException e) {
+            throw new SQLException("Error updating password: " + e.getMessage(), e);
         }
     }
 }
