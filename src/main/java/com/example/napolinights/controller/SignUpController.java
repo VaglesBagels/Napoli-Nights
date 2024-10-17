@@ -81,7 +81,7 @@ public class SignUpController {
 
             // If validation passes, save the user data and navigate to login page
             if (isValid) {
-                User userToSave = new User(0, firstName, lastName, mobile, email, password, "Staff", true);
+                User userToSave = new User(firstName, lastName, mobile, email, password);
                 saveUserData(userToSave);
                 openLoginPage();
             } else {
