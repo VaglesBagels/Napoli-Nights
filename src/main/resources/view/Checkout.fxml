@@ -46,7 +46,7 @@
                                 </VBox>
                                 <VBox prefHeight="273.0" prefWidth="546.0" style="-fx-padding: 25;">
                                     <children>
-                                        <GridPane alignment="CENTER" prefHeight="100.0" prefWidth="356.0">
+                                        <GridPane alignment="CENTER" prefHeight="100.0" prefWidth="356.0" vgap="25.0">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -62,37 +62,40 @@
                                             <children>
                                                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Cart items">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <Text fill="WHITE" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <Text fill="WHITE" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GST (10%)" GridPane.rowIndex="2">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <Text fill="WHITE" layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <!--                               Quantity -->
                                                 <Text fx:id="quantityText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <!--                               Subtotal -->
                                                 <Text fx:id="subtotalPriceText" fill="WHITE" layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <!--                              Tax -->
                                                 <Text fx:id="taxText" fill="WHITE" layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                     <font>
-                                                        <Font size="15.0" />
+                                                        <Font size="20.0" />
                                                     </font></Text>
                                                 <!--                              Total -->
-                                                <Text fx:id="totalPriceText" fill="WHITE" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Text fx:id="totalPriceText" fill="WHITE" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font></Text>
                                             </children>
                                         </GridPane>
                                         <HBox prefHeight="64.0" prefWidth="224.0" style="-fx-padding: 25;">
