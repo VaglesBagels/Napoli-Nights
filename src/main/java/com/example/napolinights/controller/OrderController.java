@@ -2,7 +2,12 @@ package com.example.napolinights.controller;
 
 import com.example.napolinights.CartItem;
 import com.example.napolinights.ItemSelectionCallback;
-import javafx.event.ActionEvent;
+import com.example.napolinights.model.Category;
+import com.example.napolinights.model.MenuItem;
+import com.example.napolinights.model.MenuItemDAO;
+import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.util.StyleConstants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -10,282 +15,267 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+
+/**
+ * OrderController is responsible for handling actions on the order page.
+ * This class controls the behavior when the user interacts with the UI elements, such as buttons and menu items.
+ */
 public class OrderController {
 
-    @FXML
-    private Hyperlink lnkEntree;
+    @FXML private TilePane menuItemsPane;  // To dynamically load menu items
+    @FXML private ToolBar categoryToolBar; // Toolbar for category selection
+    @FXML private VBox orderSection;       // Section for the ordered items
+    @FXML private Label lblTotalPrice;     // Label for displaying total price
+    @FXML private Button checkoutButton;   // Button to proceed to checkout
 
-    @FXML
-    private Hyperlink lnkMains;
 
-    @FXML
-    private AnchorPane contentAnchorPane;
+    private double totalPrice = 0.00;      // Variable to store total price
 
-    @FXML
-    private VBox entreeSection;
+    // List of categories to display in the toolbar
+    private List<Category> categories = List.of(
+            Category.ENTREE, Category.PIZZA, Category.PASTA, Category.DESSERT, Category.BEVERAGES
+    );
 
-    @FXML
-    private VBox mainsSection;
-
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private VBox orderSection;
-
-    @FXML
-    private Label lblTotalPrice;
-
-    private double totalPrice = 0.00;
-
-    private int quantity = 1; // Default quantity
-
-    @FXML
-    private Button checkoutButton;
-
+    /**
+     * Initialize the controller, set up categories and their display.
+     */
     @FXML
     private void initialize() {
-        if (lnkEntree != null && lnkMains != null) {
-            System.out.println("lnkEntree and lnkMains are not null");
-//            lnkEntree.setOnAction(event -> showSection(entreeSection));
-//            lnkMains.setOnAction(event -> showSection(mainsSection));
-            System.out.println("Initialized Menu Controller");
-        } else {
-            System.out.println("One or both amongst lnkEntree and lnkMains are null");
+        setupCategoryLinks();
+        showCategory(Category.ENTREE);
+    }
+
+    /**
+     * Setup category links in the toolbar.
+     */
+    private void setupCategoryLinks() {
+        for (Category category : categories) {
+            Hyperlink link = new Hyperlink(category.toString());
+            link.setOnAction(event -> showCategory(category));
+            categoryToolBar.getItems().add(link);
         }
-
-        showSection(entreeSection);
     }
 
-    @FXML
-    private void handleMenuOptionMouseClick(MouseEvent event) {
-        System.out.println("on menu option mouse clicked");
-        System.out.println(event.getSource());
+
+    /**
+     * Loads the menu items from the database and displays them by category.
+     */
+    private void loadMenuItemsByCategory(Category selectedCategory) {
+        // Fetch and display the menu items for the selected category
+        List<MenuItem> menuItems = fetchMenuItems(selectedCategory);
+        displayMenuItems(menuItems);
     }
 
-    @FXML
-    private void handleMenuOptionClick(ActionEvent event) {
-        System.out.println("handleMenuOptionClick for section: " + event.getSource());
-        if (event.getSource() == lnkEntree) {
-            showSection(entreeSection);
-        } else if (event.getSource() == lnkMains) {
-            showSection(mainsSection);
+    /**
+     * Fetches menu items for a given category from the database.
+     */
+    private List<MenuItem> fetchMenuItems(Category selectedCategory) {
+        // Get a connection to the database and fetch items by category
+        Connection connection = SqliteConnection.getInstance();
+        MenuItemDAO menuItemDAO = new MenuItemDAO(connection);
+        return menuItemDAO.fetchAllMenuItemsByCategory(selectedCategory);
+    }
+
+    /**
+     * Shows the menu items based on the selected category.
+     */
+    private void showCategory(Category category) {
+        // Clears the previous menu items
+        menuItemsPane.getChildren().clear();
+        // Loads and displays items from the selected category
+        loadMenuItemsByCategory(category);
+    }
+
+    /**
+     * Displays the menu items in the UI by creating visual elements for each item.
+     */
+    private void displayMenuItems(List<MenuItem> menuItems) {
+        for (MenuItem menuItem : menuItems) {
+            VBox itemBox = createMenuItemBox(menuItem);
+            menuItemsPane.getChildren().add(itemBox);
         }
-        mainsSection.getParent().layout();
-        /*switch (section) {
-            case "entree":
-                showSection(entreeSection);
-                break;
-            case "mains":
-                showSection(mainsSection);
-                break;
-        }*/
     }
 
-    @FXML
-    private void handleMenuItemClick(MouseEvent event) {
-        // Get the clicked Vbox
-        Object source = event.getSource();
-        System.out.println("handleVBoxClick1 Source: " + source);
-        if (source instanceof VBox) {
-            VBox clickedVBox = (VBox) source;
-            System.out.println("Clicked VBox ID: " + clickedVBox.getId());
-            HBox hBox = (HBox) clickedVBox.getChildren().get(0);
-            System.out.println("Clicked HBox ID: " + hBox.getId());
-            Object objVbox = hBox.getChildren().get(0);
-            if (objVbox instanceof VBox) {
-                System.out.println("OBJVBOX text: " + ((VBox) objVbox).getChildren().get(0));
-                VBox controlsVBox = (VBox) objVbox;
-                String title = extractTextFromLabel(controlsVBox, 0);
-                String description = extractTextFromLabel(controlsVBox, 1);
-                String price = extractTextFromLabel(controlsVBox, 2);
-                ImageView imageViewCtrl = (ImageView) (hBox.getChildren().get(1));
-                System.out.println("ImageViewCtrl Image ID: " + imageViewCtrl.getId());
-                String imagePath = ((Image) imageViewCtrl.getImage()).getUrl();
-                System.out.println("Image Path: " + imagePath);
-                showDetails(
-                        title,
-                        description,
-                        price,
-                        imagePath
-                );
+    /**
+     * Creates a visual display (VBox) for a single menu item.
+     */
+    private VBox createMenuItemBox(MenuItem menuItem) {
+        VBox itemBox = new VBox(10);
+        itemBox.setAlignment(Pos.TOP_LEFT);
+        itemBox.setStyle("-fx-border-color: lightgray; -fx-padding: 10;");
+
+        // Attaches the click event to the VBox
+        itemBox.setOnMouseClicked(event -> handleMenuItemClick(menuItem));
+
+        // Creates the labels and image for the menu item
+        Label itemTitle = createLabel(menuItem.getName(), "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+        Label itemDescription = createLabel(menuItem.getDescription(), "-fx-font-size: 14px; -fx-text-fill: white;");
+        Label itemPrice = createLabel(String.format("$%.2f", menuItem.getPrice()), "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+        ImageView itemImage = createImageView(menuItem.getImageURL());
+
+        // Adds the labels and image to the VBox
+        itemBox.getChildren().addAll(itemImage, itemTitle, itemDescription, itemPrice);
+
+        return itemBox;
+    }
+
+    /**
+     * Creates a styled label.
+     */
+    private Label createLabel(String text, String style) {
+        Label label = new Label(text);
+        label.setStyle(style);
+        return label;
+    }
+
+    /**
+     * Creates an ImageView for a menu item, using a default image if none is provided.
+     */
+    private ImageView createImageView(String imageUrl) {
+        String imagePath = getMenuItemImageOrDefault(imageUrl);
+        ImageView imageView = new ImageView(new Image(imagePath));
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
+        return imageView;
+    }
+
+    /**
+     * Returns the image URL or a default image if none is available.
+     */
+    private String getMenuItemImageOrDefault(String imageUrl) {
+        if (imageUrl != null && !imageUrl.trim().isEmpty() && !imageUrl.equalsIgnoreCase("null")) {
+            URL menuItemImageUrl = getClass().getResource("/com/example/napolinights/images/menu_images/" + imageUrl);
+            if (menuItemImageUrl != null) {
+                return menuItemImageUrl.toExternalForm();
             }
-            else {
-                System.out.println("Source is not a VBox, it's a: " + source.getClass().getSimpleName());
-            }
-
-        } else {
-            System.out.println("Source is not a VBox, it's a: " + source.getClass().getSimpleName());
         }
-        //VBox clickedVBox = (VBox) event.getSource();
-        //System.out.println("Clicked VBox" + clickedVBox.getId());
-
-        // Extract details from the VBox
-
+        return getClass().getResource("/com/example/napolinights/images/menu_images/no_image_found.png").toExternalForm();
     }
 
-    private String extractTextFromLabel(VBox vbox, int index) {
-        // Assuming that the Labels are in the first VBox inside the clicked VBox
-        Label label = (Label) vbox.getChildren().get(index);
-        System.out.println("extractTextFromLabel Label: " + label.getText());
-        return label.getText();
+    /**
+     * Handles a menu item click event to display its details.
+     */
+    private void handleMenuItemClick(MenuItem menuItem) {
+        try {
+            showDialog(menuItem.getName(), menuItem.getDescription(), String.format("$%.2f", menuItem.getPrice()), menuItem.getImageURL(), this::updateSelectedItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-
-    private void showDetails(String title, String details, String price, String imagePath) {
-        System.out.println("Show title: " + title + " price: " + price + " imagePath: " + imagePath);
-        showDialog(title, details, price, imagePath, ((itemName, itemPrice, itemQty) -> {
-            updateSelectedItem(itemName, itemPrice, itemQty);
-        }));
-    }
 
     private void showDialog(String title, String description, String price, String imagePath, ItemSelectionCallback callback) {
         try {
-            // Load the FXML template
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("itemDetailDialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ItemDetailDialog.fxml"));
             VBox dialogVBox = loader.load();
 
-            System.out.println("Template loaded");
-
+            System.out.println("Image Path: " + imagePath);
             ItemDetailDialogController itemDetailDialogController = loader.getController();
             itemDetailDialogController.setItemSelectionCallback(callback);
-
-            // Access the controls in the dialog
             Label dialogTitle = (Label) loader.getNamespace().get("dialogTitle");
             Label dialogDescription = (Label) loader.getNamespace().get("dialogDescription");
             Label dialogPrice = (Label) loader.getNamespace().get("dialogPrice");
             ImageView dialogImageView = (ImageView) loader.getNamespace().get("dialogImageView");
             Button cancelButton = (Button) loader.getNamespace().get("btnCancel");
-
-            // Set the values dynamically
             dialogTitle.setText(title);
             dialogDescription.setText(description);
             dialogPrice.setText(price);
-            dialogImageView.setImage(new Image(imagePath));
-
-            // Create a new Stage for the dialog
+            String menuImagePath = getMenuItemImageOrDefault(imagePath);
+            dialogImageView.setImage(new Image(menuImagePath));
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle(title);
-
-            // Set up the scene and add the content
             Scene dialogScene = new Scene(dialogVBox);
             dialogStage.setScene(dialogScene);
-
-            // Disable the close (X) button by setting the stage's style
             dialogStage.initStyle(StageStyle.UNDECORATED);
-
-            // Handle the "Cancel" button to close the dialog
             cancelButton.setOnAction(e -> dialogStage.close());
-
-            dialogStage.showAndWait(); // showAndWait will block until the dialog is closed
+            dialogStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-    }
-
-    private void showSection(VBox sectionToShow) {
-        System.out.println("Show Section");
-        System.out.println(sectionToShow.getId());
-        // Hide all sections
-        entreeSection.setVisible(false);
-        entreeSection.setManaged(false);
-        mainsSection.setVisible(false);
-        mainsSection.setManaged(false);
-
-        // Show selected section
-        sectionToShow.setVisible(true);
-        sectionToShow.setManaged(true);
     }
 
     public void updateSelectedItem(String itemName, String itemPrice, Integer itemQty) {
-        System.out.println("Adding item: " + itemName + " Price: " + itemPrice + " Qty: " + itemQty);
-
-        // Create labels for item name and price
         Label nameLabel = new Label(itemName);
-        Label priceLabel = new Label(String.format("$%.2f", Double.parseDouble(itemPrice.replace("$", "")) * itemQty));  // Adjust for initial quantity
+        Label priceLabel = new Label(String.format("$%.2f", Double.parseDouble(itemPrice.replace("$", "")) * itemQty));
+        // Hidden unit price label
+        Label unitPriceLabel = new Label(itemPrice);
+        unitPriceLabel.setVisible(false); // This makes it invisible in the UI
 
-        nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        priceLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: gray;");
+        nameLabel.setStyle(StyleConstants.ITEM_NAME_STYLE);
+        priceLabel.setStyle(StyleConstants.ITEM_PRICE_STYLE);
 
-        // Create buttons for quantity control
         Button incrementButton = new Button("+");
         Button decrementButton = new Button("-");
-        Label quantityLabel = new Label(String.valueOf(itemQty));  // Display initial quantity passed from the dialog
+
+        Label quantityLabel = new Label(String.valueOf(itemQty));
 
         incrementButton.setOnAction(e -> incrementQuantity(itemPrice, priceLabel, quantityLabel));
         decrementButton.setOnAction(e -> decrementQuantity(itemPrice, priceLabel, quantityLabel));
 
-        // Create an HBox to hold the buttons and labels
-        HBox itemBox = new HBox(10); // 10 is spacing between elements
-        itemBox.getChildren().addAll(decrementButton, quantityLabel, incrementButton, nameLabel, priceLabel);
+        HBox itemBox = new HBox(10);
+        itemBox.getChildren().addAll(decrementButton, quantityLabel, incrementButton, nameLabel, priceLabel, unitPriceLabel);
         itemBox.setAlignment(Pos.CENTER);
 
-        // Add the HBox to the orderSection VBox
         orderSection.getChildren().add(itemBox);
 
-        // Update the total price
         updateTotalPrice();
     }
 
-
     private void incrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
-        int currentQuantity = Integer.parseInt(quantityLabel.getText());  // Get current quantity
-        currentQuantity++;  // Increment quantity
-        quantityLabel.setText(String.valueOf(currentQuantity));  // Update quantity label
-        updateItemPrice(itemPrice, currentQuantity, priceLabel);  // Update price display for this item
-        updateTotalPrice();  // Update the total price for the entire order
+        int currentQuantity = Integer.parseInt(quantityLabel.getText());
+        currentQuantity++;
+        quantityLabel.setText(String.valueOf(currentQuantity));
+        updateItemPrice(itemPrice, currentQuantity, priceLabel);
+        updateTotalPrice();
     }
 
     private void decrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
-        int currentQuantity = Integer.parseInt(quantityLabel.getText());  // Get current quantity
+        int currentQuantity = Integer.parseInt(quantityLabel.getText());
         if (currentQuantity > 1) {
-            currentQuantity--;  // Decrement quantity if greater than 1
-            quantityLabel.setText(String.valueOf(currentQuantity));  // Update quantity label
-            updateItemPrice(itemPrice, currentQuantity, priceLabel);  // Update price display for this item
-            updateTotalPrice();  // Update the total price for the entire order
+            currentQuantity--;
+            quantityLabel.setText(String.valueOf(currentQuantity));
+            updateItemPrice(itemPrice, currentQuantity, priceLabel);
+            updateTotalPrice();
         }
     }
-
 
     private void updateTotalPrice() {
         totalPrice = 0.0;
-
-        // Iterate over all items in the orderSection to calculate total price
         for (int i = 0; i < orderSection.getChildren().size(); i++) {
             HBox itemBox = (HBox) orderSection.getChildren().get(i);
-            Label nameLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
+            Label priceLabel = (Label) itemBox.getChildren().get(4);
 
-            double itemPrice = Double.parseDouble(nameLabel.getText().replace("$", ""));
+            double itemPrice = Double.parseDouble(priceLabel.getText().replace("$", ""));
             totalPrice += itemPrice;
         }
-
-        // Update the total price label
         lblTotalPrice.setText(String.format("$%.2f", totalPrice));
     }
-
-
 
     private void updateItemPrice(String itemPrice, int quantity, Label priceLabel) {
         double price = Double.parseDouble(itemPrice.replace("$", ""));
         double updatedPrice = price * quantity;
         priceLabel.setText(String.format("$%.2f", updatedPrice));
     }
-
 
     private CheckoutController checkoutController;
 
@@ -298,50 +288,50 @@ public class OrderController {
 
             passCartData();
 
-            Stage stage = (Stage)this.checkoutButton.getScene().getWindow();
-            stage.setTitle("Checkout");
-            Scene scene = new Scene(checkoutPage);
-            stage.setScene(scene);
-            stage.show();
-        }
-        catch (IOException e) {
+            Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
+            setupStage(stage, checkoutPage, "Checkout");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
     public void passCartData() {
-
         int cartLength = orderSection.getChildren().size();
-
         CartItem[] item = new CartItem[cartLength];
         for (int i = 0; i < cartLength; i++) {
             HBox itemBox = (HBox) orderSection.getChildren().get(i);
-            Label nameLabel = (Label) itemBox.getChildren().get(3);  // Name label is the 4th element (index 3)
-            Label priceLabel = (Label) itemBox.getChildren().get(4);  // Price label is the 5th element (index 4)
-            Label quantityLabel = (Label) itemBox.getChildren().get(1);  // Quantity label is the 2nd element (index 1)
+            Label nameLabel = (Label) itemBox.getChildren().get(3);
+            Label priceLabel = (Label) itemBox.getChildren().get(4);
+            Label quantityLabel = (Label) itemBox.getChildren().get(1);
+            // Retrieving the hidden unit price label
+            Label unitPriceLabel = (Label) itemBox.getChildren().get(5);
 
             String name = nameLabel.getText();
             double price = parseItemPrice(priceLabel.getText());
             int quantity = parseItemQuantity(quantityLabel.getText());
-            item[i] = new CartItem(name, price,quantity);
-
-            System.out.println(name + ", " +  price + ", " + quantity);
-
+            double unitPrice = parseItemPrice(unitPriceLabel.getText());
+            item[i] = new CartItem(name, unitPrice, quantity);
         }
+        System.out.println("passing item to cart: " + item);
         checkoutController.receiveData(item);
     }
 
-    private double parseItemPrice(String string){
-        double itemPrice = Double.parseDouble(string.replace("$", ""));
-        return itemPrice;
+    private double parseItemPrice(String string) {
+        return Double.parseDouble(string.replace("$", ""));
     }
 
     private int parseItemQuantity(String string) {
-        int quantity = Integer.parseInt(string);
-        return quantity;
+        return Integer.parseInt(string);
     }
 
-
+    private void setupStage(Stage stage, Parent page, String title) {
+        stage.setTitle(title);
+        Scene scene = new Scene(page);
+        stage.setScene(scene);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
+        stage.show();
+    }
 }
 

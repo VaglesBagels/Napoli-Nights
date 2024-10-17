@@ -44,8 +44,7 @@ public class LandingPageController {
      */
     @FXML
     private void handleViewMenu() {
-        System.out.println("View Menu button clicked");
-        openMenuPage();
+        openPage("/view/Menu.fxml", "View Menu");
     }
 
     /**
@@ -54,8 +53,7 @@ public class LandingPageController {
      */
     @FXML
     private void handleOrder() {
-        System.out.println("Order Here button clicked");
-        openOrderPage();
+        openPage("/view/Order.fxml", "Order Here");
     }
 
     /**
@@ -64,92 +62,28 @@ public class LandingPageController {
      */
     @FXML
     private void handleAdminAccess() {
-        System.out.println("Staff button clicked");
-        openLoginPage();
+        openPage("/view/Login.fxml", "Login");
     }
 
     /**
-     * Opens the Menu page (Menu.fxml).
-     * Sets a fixed window size for consistency.
+     * Opens a page based on the specified FXML file and sets the stage title.
+     * @param fxmlPath Path to the FXML file.
+     * @param title Title of the window.
      */
-    private void openMenuPage() {
+    private void openPage(String fxmlPath, String title) {
         try {
-            // Load the Menu page FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Menu.fxml"));
-            Parent menuPage = loader.load();
-
-            // Get the current stage (window) and set properties
-            Stage stage = (Stage) this.menuButton.getScene().getWindow();
-            stage.setMinWidth(800); // Only set the minimum width
-            stage.setMinHeight(600); // Only set the minimum height
-            stage.setTitle("View Menu");
-
-            // Allow the window to be maximized and resized freely
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent page = loader.load();
+            Stage stage = (Stage) menuButton.getScene().getWindow();
+            stage.setTitle(title);
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
             stage.setResizable(true);
-
-            // Set the new scene to the stage and display it
-            Scene scene = new Scene(menuPage);
-            stage.setScene(scene);
+            stage.setScene(new Scene(page));
             stage.show();
         } catch (IOException e) {
-            System.out.println("Error occurred while opening the Menu page.");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Opens the Order page (Order.fxml).
-     * Sets a fixed window size for consistency.
-     */
-    private void openOrderPage() {
-        try {
-            // Load the Order page FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Order.fxml"));
-            Parent orderPage = loader.load();
-
-            // Get the current stage (window) and set properties
-            Stage stage = (Stage)this.menuButton.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setTitle("Order Here");
-
-            // Set the new scene to the stage and display it
-            Scene scene = new Scene(orderPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error occurred while opening the Order page.");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Opens the Login page (Login.fxml).
-     * Sets a fixed window size for consistency.
-     */
-    private void openLoginPage() {
-        try {
-            // Load the Login page FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
-            Parent loginPage = loader.load();
-
-            // Get the current stage (window) and set properties
-            Stage stage = (Stage)this.menuButton.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setTitle("Login");
-
-            // Set the new scene to the stage and display it
-            Scene scene = new Scene(loginPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error occurred while opening the Login page.");
-            System.out.println(e.getMessage());
+            System.out.println("Error occurred while opening the " + title + " page.");
             e.printStackTrace();
         }
     }
 }
-
