@@ -1,6 +1,8 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.User;
+import com.example.napolinights.model.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
