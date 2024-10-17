@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
 <!-- Main layout for the Landing Page using an AnchorPane -->
+
 <AnchorPane style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.LandingPageController">
 
     <!-- Define all children components within the AnchorPane -->
     <children>
 
         <!-- VBox used to vertically center the logo, welcome text, and buttons -->
-        <VBox alignment="CENTER" layoutY="-86.0" prefWidth="604.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <VBox alignment="CENTER" layoutY="-86.0" maxHeight="-Infinity" prefHeight="700.0" prefWidth="1200.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <!-- Logo Image -->
-            <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
+            <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
                 <image>
                     <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
                 </image>
             </ImageView>
 
             <!-- HBox to align the background image in the center -->
-            <HBox fx:id="imageBox" alignment="CENTER">
+            <HBox fx:id="imageBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="350.0" prefHeight="400.0" prefWidth="1121.0">
                 <!-- Background Image -->
-                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                <ImageView fitHeight="400.0" fitWidth="267.0" preserveRatio="true" smooth="true">
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image.jpg" />
                 </ImageView>
                 <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
@@ -71,6 +72,3 @@
 
     </children> <!-- End of children components in AnchorPane -->
 </AnchorPane>
-
-
-
