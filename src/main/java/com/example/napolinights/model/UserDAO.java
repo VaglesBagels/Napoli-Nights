@@ -108,11 +108,12 @@ public class UserDAO implements IUserDAO {
                             rs.getBoolean("user_status")
                     );
                 } else {
-                    throw new Exception("Invalid password or user does not exist.");
+                    throw new SQLException("Invalid password or user does not exist.");
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
+            //} catch (Exception e) {
+            //    throw new RuntimeException(e);
+            //}
         }
     }
 

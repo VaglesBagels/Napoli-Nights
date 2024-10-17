@@ -1,6 +1,8 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.User;
+import com.example.napolinights.model.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,6 +65,12 @@ public class LoginController {
                 System.out.println("Login failed due to validation errors.");
             }
 
+        } catch (SQLException sqlEx) {
+            System.out.println("SqlException occured. Please try again.");
+            System.out.println(sqlEx.getMessage());
+            lblLoginStatusMessage.setText(sqlEx.getMessage());
+            lblLoginStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            lblLoginStatusMessage.setVisible(true);
         } catch (Exception ex) {
             System.out.println("Login Failed. An error occurred during login. Please try again.");
             System.out.println(ex.getMessage());
