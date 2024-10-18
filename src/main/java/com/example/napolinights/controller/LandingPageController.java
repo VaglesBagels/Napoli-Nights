@@ -1,5 +1,6 @@
 package com.example.napolinights.controller;
 
+import com.example.napolinights.util.StageConstants;  // Import StageUtil class for setting stage size
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 /**
@@ -17,17 +19,10 @@ import java.io.IOException;
 public class LandingPageController {
 
     // UI elements from the FXML file
-    @FXML
-    private Button menuButton;
-
-    @FXML
-    private Button orderButton;
-
-    @FXML
-    private ImageView logoImageView;
-
-    @FXML
-    private HBox imageBox;
+    @FXML private Button menuButton;
+    @FXML private Button orderButton;
+    @FXML private ImageView logoImageView;
+    @FXML private HBox imageBox;
 
     /**
      * This method is called automatically after the FXML file is loaded.
@@ -67,6 +62,8 @@ public class LandingPageController {
 
     /**
      * Opens a page based on the specified FXML file and sets the stage title.
+     * Uses the StageUtil utility to ensure consistent stage size settings.
+     *
      * @param fxmlPath Path to the FXML file.
      * @param title Title of the window.
      */
@@ -76,8 +73,10 @@ public class LandingPageController {
             Parent page = loader.load();
             Stage stage = (Stage) menuButton.getScene().getWindow();
             stage.setTitle(title);
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
+
+            // Use the StageUtil to set the stage size
+            StageConstants.setStageSize(stage);
+
             stage.setResizable(true);
             stage.setScene(new Scene(page));
             stage.show();
@@ -87,3 +86,4 @@ public class LandingPageController {
         }
     }
 }
+

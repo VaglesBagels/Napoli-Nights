@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.OrderController"
             style="-fx-background-color: #141415;">
@@ -19,7 +18,7 @@
         <HBox spacing="20" alignment="TOP_LEFT" style="-fx-background-color: #141415; -fx-padding: 0 20 0 0;">
 
             <!-- Left Section: Menu Items -->
-            <VBox prefWidth="600" style="-fx-padding: 10; -fx-background-color: #141415;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <VBox prefWidth="600" maxWidth="1200" style="-fx-padding: 10; -fx-background-color: #141415;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 
                 <!-- ScrollPane wrapping the menu items section -->
                 <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
@@ -38,13 +37,26 @@
                 <VBox fx:id="orderSection" spacing="10" alignment="CENTER" style="-fx-background-color: #141415;">
                 </VBox>
 
+                <!-- Subtotal Section -->
+                <Label text="Subtotal (Excl GST)" style="-fx-font-size: 18px; -fx-text-fill: white;"/>
+                <Label fx:id="lblSubtotal" text="\$0.00" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+
+                <!-- GST Section -->
+                <Label text="GST" style="-fx-font-size: 16px; -fx-text-fill: grey;"/>
+                <Label fx:id="lblGST" text="\$0.00" style="-fx-font-size: 16px; -fx-text-fill: grey;"/>
+
+                <!-- Discount Section -->
+                <Label text="Discount" style="-fx-font-size: 16px; -fx-text-fill: grey;"/>
+                <Label fx:id="lblDiscount" text="\$0.00" style="-fx-font-size: 16px; -fx-text-fill: grey;"/>
+
                 <!-- Total Price Section -->
-                <Label text="Total (Inc GST)" style="-fx-font-size: 18px; -fx-text-fill: white;"/>
-                <Label fx:id="lblTotalPrice" text="\$0.00" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+                <Label text="Total (Inc GST)" style="-fx-font-size: 25px; -fx-text-fill: white; -fx-font-weight: bold"/>
+                <Label fx:id="lblTotalIncGST" text="\$0.00" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
 
                 <!-- Checkout Button -->
-                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" style="-fx-background-color: #141415; -fx-text-fill: white;"/>
+                <Button fx:id="checkoutButton" onMouseClicked="#HandleCheckoutButton" text="Checkout" style="-fx-font-size: 18px; -fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold;" prefWidth="200" prefHeight="50"/>
             </VBox>
+
         </HBox>
     </VBox>
 </AnchorPane>
