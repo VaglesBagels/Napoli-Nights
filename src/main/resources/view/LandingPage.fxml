@@ -12,42 +12,59 @@
     <!-- Define all children components within the AnchorPane -->
     <children>
 
+<<<<<<< HEAD
+        <!-- VBox is used to vertically center the logo, welcome text, and buttons -->
+        <VBox alignment="CENTER" layoutY="-86.0" prefWidth="604.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+=======
         <!-- VBox used to vertically center the logo, welcome text, and buttons -->
         <VBox alignment="CENTER" layoutY="-86.0" maxHeight="-Infinity" prefHeight="700.0" prefWidth="1200.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6
 
             <!-- Logo Image -->
             <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
                 <image>
+                    <!-- The logo image displayed at the top of the landing page -->
                     <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
                 </image>
             </ImageView>
 
+<<<<<<< HEAD
+            <!-- HBox is used to align multiple background images in the center -->
+            <HBox fx:id="imageBox" alignment="CENTER">
+                <!-- First Background Image -->
+                <ImageView fitHeight="400.0" preserveRatio="true">
+=======
             <!-- HBox to align the background image in the center -->
             <HBox fx:id="imageBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="350.0" prefHeight="400.0" prefWidth="1121.0">
                 <!-- Background Image -->
                 <ImageView fitHeight="400.0" fitWidth="267.0" preserveRatio="true" smooth="true">
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image.jpg" />
                 </ImageView>
-                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                <!-- Second Background Image -->
+                <ImageView fitHeight="400.0" preserveRatio="true">
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image_2.jpg" />
                 </ImageView>
-                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                <!-- Third Background Image -->
+                <ImageView fitHeight="400.0" preserveRatio="true">
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image_3.jpg" />
                 </ImageView>
-                <ImageView fitHeight="400.0" preserveRatio="true" smooth="true">
+                <!-- Fourth Background Image -->
+                <ImageView fitHeight="400.0" preserveRatio="true">
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image_4.jpg" />
                 </ImageView>
             </HBox>
 
-            <!-- Welcome Message Text, centrally aligned -->
+            <!-- Welcome Message Text, centrally aligned in the VBox -->
             <Text fx:id="welcomeText" style="-fx-font-size: 20px; -fx-fill: white;" text="Welcome to Napoli Pizza!" />
 
-            <!-- Horizontal Box to align the buttons centrally with equal spacing -->
+            <!-- HBox to align the buttons centrally with equal spacing -->
             <HBox alignment="CENTER" spacing="10">
 
                 <!-- Button to view the menu -->
                 <Button fx:id="menuButton" onAction="#handleViewMenu" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #84AE87; -fx-text-fill: white;" text="View Menu">
                     <font>
+                        <!-- Set the font size for the button text -->
                         <Font size="18.0" />
                     </font>
                 </Button>
@@ -55,6 +72,7 @@
                 <!-- Button to place an order -->
                 <Button fx:id="orderButton" onAction="#handleOrder" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #84AE87; -fx-text-fill: white;" text="Order Here">
                     <font>
+                        <!-- Set the font size for the button text -->
                         <Font size="18.0" />
                     </font>
                 </Button>
@@ -62,6 +80,7 @@
                 <!-- Button for staff/admin access -->
                 <Button onAction="#handleAdminAccess" prefHeight="46.0" prefWidth="133.0" style="-fx-background-color: #C6959B; -fx-text-fill: white;" text="Staff">
                     <font>
+                        <!-- Set the font size for the button text -->
                         <Font size="18.0" />
                     </font>
                 </Button>
@@ -72,3 +91,10 @@
 
     </children> <!-- End of children components in AnchorPane -->
 </AnchorPane>
+<<<<<<< HEAD
+
+
+
+
+=======
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6
