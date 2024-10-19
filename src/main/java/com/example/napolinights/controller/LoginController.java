@@ -1,6 +1,7 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.User;
 import com.example.napolinights.model.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,6 +65,12 @@ public class LoginController {
                 System.out.println("Login failed due to validation errors.");
             }
 
+        } catch (SQLException sqlEx) {
+            System.out.println("SqlException occured. Please try again.");
+            System.out.println(sqlEx.getMessage());
+            lblLoginStatusMessage.setText(sqlEx.getMessage());
+            lblLoginStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            lblLoginStatusMessage.setVisible(true);
         } catch (Exception ex) {
             System.out.println("Login Failed. An error occurred during login. Please try again.");
             System.out.println(ex.getMessage());
@@ -116,9 +123,9 @@ public class LoginController {
         System.out.println("Attempting login");
         Connection connection = SqliteConnection.getInstance();
         UserDAO userDAO = new UserDAO(connection);
-        boolean userHasAccess = userDAO.verifyUserAccess(email, password);
-
-        if (userHasAccess) {
+        User user = userDAO.verifyUserAccess(email, password);  //VerifyUserAccess Returns a User object when successful.
+        //boolean userHasAccess = userDAO.verifyUserAccess(email, password);
+        if (user != null && user.isUserActive()) {
             lblLoginStatusMessage.setStyle("");
             lblLoginStatusMessage.setText(null);
             lblLoginStatusMessage.setVisible(false);

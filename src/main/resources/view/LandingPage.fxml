@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
 <!-- Main layout for the Landing Page using an AnchorPane -->
+
 <AnchorPane style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.LandingPageController">
 
     <!-- Define all children components within the AnchorPane -->
     <children>
 
+<<<<<<< HEAD
         <!-- VBox is used to vertically center the logo, welcome text, and buttons -->
         <VBox alignment="CENTER" layoutY="-86.0" prefWidth="604.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+=======
+        <!-- VBox used to vertically center the logo, welcome text, and buttons -->
+        <VBox alignment="CENTER" layoutY="-86.0" maxHeight="-Infinity" prefHeight="700.0" prefWidth="1200.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6
 
             <!-- Logo Image -->
-            <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
+            <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150.0" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
                 <image>
                     <!-- The logo image displayed at the top of the landing page -->
                     <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
                 </image>
             </ImageView>
 
+<<<<<<< HEAD
             <!-- HBox is used to align multiple background images in the center -->
             <HBox fx:id="imageBox" alignment="CENTER">
                 <!-- First Background Image -->
                 <ImageView fitHeight="400.0" preserveRatio="true">
+=======
+            <!-- HBox to align the background image in the center -->
+            <HBox fx:id="imageBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="350.0" prefHeight="400.0" prefWidth="1121.0">
+                <!-- Background Image -->
+                <ImageView fitHeight="400.0" fitWidth="267.0" preserveRatio="true" smooth="true">
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6
                     <Image url="@../com/example/napolinights/images/landing_page/hero_image.jpg" />
                 </ImageView>
                 <!-- Second Background Image -->
@@ -78,7 +91,10 @@
 
     </children> <!-- End of children components in AnchorPane -->
 </AnchorPane>
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 0dcfa845953219f7c6a1e3b1910d2fbeec532fe6

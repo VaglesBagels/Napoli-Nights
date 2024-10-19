@@ -6,113 +6,119 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
-
     private User user;
 
     @BeforeEach
-    public void setUp() {
-        // Initialize a new user for each test
-        user = new User("John", "Doe", "123-456-7890", "john.doe@example.com", "password123");
+    void setUp() {
+        user = new User("John", "Doe", "1234567890", "john.doe@example.com", "password123");
     }
 
     @Test
-    public void testUserConstructor() {
-        // Ensure the constructor sets the correct values
-        assertEquals("John", user.getUserFirstName());
-        assertEquals("Doe", user.getUserLastName());
-        assertEquals("123-456-7890", user.getMobile());
+    void testUserCreation() {
+        assertNotNull(user);
+        assertEquals("John", user.getFirstName());
+        assertEquals("Doe", user.getLastName());
+        assertEquals("1234567890", user.getMobile());
         assertEquals("john.doe@example.com", user.getEmail());
-        assertEquals("password123", user.getPassword());
-        assertEquals("staff", user.getUserRole());  // Default role
-        assertTrue(user.isUserActive()); // Default active status
+        assertEquals("staff", user.getRole());
+        assertTrue(user.isUserActive());
     }
 
     @Test
-    public void testUserConstructorWithId() {
-        // Test the constructor that includes userId, userRole, and userStatus
-        User userWithId = new User(1, "Jane", "Doe", "987-654-3210", "jane.doe@example.com", "password456", "admin", false);
-
-        assertEquals(1, userWithId.getUserId());
-        assertEquals("Jane", userWithId.getUserFirstName());
-        assertEquals("Doe", userWithId.getUserLastName());
-        assertEquals("987-654-3210", userWithId.getMobile());
-        assertEquals("jane.doe@example.com", userWithId.getEmail());
-        assertEquals("password456", userWithId.getPassword());
-        assertEquals("admin", userWithId.getUserRole());
-        assertFalse(userWithId.isUserActive());
+    void testSetId() {
+        user.setId(1);
+        assertEquals(1, user.getId());
     }
 
     @Test
-    public void testSetAndGetUserId() {
-        // Set a valid user ID
-        user.setUserId(100);
-        assertEquals(100, user.getUserId());
-
-        // Ensure exception is thrown if trying to change userId after it's set
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            user.setUserId(200);
-        });
+    void testSetIdThrowsExceptionWhenChangingId() {
+        user.setId(1);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setId(2));
         assertEquals("User ID cannot be changed after it's been set.", exception.getMessage());
-
-        // Ensure exception is thrown if userId is set to 0
-        User newUser = new User("Mark", "Smith", "123-789-4560", "mark.smith@example.com", "password789");
-        IllegalArgumentException exceptionForZeroId = assertThrows(IllegalArgumentException.class, () -> {
-            newUser.setUserId(0);
-        });
-        assertEquals("User ID cannot be null or empty.", exceptionForZeroId.getMessage());
     }
 
     @Test
-    public void testSetAndGetUserDetails() {
-        // Test updating user details
-        user.setUserFirstName("Johnny");
-        user.setUserLastName("Smith");
-        user.setMobile("111-222-3333");
-        user.setEmail("john.smith@example.com");
-        user.setPassword("newPassword");
-
-        assertEquals("Johnny", user.getUserFirstName());
-        assertEquals("Smith", user.getUserLastName());
-        assertEquals("111-222-3333", user.getMobile());
-        assertEquals("john.smith@example.com", user.getEmail());
-        assertEquals("newPassword", user.getPassword());
+    void testSetIdThrowsExceptionWhenIdIsZero() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setId(0));
+        assertEquals("User ID cannot be null or empty.", exception.getMessage());
     }
 
     @Test
-    public void testSetAndGetUserRole() {
-        // Ensure the role can be updated correctly
-        assertEquals("staff", user.getUserRole());
-
-        user.setUserRole("manager");
-        assertEquals("manager", user.getUserRole());
-
-        user.setUserRole("admin");
-        assertEquals("admin", user.getUserRole());
+    void testSetMobileThrowsExceptionWhenInvalid() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setMobile("12345678"));
+        assertEquals("Mobile number must be exactly 10 digits.", exception.getMessage());
     }
 
     @Test
-    public void testSetAndGetUserStatus() {
-        // Ensure the user status can be updated
-        assertTrue(user.isUserActive());
-
-        user.setUserStatus(false);
-        assertFalse(user.isUserActive());
-
-        user.setUserStatus(true);
-        assertTrue(user.isUserActive());
+    void testSetMobileThrowsExceptionWhenNull() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setMobile(null));
+        assertEquals("Mobile number must be exactly 10 digits.", exception.getMessage());
     }
 
     @Test
-    public void testToString() {
-        // Ensure the toString method returns the correct output
-        String expected = "User{userId='0', userName='John', userLastName='Doe', mobile='123-456-7890', email='john.doe@example.com', userRole='staff', userStatus=true}";
-        assertEquals(expected, user.toString());
+    void testSetEmailThrowsExceptionWhenInvalid() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setEmail("invalidEmail"));
+        assertEquals("Invalid email address.", exception.getMessage());
     }
 
     @Test
-    public void testPasswordHandlingNull() {
-        // Test setting a null password
-        User nullPasswordUser = new User("Sam", "Johnson", "123-456-7891", "sam.johnson@example.com", null);
-        assertEquals("", nullPasswordUser.getPassword()); // Expect empty string if password is null
+    void testSetEmailThrowsExceptionWhenNull() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setEmail(null));
+        assertEquals("Invalid email address.", exception.getMessage());
+    }
+
+    @Test
+    void testSetPasswordHashesPassword() {
+        String hashedPassword = user.getPassword();
+        assertNotEquals("password123", hashedPassword); // Ensure it's hashed
+        assertTrue(User.isPasswordHashed(hashedPassword));
+    }
+
+    @Test
+    void testSetPasswordThrowsExceptionWhenNullOrEmpty() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setPassword(null));
+        assertEquals("Password cannot be null or empty.", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> user.setPassword(""));
+        assertEquals("Password cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    void testHashPassword() {
+        String password = "myPassword";
+        String hashedPassword = User.hashPassword(password);
+        assertNotNull(hashedPassword);
+        assertTrue(hashedPassword.length() == 64); // SHA-256 produces a 64 character hex string
+    }
+
+
+    @Test
+    void testToString() {
+        String expectedString = "User{userId='0', userName='John', userLastName='Doe', mobile='1234567890', email='john.doe@example.com', userRole='staff', userStatus=true}";
+        assertEquals(expectedString, user.toString());
+    }
+
+    // Edge Cases
+    @Test
+    void testSetMobileWithEdgeCases() {
+        // Testing mobile number with 10 digits but leading zeros
+        user.setMobile("0000000000");
+        assertEquals("0000000000", user.getMobile());
+
+        // Testing mobile number with 10 digits and maximum integer value (this is not a real mobile number, but checks the validation)
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setMobile("123456789012345")); // More than 10 digits
+        assertEquals("Mobile number must be exactly 10 digits.", exception.getMessage());
+    }
+
+    @Test
+    void testSetEmailWithEdgeCases() {
+        // Valid email with maximum length
+        String longEmail = "a".repeat(64) + "@example.com"; // An email with long local part
+        user.setEmail(longEmail);
+        assertEquals(longEmail, user.getEmail());
+
+        // Testing invalid email formats
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> user.setEmail("test..email@example.com")); // Invalid email
+        assertEquals("Invalid email address.", exception.getMessage());
     }
 }
