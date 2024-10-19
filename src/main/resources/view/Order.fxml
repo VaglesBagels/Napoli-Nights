@@ -6,7 +6,13 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.OrderController"
             style="-fx-background-color: #141415;">
-    <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+    <!-- Home Button in the Top Right Corner -->
+    <Button fx:id="homeButton" text="Home" onMouseClicked="#handleHomeButtonClick"
+            style="-fx-font-size: 14px; -fx-background-color: white; -fx-font-weight: bold; -fx-text-fill: black;"
+            AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" prefWidth="80" prefHeight="20"/>
+
+    <VBox spacing="10" AnchorPane.topAnchor="50" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
         <!-- ToolBar to dynamically add category links -->
         <ToolBar fx:id="categoryToolBar" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"

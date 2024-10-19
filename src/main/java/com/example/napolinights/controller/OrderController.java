@@ -48,6 +48,7 @@ public class OrderController {
     @FXML private Label lblDiscount;       // Label for displaying discount
     @FXML private Label lblTotalIncGST;    // Label for displaying total including GST
     @FXML private Button checkoutButton;   // Button to proceed to checkout
+    @FXML private Button homeButton;
 
     private double totalPrice = 0.00;      // Variable to store total price
     private double subtotal = 0.00;        // Variable to store subtotal (Excl GST)
@@ -285,6 +286,19 @@ public class OrderController {
      * SECTION 3: Right-hand Side Checkout (Order Summary)
      * =============================================== */
 
+    @FXML
+    private void handleHomeButtonClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LandingPage.fxml"));
+            Parent landingPage = loader.load();
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            setupStage(stage, landingPage, "Landing Page");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Updates the selected item and adds it to the checkout section.
      */
@@ -397,13 +411,16 @@ public class OrderController {
      */
     private void updateTotalPrice() {
         subtotal = 0.0;
+        gst = 0.0;
         for (int i = 0; i < orderSection.getChildren().size(); i++) {
             GridPane itemBox = (GridPane) orderSection.getChildren().get(i);
             Label priceLabel = (Label) itemBox.getChildren().get(4);
-            double itemPrice = Double.parseDouble(priceLabel.getText().replace("$", ""));
-            subtotal += itemPrice;
+            Label quantityLabel = (Label) itemBox.getChildren().get(1);
+            double unitPrice = Double.parseDouble(priceLabel.getText().replace("$", "")) / Integer.parseInt(quantityLabel.getText());
+            int quantity = Integer.parseInt(quantityLabel.getText());
+            subtotal += unitPrice * quantity;
+            gst += (unitPrice * 0.10) * quantity; // GST is calculated per item and then multiplied by quantity
         }
-        gst = subtotal * 0.10; // GST is 10% of subtotal
         totalPrice = subtotal + gst - discount;
 
         lblSubtotal.setText(String.format("$%.2f", subtotal));
@@ -490,7 +507,7 @@ public class OrderController {
         return Integer.parseInt(string);
     }
 
-    
+
     /**
      * Sets up the stage for navigation to a new page.
      */
