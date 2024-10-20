@@ -13,10 +13,12 @@
         <!-- Menu items and categories will be dynamically added to this VBox by the MenuController -->
         <VBox fx:id="contentAnchorPane" layoutX="10.0" layoutY="10.0" spacing="20.0" prefWidth="800.0"
               style="-fx-background-color: #141415;">
+
+            <!-- Include the reusable header at the top of the menu page -->
+            <fx:include source="Header.fxml" />
+
             <!-- Initially, this VBox is empty. Content is dynamically added by the MenuController during runtime -->
+
         </VBox>
     </content>
 </ScrollPane>
-
-
-

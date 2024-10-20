@@ -8,6 +8,7 @@ import com.example.napolinights.model.MenuItemDAO;
 import com.example.napolinights.model.SqliteConnection;
 import com.example.napolinights.util.StyleConstants;
 import com.example.napolinights.util.UIComponentBuilder;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -21,12 +22,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,12 +33,17 @@ import java.util.List;
 
 import static com.example.napolinights.util.UIComponentBuilder.getMenuItemImageOrDefault;
 
+
+/**
+ * Controller for handling actions on the Order Page.
+ * This includes displaying menu items, handling item selection, and managing the order summary.
+ */
 public class OrderController {
 
     @FXML private TilePane menuItemsPane;  // To dynamically load menu items
+    @FXML private AnchorPane orderPane;  // AnchorPane to hold the menu items
     @FXML private ToolBar categoryToolBar; // Toolbar for category selection
     @FXML private VBox orderSection;       // Section for the ordered items
-    @FXML private Label lblTotalPrice;     // Label for displaying total price
     @FXML private Label lblSubtotal;       // Label for displaying subtotal (Excl GST)
     @FXML private Label lblGST;            // Label for displaying GST
     @FXML private Label lblDiscount;       // Label for displaying discount
@@ -75,6 +76,12 @@ public class OrderController {
     private void initialize() {
         setupCategoryLinks(); // Set up category hyperlinks in the toolbar
         showCategory(Category.ENTREE); // Show 'ENTREE' items by default
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) orderPane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
     }
 
 
@@ -286,6 +293,11 @@ public class OrderController {
      * SECTION 3: Right-hand Side Checkout (Order Summary)
      * =============================================== */
 
+    /**
+     * Event handler for the "Home" button click.
+     * Navigates back to the Landing Page.
+     */
+
     @FXML
     private void handleHomeButtonClick() {
         try {
@@ -301,6 +313,9 @@ public class OrderController {
 
     /**
      * Updates the selected item and adds it to the checkout section.
+     * @param itemName The name of the menu item.
+     * @param itemPrice The price of the menu item.
+     * @param itemQty The quantity of the menu item.
      */
     public void updateSelectedItem(String itemName, String itemPrice, Integer itemQty) {
         // Create Label for item name and enable text wrapping
@@ -382,6 +397,9 @@ public class OrderController {
 
     /**
      * Increments the quantity of a selected item and updates the price.
+     * @param itemPrice The price of the item.
+     * @param priceLabel The label showing the price.
+     * @param quantityLabel The label showing the quantity.
      */
     private void incrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
         int currentQuantity = Integer.parseInt(quantityLabel.getText());
@@ -394,6 +412,9 @@ public class OrderController {
 
     /**
      * Decrements the quantity of a selected item, ensuring the quantity stays above 1.
+     * @param itemPrice The price of the item.
+     * @param priceLabel The label showing the price.
+     * @param quantityLabel The label showing the quantity.
      */
     private void decrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
         int currentQuantity = Integer.parseInt(quantityLabel.getText());
@@ -432,6 +453,9 @@ public class OrderController {
 
     /**
      * Updates the price of a single item based on its quantity.
+     * @param itemPrice The price of the item.
+     * @param quantity The quantity of the item.
+     * @param priceLabel The label showing the updated price.
      */
     private void updateItemPrice(String itemPrice, int quantity, Label priceLabel) {
         double price = Double.parseDouble(itemPrice.replace("$", ""));
@@ -454,7 +478,7 @@ public class OrderController {
             Parent checkoutPage = loader.load();
             checkoutController = loader.getController();
 
-            passCartData();  // Pass cart data to the checkout page
+            //passCartData();  // Pass cart data to the checkout page
 
             Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
             setupStage(stage, checkoutPage, "Checkout");  // Setup and show the checkout stage
@@ -467,12 +491,14 @@ public class OrderController {
     /**
      * Passes the cart data (items, quantities, prices) to the checkout page.
      */
+
+    /**
     @FXML
     public void passCartData() {
         int cartLength = orderSection.getChildren().size();
         CartItem[] items = new CartItem[cartLength];
         for (int i = 0; i < cartLength; i++) {
-            HBox itemBox = (HBox) orderSection.getChildren().get(i);
+            GridPane itemBox = (GridPane) orderSection.getChildren().get(i);
             Label nameLabel = (Label) itemBox.getChildren().get(3);
             Label priceLabel = (Label) itemBox.getChildren().get(4);
             Label quantityLabel = (Label) itemBox.getChildren().get(1);
@@ -484,8 +510,10 @@ public class OrderController {
             double unitPrice = parseItemPrice(unitPriceLabel.getText());
             items[i] = new CartItem(name, unitPrice, quantity);
         }
-        checkoutController.receiveData(items);
+         checkoutController.receiveData(items);
     }
+     */
+
 
 
     /**
@@ -510,6 +538,9 @@ public class OrderController {
 
     /**
      * Sets up the stage for navigation to a new page.
+     * @param stage The current stage.
+     * @param page The new page to load.
+     * @param title The title of the new page.
      */
     private void setupStage(Stage stage, Parent page, String title) {
         stage.setTitle(title);
