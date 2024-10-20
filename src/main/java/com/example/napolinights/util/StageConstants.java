@@ -1,8 +1,12 @@
 package com.example.napolinights.util;
 
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Utility class for setting consistent stage properties across the application.
@@ -22,7 +26,6 @@ public class StageConstants {
         stage.setMinHeight(DEFAULT_MIN_HEIGHT);
     }
 
-
     /**
      * Configures a stage with a consistent size and sets its scene.
      *
@@ -34,8 +37,26 @@ public class StageConstants {
         stage.setTitle(title);
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        setStageSize(stage);
         stage.show();
+    }
+
+    /**
+     * Opens a page based on the specified FXML file and sets the stage title.
+     * Uses the StageConstants utility to ensure consistent stage size settings.
+     *
+     * @param fxmlPath Path to the FXML file.
+     * @param stage The current stage where the scene will be set.
+     * @param title The title of the window.
+     */
+    public static void openPage(String fxmlPath, Stage stage, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(StageConstants.class.getResource(fxmlPath));
+            Parent page = loader.load();
+            configureStage(stage, page, title);
+        } catch (IOException e) {
+            System.out.println("Error occurred while opening the " + title + " page.");
+            e.printStackTrace();
+        }
     }
 }

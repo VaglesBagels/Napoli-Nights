@@ -1,16 +1,9 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.util.StageConstants;  // Import StageUtil class for setting stage size
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
 /**
  * Controller for handling actions on the Landing Page.
@@ -21,8 +14,8 @@ public class LandingPageController {
     // UI elements from the FXML file
     @FXML private Button menuButton;
     @FXML private Button orderButton;
-    @FXML private ImageView logoImageView;
-    @FXML private HBox imageBox;
+    @FXML private Button adminButton;
+
 
     /**
      * This method is called automatically after the FXML file is loaded.
@@ -39,7 +32,8 @@ public class LandingPageController {
      */
     @FXML
     private void handleViewMenu() {
-        openPage("/view/Menu.fxml", "View Menu");
+        Stage stage = (Stage) menuButton.getScene().getWindow();  // Get the current stage
+        StageConstants.openPage("/view/Menu.fxml", stage, "View Menu");  // Use the utility method
     }
 
     /**
@@ -48,7 +42,8 @@ public class LandingPageController {
      */
     @FXML
     private void handleOrder() {
-        openPage("/view/Order.fxml", "Order Here");
+        Stage stage = (Stage) orderButton.getScene().getWindow();  // Get the current stage
+        StageConstants.openPage("/view/Order.fxml", stage, "Order Here");  // Use the utility method
     }
 
     /**
@@ -57,33 +52,7 @@ public class LandingPageController {
      */
     @FXML
     private void handleAdminAccess() {
-        openPage("/view/Login.fxml", "Login");
-    }
-
-    /**
-     * Opens a page based on the specified FXML file and sets the stage title.
-     * Uses the StageUtil utility to ensure consistent stage size settings.
-     *
-     * @param fxmlPath Path to the FXML file.
-     * @param title Title of the window.
-     */
-    private void openPage(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent page = loader.load();
-            Stage stage = (Stage) menuButton.getScene().getWindow();
-            stage.setTitle(title);
-
-            // Use the StageUtil to set the stage size
-            StageConstants.setStageSize(stage);
-
-            stage.setResizable(true);
-            stage.setScene(new Scene(page));
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error occurred while opening the " + title + " page.");
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) adminButton.getScene().getWindow();  // Get the current stage
+        StageConstants.openPage("/view/Login.fxml", stage, "Login");  // Use the utility method
     }
 }
-
