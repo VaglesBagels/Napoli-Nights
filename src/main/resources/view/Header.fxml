@@ -9,7 +9,7 @@
 <HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.HeaderController" alignment="CENTER" spacing="20" style="-fx-background-color: #141415; -fx-padding: 10 10 10 10;">
 
     <!-- Logo aligned to the left, size reduced to 50% -->
-    <ImageView fx:id="logoImageView" fitHeight="150.0" fitWidth="140.0" preserveRatio="true">
+    <ImageView fx:id="logoImageView" fitHeight="130.0" fitWidth="120.0" preserveRatio="true">
         <image>
             <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
         </image>
@@ -19,6 +19,7 @@
     <Pane HBox.hgrow="ALWAYS"/>
 
     <!-- Home Button aligned to the rightmost side -->
-    <Button fx:id="homeButton" text="Home" style="-fx-font-size: 14px; -fx-background-color: #84AE87; -fx-font-weight: bold; -fx-text-fill: white;" prefWidth="80" prefHeight="40" onAction="#handleHomeButtonClick"/>
+    <Button fx:id="homeButton" text="Home" prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #84AE87;
+    -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" onAction="#handleHomeButtonClick"/>
 
 </HBox>

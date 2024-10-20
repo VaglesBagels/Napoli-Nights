@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -50,6 +51,7 @@ public class OrderController {
     @FXML private Label lblTotalIncGST;    // Label for displaying total including GST
     @FXML private Button checkoutButton;   // Button to proceed to checkout
     @FXML private Button homeButton;
+    @FXML private VBox headerPane;
 
     private double totalPrice = 0.00;      // Variable to store total price
     private double subtotal = 0.00;        // Variable to store subtotal (Excl GST)
@@ -74,6 +76,9 @@ public class OrderController {
      */
     @FXML
     private void initialize() {
+        // Set padding for the contentAnchorPane to provide spacing
+        headerPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
         setupCategoryLinks(); // Set up category hyperlinks in the toolbar
         showCategory(Category.ENTREE); // Show 'ENTREE' items by default
         // Ensure that the stage size is adjusted after the scene is loaded
