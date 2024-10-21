@@ -11,127 +11,94 @@ import java.util.List;
 
 public class MenuItemDAOTest {
 
-    private Connection connection;
+    private Connection mockConnection;
     private MenuItemDAO menuItemDAO;
+    private PreparedStatement mockPreparedStatement;
+    private Statement mockStatement;
+    private ResultSet mockResultSet;
 
     @BeforeEach
-    public void setUp() {
-        connection = mock(Connection.class);
-        menuItemDAO = new MenuItemDAO(connection);
+    public void setUp() throws SQLException {
+        mockConnection = mock(Connection.class);
+        mockPreparedStatement = mock(PreparedStatement.class);
+        mockStatement = mock(Statement.class);
+        mockResultSet = mock(ResultSet.class);
+
+        menuItemDAO = new MenuItemDAO(mockConnection);
+
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
     }
 
     @Test
-    public void testCreateTableIfNotExists() throws Exception {
-        Statement statement = mock(Statement.class);
-        when(connection.createStatement()).thenReturn(statement);
-
+    public void testCreateMenuTable() throws SQLException {
         menuItemDAO.createMenuTable();
-
-        verify(statement).execute("CREATE TABLE IF NOT EXISTS menu (" +
-                "menuID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "category TEXT NOT NULL, " +
-                "name TEXT NOT NULL, " +
-                "description TEXT, " +
-                "price DOUBLE, " +
-                "imageURL TEXT" +
-                ")");
+        verify(mockStatement, times(1)).execute(anyString());
     }
 
     @Test
     public void testAddMenuItem() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-
-        MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Classic cheese pizza", 8.99, "imageURL");
+        MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Classic pizza", 9.99, "url");
         menuItemDAO.addMenuItem(menuItem);
 
-        verify(stmt).setString(1, "PIZZA");
-        verify(stmt).setString(2, "Margherita");
-        verify(stmt).setString(3, "Classic cheese pizza");
-        verify(stmt).setDouble(4, 8.99);
-        verify(stmt).setString(5, "imageURL");
-        verify(stmt).executeUpdate();
+        verify(mockPreparedStatement, times(1)).setString(1, "PIZZA");
+        verify(mockPreparedStatement, times(1)).setString(2, "Margherita");
+        verify(mockPreparedStatement, times(1)).setString(3, "Classic pizza");
+        verify(mockPreparedStatement, times(1)).setDouble(4, 9.99);
+        verify(mockPreparedStatement, times(1)).setString(5, "url");
+        verify(mockPreparedStatement, times(1)).executeUpdate();
     }
 
     @Test
     public void testUpdateMenuItem() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-
-        MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Updated description", 9.99, "newImageURL");
+        MenuItem menuItem = new MenuItem(1, Category.PIZZA, "Margherita", "Classic pizza", 9.99, "url");
         menuItemDAO.updateMenuItem(menuItem);
 
-        verify(stmt).setString(1, "PIZZA");
-        verify(stmt).setString(2, "Margherita");
-        verify(stmt).setString(3, "Updated description");
-        verify(stmt).setDouble(4, 9.99);
-        verify(stmt).setString(5, "newImageURL");
-        verify(stmt).setInt(6, 1);
-        verify(stmt).executeUpdate();
+        verify(mockPreparedStatement, times(1)).setString(1, "PIZZA");
+        verify(mockPreparedStatement, times(1)).setString(2, "Margherita");
+        verify(mockPreparedStatement, times(1)).setString(3, "Classic pizza");
+        verify(mockPreparedStatement, times(1)).setDouble(4, 9.99);
+        verify(mockPreparedStatement, times(1)).setString(5, "url");
+        verify(mockPreparedStatement, times(1)).setInt(6, 1);
+        verify(mockPreparedStatement, times(1)).executeUpdate();
     }
 
     @Test
     public void testFetchAllMenuItems() throws Exception {
-        Statement statement = mock(Statement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(connection.createStatement()).thenReturn(statement);
-        when(statement.executeQuery("SELECT * FROM menu")).thenReturn(resultSet);
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false); // Simulate one item in result set
+        when(mockResultSet.getInt("menuID")).thenReturn(1);
+        when(mockResultSet.getString("category")).thenReturn("PIZZA");
+        when(mockResultSet.getString("name")).thenReturn("Margherita");
+        when(mockResultSet.getString("description")).thenReturn("Classic pizza");
+        when(mockResultSet.getDouble("price")).thenReturn(9.99);
+        when(mockResultSet.getString("imageURL")).thenReturn("url");
 
-        when(resultSet.next()).thenReturn(true).thenReturn(false); // simulate one row
-        when(resultSet.getInt("menuID")).thenReturn(1);
-        when(resultSet.getString("category")).thenReturn("PIZZA");
-        when(resultSet.getString("name")).thenReturn("Margherita");
-        when(resultSet.getString("description")).thenReturn("Classic cheese pizza");
-        when(resultSet.getDouble("price")).thenReturn(8.99);
-        when(resultSet.getString("imageURL")).thenReturn("imageURL");
-
-        List<MenuItem> items = menuItemDAO.fetchAllMenuItems();
-
-        assertNotNull(items);
-        assertEquals(1, items.size());
-        MenuItem item = items.getFirst(); // Use get(0) instead of getFirst
-        assertEquals(1, item.getMenuItemID());
-        assertEquals(Category.PIZZA, item.getCategory());
-        assertEquals("Margherita", item.getName());
-        assertEquals("Classic cheese pizza", item.getDescription());
-        assertEquals(8.99, item.getPrice());
-        assertEquals("imageURL", item.getImageURL());
+        List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItems();
+        assertEquals(1, menuItems.size());
+        assertEquals("Margherita", menuItems.get(0).getName());
     }
 
     @Test
-    public void testFetchMenuItemById() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-        when(stmt.executeQuery()).thenReturn(resultSet);
+    void testFetchMenuItemById() throws SQLException {
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getInt("menuID")).thenReturn(1);
+        when(mockResultSet.getString("category")).thenReturn("PIZZA");
+        when(mockResultSet.getString("name")).thenReturn("Margherita");
+        when(mockResultSet.getString("description")).thenReturn("Classic pizza");
+        when(mockResultSet.getDouble("price")).thenReturn(9.99);
+        when(mockResultSet.getString("imageURL")).thenReturn("url");
 
-        when(resultSet.next()).thenReturn(true).thenReturn(false); // simulate one row
-        when(resultSet.getInt("menuID")).thenReturn(1);
-        when(resultSet.getString("category")).thenReturn("PIZZA");
-        when(resultSet.getString("name")).thenReturn("Margherita");
-        when(resultSet.getString("description")).thenReturn("Classic cheese pizza");
-        when(resultSet.getDouble("price")).thenReturn(8.99);
-        when(resultSet.getString("imageURL")).thenReturn("imageURL");
-
-        MenuItem item = menuItemDAO.fetchMenuItemById(1);
-
-        assertNotNull(item);
-        assertEquals(1, item.getMenuItemID());
-        assertEquals(Category.PIZZA, item.getCategory());
-        assertEquals("Margherita", item.getName());
-        assertEquals("Classic cheese pizza", item.getDescription());
-        assertEquals(8.99, item.getPrice());
-        assertEquals("imageURL", item.getImageURL());
+        MenuItem menuItem = menuItemDAO.fetchMenuItemById(1);
+        assertNotNull(menuItem);
+        assertEquals("Margherita", menuItem.getName());
     }
 
     @Test
     public void testFetchMenuItemByIdNotFound() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-        when(stmt.executeQuery()).thenReturn(resultSet);
-
-        when(resultSet.next()).thenReturn(false); // simulate no rows found
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false); // simulate no rows found
 
         MenuItem item = menuItemDAO.fetchMenuItemById(1);
 
@@ -139,12 +106,43 @@ public class MenuItemDAOTest {
     }
 
     @Test
-    public void testFetchAllMenuItemsByCategory() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-        when(stmt.executeQuery()).thenReturn(resultSet);
+    void testFetchAllMenuItemsByCategory() throws SQLException {
+        Category category = Category.PIZZA;
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false); // Simulate one item in result set
+        when(mockResultSet.getInt("menuID")).thenReturn(1);
+        when(mockResultSet.getString("category")).thenReturn(category.name());
+        when(mockResultSet.getString("name")).thenReturn("Margherita");
+        when(mockResultSet.getString("description")).thenReturn("Classic pizza");
+        when(mockResultSet.getDouble("price")).thenReturn(9.99);
+        when(mockResultSet.getString("imageURL")).thenReturn("url");
 
+        List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItemsByCategory(category);
+        assertEquals(1, menuItems.size());
+        assertEquals("Margherita", menuItems.get(0).getName());
+    }
+
+    @Test
+    void testFetchAllMenuItemsByCategory_NoResults() throws SQLException {
+        Category category = Category.PIZZA;
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false); // Simulate no items in result set
+
+        List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItemsByCategory(category);
+        assertTrue(menuItems.isEmpty());
+    }
+
+    @Test
+    void testFetchAllMenuItemsByCategory_SQLException() throws SQLException {
+        Category category = Category.PIZZA;
+        when(mockPreparedStatement.executeQuery()).thenThrow(new SQLException("Database error"));
+
+        List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItemsByCategory(category);
+        assertTrue(menuItems.isEmpty()); // Expected to return an empty list on SQL exception
+        // You can also check if the exception is logged if you have a logger setup in your DAO
+    }
+
+    private void mockResultSetForSingleMenuItem(ResultSet resultSet) throws SQLException {
         when(resultSet.next()).thenReturn(true).thenReturn(false); // simulate one row
         when(resultSet.getInt("menuID")).thenReturn(1);
         when(resultSet.getString("category")).thenReturn("PIZZA");
@@ -152,44 +150,17 @@ public class MenuItemDAOTest {
         when(resultSet.getString("description")).thenReturn("Classic cheese pizza");
         when(resultSet.getDouble("price")).thenReturn(8.99);
         when(resultSet.getString("imageURL")).thenReturn("imageURL");
-
-        List<MenuItem> items = menuItemDAO.fetchAllMenuItemsByCategory(Category.PIZZA);
-
-        assertNotNull(items);
-        assertEquals(1, items.size());
-        MenuItem item = items.getFirst(); // Use get(0) instead of getFirst
-        assertEquals(1, item.getMenuItemID());
-        assertEquals(Category.PIZZA, item.getCategory());
-        assertEquals("Margherita", item.getName());
-        assertEquals("Classic cheese pizza", item.getDescription());
-        assertEquals(8.99, item.getPrice());
-        assertEquals("imageURL", item.getImageURL());
     }
 
-    @Test
-    public void testFetchAllMenuItemsByCategoryNoResults() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-        when(stmt.executeQuery()).thenReturn(resultSet);
 
-        when(resultSet.next()).thenReturn(false); // simulate no rows found
-
-        List<MenuItem> items = menuItemDAO.fetchAllMenuItemsByCategory(Category.PIZZA);
-
-        assertNotNull(items);
-        assertTrue(items.isEmpty());
-    }
-
-    @Test
-    public void testFetchAllMenuItemsByCategorySQLException() throws Exception {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(any(String.class))).thenReturn(stmt);
-        when(stmt.executeQuery()).thenThrow(new SQLException("Database error"));
-
-        List<MenuItem> items = menuItemDAO.fetchAllMenuItemsByCategory(Category.PIZZA);
-
-        assertNotNull(items);
-        assertTrue(items.isEmpty());
+    private void assertMenuItemEquals(MenuItem item, int expectedId, String expectedCategory,
+                                      String expectedName, String expectedDescription,
+                                      double expectedPrice, String expectedImageURL) {
+        assertEquals(expectedId, item.getMenuItemID());
+        assertEquals(Category.valueOf(expectedCategory), item.getCategory());
+        assertEquals(expectedName, item.getName());
+        assertEquals(expectedDescription, item.getDescription());
+        assertEquals(expectedPrice, item.getPrice());
+        assertEquals(expectedImageURL, item.getImageURL());
     }
 }

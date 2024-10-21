@@ -3,19 +3,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<!-- ScrollPane to enable scrolling when the content exceeds the visible window size -->
+<!-- ScrollPane is used to enable scrolling when the content inside the pane exceeds the visible window size -->
 <ScrollPane fx:id="menuScrollPane" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.napolinights.controller.MenuController"
             prefWidth="800.0" prefHeight="600.0" fitToWidth="true" >
 
     <content>
-        <!-- VBox to hold all categories and menu items -->
-        <!-- This VBox will be populated dynamically with categories and their respective items -->
+        <!-- VBox serves as a container to hold all categories and menu items -->
+        <!-- Menu items and categories will be dynamically added to this VBox by the MenuController -->
         <VBox fx:id="contentAnchorPane" layoutX="10.0" layoutY="10.0" spacing="20.0" prefWidth="800.0"
               style="-fx-background-color: #141415;">
-            <!-- Initially empty. Content is dynamically added by the MenuController -->
+
+            <!-- Include the reusable header at the top of the menu page -->
+            <fx:include source="Header.fxml" />
+
+            <!-- Initially, this VBox is empty. Content is dynamically added by the MenuController during runtime -->
+
         </VBox>
     </content>
 </ScrollPane>
-
-

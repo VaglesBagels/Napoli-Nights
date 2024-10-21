@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
+
+<!-- Define the controller for handling the home button -->
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.HeaderController" alignment="CENTER" spacing="20" style="-fx-background-color: #141415; -fx-padding: 10 10 10 10;">
+
+    <!-- Logo aligned to the left, size reduced to 50% -->
+    <ImageView fx:id="logoImageView" fitHeight="130.0" fitWidth="120.0" preserveRatio="true">
+        <image>
+            <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
+        </image>
+    </ImageView>
+
+    <!-- Spacer to push the home button to the rightmost corner -->
+    <Pane HBox.hgrow="ALWAYS"/>
+
+    <!-- Home Button aligned to the rightmost side -->
+    <Button fx:id="homeButton" text="Home" prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #84AE87;
+    -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" onAction="#handleHomeButtonClick"/>
+
+</HBox>

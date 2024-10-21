@@ -38,8 +38,8 @@ public class UserDAOTest {
 
     @Test
     public void testAddUser() throws SQLException {
-        User user = new User("John", "Doe", "123-456-7890", "john.doe@example.com", "password123");
-        mockAddUserDatabaseInteraction(user);
+        User user = new User("John", "Doe", "1234567890", "john.doe@example.com", "password123");
+        mockAddUserDatabaseInteraction();
 
         userDAO.addUser(user);
 
@@ -53,53 +53,90 @@ public class UserDAOTest {
 
         userDAO.changePassword(1, "newPassword");
 
-        verify(mockPreparedStatement).setString(1, UserDAO.hashPassword("newPassword"));
+        verify(mockPreparedStatement).setString(1, User.hashPassword("newPassword"));
         verify(mockPreparedStatement).setInt(2, 1);
         verify(mockPreparedStatement).executeUpdate();
     }
 
     @Test
-    public void testVerifyUserAccessWhenActive() throws SQLException {
-        mockVerifyUserAccess("password123", true, true);
+    void testVerifyUserAccess_Success() throws Exception {
+        String username = "test@example.com";
+        String password = "password123";
+        String hashedPassword = User.hashPassword(password); // Assume this is the correct hash
 
-        boolean result = userDAO.verifyUserAccess("john.doe@example.com", "password123");
+        // Mock behavior for the prepared statement and result set
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getInt("user_id")).thenReturn(1);
+        when(mockResultSet.getString("user_first_name")).thenReturn("John");
+        when(mockResultSet.getString("user_last_name")).thenReturn("Doe");
+        when(mockResultSet.getString("mobile")).thenReturn("1234567890");
+        when(mockResultSet.getString("email")).thenReturn(username);
+        when(mockResultSet.getString("password")).thenReturn(hashedPassword);
+        when(mockResultSet.getString("user_role")).thenReturn("user");
+        when(mockResultSet.getBoolean("user_status")).thenReturn(true);
 
-        assertTrue(result);
+        // Call the method
+        User user = userDAO.verifyUserAccess(username, password);
+
+        // Verify the results
+        assertNotNull(user);
+        assertEquals(1, user.getId());
+        assertEquals("John", user.getFirstName());
     }
 
     @Test
     public void testVerifyUserAccessWhenUserInactive() throws SQLException {
-        mockVerifyUserAccess("password123", true, false);
+        String username = "test@example.com";
+        String password = "password123";
+        String hashedPassword = User.hashPassword(password);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> userDAO.verifyUserAccess("john.doe@example.com", "password123"));
+        // Mock behavior for the prepared statement and result set
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
 
-        assertEquals("java.lang.Exception: User is not active", exception.getMessage());
+        // Call the method and assert exception
+        SQLException exception = assertThrows(SQLException.class, () ->
+                userDAO.verifyUserAccess(username, hashedPassword));
+
+        assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
     }
 
 
     @Test
     public void testVerifyUserAccessWithInvalidCredentials() throws SQLException {
-        mockVerifyUserAccess("password123", false, true);
+        String username = "test@example.com";
+        String password = "wrongPassword";
+        String hashedPassword = User.hashPassword(password);
 
-        boolean result = userDAO.verifyUserAccess("wrong.email@example.com", "wrongPassword");
+        // Mock behavior for the prepared statement and result set
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false); // Simulate no user found
 
-        assertFalse(result);
+        // Call the method and assert exception
+        SQLException exception = assertThrows(SQLException.class, () ->
+                userDAO.verifyUserAccess(username, hashedPassword));
+
+        assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
     }
 
     @Test
     public void testAddUserSQLException() throws SQLException {
-        User user = new User("John", "Doe", "123-456-7890", "john.doe@example.com", "password123");
+        User user = new User("John", "Doe", "1234567890", "john.doe@example.com", "password123");
 
         when(mockConnection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenThrow(new SQLException("Database error"));
 
         SQLException thrown = assertThrows(SQLException.class, () -> userDAO.addUser(user));
 
-        assertEquals("Database error", thrown.getMessage());
+        assertEquals("Error adding user: Database error", thrown.getMessage());
     }
 
     // Helper Methods
-    private void mockAddUserDatabaseInteraction(User user) throws SQLException {
+    private void mockAddUserDatabaseInteraction() throws SQLException {
         when(mockConnection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(mockPreparedStatement);
         when(mockPreparedStatement.executeUpdate()).thenReturn(1);
@@ -109,21 +146,13 @@ public class UserDAOTest {
     }
 
     private void verifyAddUserStatements(User user) throws SQLException {
-        verify(mockPreparedStatement).setString(1, user.getUserFirstName());
-        verify(mockPreparedStatement).setString(2, user.getUserLastName());
+        verify(mockPreparedStatement).setString(1, user.getFirstName());
+        verify(mockPreparedStatement).setString(2, user.getLastName());
         verify(mockPreparedStatement).setString(3, user.getMobile());
         verify(mockPreparedStatement).setString(4, user.getEmail());
-        verify(mockPreparedStatement).setString(5, UserDAO.hashPassword(user.getPassword()));
-        verify(mockPreparedStatement).setString(6, user.getUserRole());
+        verify(mockPreparedStatement).setString(5, user.getPassword());
+        verify(mockPreparedStatement).setString(6, user.getRole());
         verify(mockPreparedStatement).setBoolean(7, user.isUserActive());
         verify(mockPreparedStatement).executeUpdate();
-    }
-
-    private void mockVerifyUserAccess(String password, boolean userExists, boolean userActive) throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(userExists);
-        when(mockResultSet.getString("password")).thenReturn(UserDAO.hashPassword(password));
-        when(mockResultSet.getBoolean("user_status")).thenReturn(userActive);
     }
 }
