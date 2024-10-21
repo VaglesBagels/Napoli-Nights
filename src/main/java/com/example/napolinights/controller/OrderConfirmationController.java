@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 import javafx.collections.ObservableList;
 import java.util.Random;
 import java.io.IOException;
+import com.example.napolinights.model.Order;
+import com.example.napolinights.controller.OrderService;
+import javafx.scene.control.Label;
 
 public class OrderConfirmationController {
 
@@ -45,6 +48,17 @@ public class OrderConfirmationController {
 
     @FXML
     private ImageView logoImageView;
+
+    @FXML
+    private Label orderDetailsLabel;
+
+    private Order confirmedOrder;
+
+    public void initialize(Order order) {
+        this.confirmedOrder = order;
+        orderDetailsLabel.setText(order.toString());
+        OrderService.setConfirmedOrder(order);
+    }
 
     // Initialization method (Merged Logic)
     @FXML

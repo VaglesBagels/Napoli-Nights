@@ -19,7 +19,7 @@
         </ImageView>
 
         <!-- Admin Label -->
-        <Label text="ADMIN" style="-fx-font-size: 24px; -fx-text-fill: black;"/>
+        <Label text="ADMIN" style="-fx-font-size: 24px; -fx-text-fill: white;"/>
 
         <!-- Buttons for View Orders and Reports -->
         <HBox alignment="CENTER" spacing="40">
