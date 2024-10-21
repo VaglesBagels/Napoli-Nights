@@ -8,6 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import java.io.IOException;
+import com.example.napolinights.model.Order;
+import com.example.napolinights.controller.OrderService;
+import javafx.scene.control.Label;
 
 public class IncomingOrdersController {
     @FXML
@@ -17,6 +20,16 @@ public class IncomingOrdersController {
     private Button staffLandingPageButton;
 
     @FXML
+    private Label incomingOrderLabel;
+
+    public void initialize() {
+        Order confirmedOrder = OrderService.getConfirmedOrder();
+        if (confirmedOrder != null) {
+            incomingOrderLabel.setText(confirmedOrder.toString());
+        }
+    }
+
+    @FXML
     private void handleStaffHomePage(){
         System.out.println("Staff Main Page button clicked");
         openStaffHomePage();
@@ -24,7 +37,7 @@ public class IncomingOrdersController {
 
     private void openStaffHomePage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/StaffLandingPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StaffLandingPage.fxml"));
             Parent staffLandingPage = loader.load();
             // Add null check
                 Stage stage = (Stage) staffLandingPageButton.getScene().getWindow();
