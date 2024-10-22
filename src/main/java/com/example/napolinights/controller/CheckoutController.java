@@ -1,190 +1,146 @@
 package com.example.napolinights.controller;
 
-import com.example.napolinights.CartItem;
+import com.example.napolinights.model.Category;
+import com.example.napolinights.util.StageConstants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.collections.ObservableList;
-
 import java.io.IOException;
+import com.example.napolinights.CartItem;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Controller for handling actions on the Checkout Page.
+ * This includes displaying the order summary, handling navigation, and managing checkout functionality.
+ */
 public class CheckoutController {
 
-    @FXML
-    private Button checkoutBackButton;
+    // FXML elements for the checkout page
+    @FXML private TableView<CartItem> orderSummaryTable;  // Table to display cart items
+    @FXML private TableColumn<CartItem, String> itemNameColumn;  // Column for item name
+    @FXML private TableColumn<CartItem, Integer> quantityColumn;  // Column for quantity
+    @FXML private TableColumn<CartItem, Double> unitPriceColumn;  // Column for unit price
+    @FXML private TableColumn<CartItem, Double> gstColumn;  // Column for GST
+    @FXML private TableColumn<CartItem, Double> totalColumn;  // Column for total price including GST
+    @FXML private Label totalPriceLabel;  // Label to display the total price including GST
+    @FXML private Button backButton;  // Button to go back to the Order page
+    @FXML private Button payButton;  // Button to proceed to payment
+    @FXML private AnchorPane checkoutPane;  // AnchorPane to hold the checkout items
 
-    @FXML
-    private Button checkoutPayButton;
+    private ObservableList<CartItem> cartItems = FXCollections.observableArrayList();  // List to hold cart items
 
-    @FXML
-    private CartItem[] cartItems;
+    /* ===============================================
+     * SECTION 1: Initialization
+     * =============================================== */
 
-    private double totalPrice = 0.0;
-
-    private int totalQuantity = 0;
-
-    private double tax = 0.0;
-
-    private double subtotalPrice;
-
+    /**
+     * Initializes the controller, sets up the table columns, and adjusts the stage size.
+     */
     @FXML
-    private Text quantityText;
-    @FXML
-    private Text subtotalPriceText;
-    @FXML
-    private Text taxText;
-    @FXML
-    private Text totalPriceText;
+    private void initialize() {
+        // Set up the table columns
+        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        gstColumn.setCellValueFactory(new PropertyValueFactory<>("gst"));
+        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalInc"));
 
-    @FXML
-    private void handleCheckoutBackButtonClick(MouseEvent event) {
-        System.out.println("Checkout back button clicked");
+        // Set padding for the checkout pane to provide spacing
+        checkoutPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) checkoutPane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
     }
 
-    public void transferCartItems(OrderConfirmationController orderConfirmationController) {
-        ObservableList<VBox> items = cartListView.getItems();
-        orderConfirmationController.setCartItems(items);
+    /* ===============================================
+     * SECTION 2: Receiving and Displaying Cart Data
+     * =============================================== */
+
+    /**
+     * Receives data from the OrderController and populates the order summary table.
+     * @param items The array of cart items to be displayed in the order summary.
+     */
+    public void receiveData(CartItem[] items) {
+        // Clear the table first
+        orderSummaryTable.getItems().clear();
+
+        // Add all the items to the table
+        cartItems.addAll(items);
+        orderSummaryTable.setItems(cartItems);
+
+        // Calculate and update total price
+        updateTotalPrice();
     }
 
+    /**
+     * Calculates and updates the total price label.
+     */
+    private void updateTotalPrice() {
+        double total = 0;
+        for (CartItem item : cartItems) {
+            total += item.getTotalInc();
+        }
+        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", total));
+    }
+
+    /* ===============================================
+     * SECTION 3: Navigation and Button Handlers
+     * =============================================== */
+
+    /**
+     * Handles the "Back" button click to navigate to the Order Page.
+     */
     @FXML
-    private void handleCheckoutPayButtonClick(MouseEvent event) {
+    private void handleBackButtonClick() {
+        // Use the StageConstants utility to open the Order Page
+        Stage stage = (Stage) backButton.getScene().getWindow();
+        StageConstants.openPage("/view/Order.fxml", stage, "Order Page");
+    }
+
+    /**
+     * Handles the "Pay" button click to proceed to the Order Confirmation Page.
+     */
+    @FXML
+    private void handlePayButtonClick() {
         System.out.println("Checkout pay button clicked");
         openOrderConfirmationPage();
     }
-//    @FXML
-//    private void handleCheckoutPayButtonClick() {
-//        // Calculate prices including tax if they are not already calculated
-//        setTotalPriceText();
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/OrderConfirmation.fxml"));
-//            Parent orderConfirmationPage = loader.load();
-//            OrderConfirmationController orderConfirmationController = loader.getController();
-//            orderConfirmationController.setTotalPrice(totalPrice); // Set total price
-//            transferCartItems(orderConfirmationController); // Transfer Cart Items
-//
-//            Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
-//            stage.setTitle("Order Confirmation");
-//            Scene scene = new Scene(orderConfirmationPage);
-//            stage.setScene(scene);
-//            stage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
-    public void receiveData(CartItem[] data) {
-        cartItems = data;
-        for (CartItem item : data) {
-            System.out.println(item.getName() + " " + item.getPrice() + " " + item.getQuantity());
-            AddItemToListView(item);
-        }
-        calculatePrices();
-        setText();
-        System.out.println(totalPrice + " " + totalQuantity);
+    /* ===============================================
+     * SECTION 4: Order Confirmation Process
+     * =============================================== */
 
-    }
-
-    private void calculatePrices() {
-        for (CartItem item : cartItems) {
-            totalPrice += item.getPrice() * item.getQuantity();  // Price * Quantity
-            totalQuantity += item.getQuantity();  // Total quantity
-        }
-        calculateTax();
-        calculateSubtotal();
-    }
-
-    private void setText() {
-        setQuantityText();
-        setSubtotalPriceText();
-        setTaxText();
-        setTotalPriceText();
-    }
-
-    private void calculateTax() {
-//        10% GST tax
-        tax = totalPrice * 0.10;
-    }
-
-    private void calculateSubtotal() {
-        subtotalPrice = totalPrice - tax;
-    }
-
-    private void setQuantityText() {
-        quantityText.setText(totalQuantity + " items");
-    }
-
-    private void setSubtotalPriceText() {
-        subtotalPriceText.setText("$" + subtotalPrice);
-    }
-
-    private void setTaxText() {
-        taxText.setText("$" + tax);
-    }
-
-    private void setTotalPriceText() {
-        totalPriceText.setText("$" + totalPrice);
-    }
-
-    @FXML
-    private ListView<VBox> cartListView;
-
-    public void AddItemToListView(CartItem item) {
-        VBox cartItemBox = new VBox();
-
-        HBox itemDetailsBox = new HBox(10);
-
-        // Add product name
-        Label nameLabel = new Label(item.getName());
-
-        // Add product price
-        Label priceLabel = new Label("Price: $" + item.getPrice());
-
-        // Add product quantity
-        Label quantityLabel = new Label("Quantity: " + item.getQuantity());
-
-        // Add all elements to the HBox
-        itemDetailsBox.getChildren().addAll(nameLabel, priceLabel, quantityLabel);
-
-        // Add HBox to VBox (so we can extend and add other details if needed)
-        cartItemBox.getChildren().add(itemDetailsBox);
-
-        // Add VBox to the ListView
-        cartListView.getItems().add(cartItemBox);
-
-    }
-
-    private boolean emptyCart() {
-        if (cartItems.length == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    /**
+     * Opens the Order Confirmation Page if the cart is not empty.
+     */
     private void openOrderConfirmationPage() {
         if (emptyCart()) {
             showEmptyCartError();
         } else {
-            // Calculate prices including tax if they are not already calculated
             setTotalPriceText();
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/OrderConfirmation.fxml"));
                 Parent orderConfirmationPage = loader.load();
                 OrderConfirmationController orderConfirmationController = loader.getController();
-                orderConfirmationController.setTotalPrice(totalPrice); // Set total price
-                transferCartItems(orderConfirmationController); // Transfer Cart Items
+                transferCartItems(orderConfirmationController);
 
-                Stage stage = (Stage) checkoutPayButton.getScene().getWindow();
+                Stage stage = (Stage) payButton.getScene().getWindow();
                 stage.setTitle("Order Confirmation");
                 Scene scene = new Scene(orderConfirmationPage);
                 stage.setScene(scene);
@@ -195,31 +151,36 @@ public class CheckoutController {
         }
     }
 
-    private void showEmptyCartError() {
-//        Alert alert = new Alert(Alert.AlertType.ERROR);
-//        alert.setTitle("Checkout Error");
-//        alert.setHeaderText(null);
-//        alert.setContentText("Your cart is empty! Please add items before checking out.");
-//        alert.showAndWait();
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EmptyCartError.fxml"));
-            VBox dialogRoot = fxmlLoader.load();
-
-            // Create a new stage for the dialog
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Checkout Error");
-
-            // Block interactions with other windows while this is open
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(dialogRoot));
-            dialogStage.showAndWait();  // Wait for the dialog to be closed before continuing
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    /**
+     * Checks if the cart is empty.
+     * @return True if the cart is empty, false otherwise.
+     */
+    private boolean emptyCart() {
+        return cartItems.isEmpty();
     }
 
+    /**
+     * Displays an error message indicating that the cart is empty.
+     */
+    private void showEmptyCartError() {
+        System.out.println("Cart is empty! Cannot proceed to payment.");
+    }
 
+    /**
+     * Sets the total price text in the total price label.
+     */
+    private void setTotalPriceText() {
+        // Calculate and set total price
+        double totalPrice = cartItems.stream().mapToDouble(CartItem::getTotalInc).sum();
+        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", totalPrice));
+    }
 
+    /**
+     * Transfers cart items to the OrderConfirmationController.
+     * @param orderConfirmationController The controller for the Order Confirmation page.
+     */
+    private void transferCartItems(OrderConfirmationController orderConfirmationController) {
+        // Transfer cart items to the confirmation page
+        orderConfirmationController.setCartItems(cartItems);
+    }
 }

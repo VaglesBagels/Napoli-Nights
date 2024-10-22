@@ -6,13 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static javafx.application.Application.launch;
+
 
 /**
  * Main application class for the Napoli Nights ordering system.
@@ -86,6 +85,7 @@ public class Main extends Application {
             System.out.println(menuItem);
         }
     }
+
 
     /**
      * Loads and opens the landing page of the application.
