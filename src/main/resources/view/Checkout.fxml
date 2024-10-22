@@ -1,123 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
-<AnchorPane style="-fx-min-width: 1200; -fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.CheckoutController">
-    <children>
-        <!-- VBox to Center Image and Buttons -->
-        <VBox alignment="CENTER" layoutY="-86.0" prefWidth="697.0" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <!-- Image Box with Background Image -->
-            <HBox alignment="CENTER" minHeight="150" prefHeight="100.0">
-                <children>
-                    <!-- Image Box with Background Image -->
-                    <ImageView fx:id="logoImageView" fitHeight="162.0" fitWidth="150" preserveRatio="true" style="-fx-border-color: red; -fx-border-width: 10px;">
-                        <image>
-                            <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
-                        </image>
-                    </ImageView>
-                </children>
-            </HBox>
-            <HBox fx:id="imageBox" alignment="CENTER" prefHeight="530.0" prefWidth="697.0">
-                <VBox prefHeight="297.0" prefWidth="1233.0" style="-fx-background-color: #141415;">
-                    <children>
-                        <HBox alignment="CENTER" prefHeight="540.0" prefWidth="1200.0" style="-fx-padding: 1em;">
-                            <children>
-                                <VBox prefHeight="506.0" prefWidth="450.0">
-                                    <children>
-                                        <VBox prefHeight="495.0" prefWidth="614.0" spacing="5.0">
-                                            <children>
-                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Cart">
-                                                    <font>
-                                                        <Font size="34.0" />
-                                                    </font>
-                                                </Text>
-                                                <ListView fx:id="cartListView" minHeight="-Infinity" prefHeight="380.0" prefWidth="614.0" style="-fx-background-color: #141415;" />
-                                                <Button fx:id="checkoutBackButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" style="-fx-background-color: none; -fx-border-color: gray; -fx-border-radius: 6px;" text="Back" textFill="WHITE">
-                                                    <font>
-                                                        <Font size="16.0" />
-                                                    </font></Button>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </VBox>
-                                <VBox prefHeight="506.0" prefWidth="412.0" style="-fx-padding: 25;">
-                                    <children>
-                                        <GridPane alignment="CENTER" prefHeight="100.0" prefWidth="356.0" vgap="25.0">
-                                            <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-
-                                            <!--                            CART OVERVIEW GRID-->
-                                            <children>
-                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Cart items">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <Text fill="WHITE" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" GridPane.rowIndex="1">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <Text fill="WHITE" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GST (10%)" GridPane.rowIndex="2">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <Text fill="WHITE" layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: BOLD;" text="Total" GridPane.rowIndex="3">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <!--                               Quantity -->
-                                                <Text fx:id="quantityText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text=" items" GridPane.columnIndex="1">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <!--                               Subtotal -->
-                                                <Text fx:id="subtotalPriceText" fill="WHITE" layoutX="188.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <!--                              Tax -->
-                                                <Text fx:id="taxText" fill="WHITE" layoutX="188.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                                    <font>
-                                                        <Font size="20.0" />
-                                                    </font></Text>
-                                                <!--                              Total -->
-                                                <Text fx:id="totalPriceText" fill="WHITE" layoutX="188.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                       <font>
-                                          <Font size="20.0" />
-                                       </font></Text>
-                                            </children>
-                                        </GridPane>
-                                        <HBox prefHeight="64.0" prefWidth="224.0" style="-fx-padding: 25;">
-                                            <children>
-                                                <Button fx:id="checkoutPayButton" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#handleCheckoutPayButtonClick" prefHeight="67.0" prefWidth="207.0" style="-fx-background-color: #8fc493;" text="Pay at counter">
-                                                    <font>
-                                                        <Font name="System Bold" size="16.0" />
-                                                    </font>
-                                                    <padding>
-                                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                                    </padding>
-                                                </Button>
-                                            </children>
-                                        </HBox>
-                                    </children>
-                                </VBox>
-                            </children></HBox>
-                    </children>
-                </VBox>
-
-            </HBox>
-
+<?import javafx.geometry.*?>
+<!-- Root element representing the checkout page layout -->
+<AnchorPane fx:id="checkoutPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.CheckoutController"
+            style="-fx-background-color: #141415; -fx-min-width: 800; -fx-min-height: 600;">
+    <!-- Include the reusable header at the top of the page -->
+    <VBox fx:id="headerPane" layoutX="10.0" layoutY="10.0" spacing="20.0" prefWidth="800.0"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <fx:include source="Header.fxml" />
+    </VBox>
+    <!-- Main content area, wrapped in another VBox for better layout control -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="120" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <!-- Title for the Checkout Page -->
+        <Label text="Checkout" style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" />
+        <!-- VBox for controlling the width and layout of the order summary table -->
+        <VBox alignment="CENTER" spacing="10" maxWidth="1000" style="-fx-background-color: #141415; -fx-padding: 20;">
+            <!-- Order Summary Table to display checkout details with increased width -->
+            <TableView fx:id="orderSummaryTable" prefWidth="1000" prefHeight="300" style="-fx-background-color: #141415;">
+                <columns>
+                    <!-- Column for item names in the order -->
+                    <TableColumn text="Item Name" fx:id="itemNameColumn" prefWidth="400"/>
+                    <!-- Column for quantities of each item -->
+                    <TableColumn text="Quantity" fx:id="quantityColumn" prefWidth="100"/>
+                    <!-- Column for unit prices of each item -->
+                    <TableColumn text="Unit Price" fx:id="unitPriceColumn" prefWidth="200"/>
+                    <!-- Column displaying the GST for each item -->
+                    <TableColumn text="GST" fx:id="gstColumn" prefWidth="100"/>
+                    <!-- Column showing the total price including GST -->
+                    <TableColumn text="Total (Inc)" fx:id="totalColumn" prefWidth="200"/>
+                </columns>
+            </TableView>
+            <!-- Footer displaying the total price including GST -->
+            <Label fx:id="totalPriceLabel" text="Total (Inc GST): $0.00" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
         </VBox>
-    </children>
+        <!-- Section containing action buttons (Back and Pay) -->
+        <HBox alignment="CENTER" spacing="20">
+            <!-- Back Button to navigate to the previous page -->
+            <Button fx:id="backButton" text="Back" onAction="#handleBackButtonClick"
+                    prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #84AE87;
+                    -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+            <!-- Pay Button to initiate the payment process -->
+            <Button fx:id="payButton" text="Pay" onAction="#handlePayButtonClick"
+                    prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #C6959B;
+                    -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
 </AnchorPane>
