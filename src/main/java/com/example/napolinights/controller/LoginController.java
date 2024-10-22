@@ -3,14 +3,18 @@ package com.example.napolinights.controller;
 import com.example.napolinights.model.SqliteConnection;
 import com.example.napolinights.model.User;
 import com.example.napolinights.model.UserDAO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,10 +44,29 @@ public class LoginController {
     private Hyperlink lnkSignUp;
 
     @FXML
+    private AnchorPane loginPane;
+
+    @FXML
     private Button btnLogin;
 
     @FXML
     private Label lblLoginStatusMessage;
+
+    /**
+     * Initializes the controller, sets up the table columns, and adjusts the stage size.
+     */
+    @FXML
+    private void initialize() {
+        // Set padding for the login pane to provide spacing
+        loginPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) loginPane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
+    }
 
     /**
      * Event handler for the login button click.

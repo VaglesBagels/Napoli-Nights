@@ -37,7 +37,7 @@
                     <!-- ScrollPane wrapping the menu items section -->
                     <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
                                 style="-fx-background-color: #141415;">
-                        <TilePane fx:id="menuItemsPane" hgap="20" vgap="20" alignment="CENTER"
+                        <TilePane fx:id="menuItemsPane" hgap="20" vgap="20" alignment="CENTER" minHeight="375"
                                   style="-fx-border-color: #141415; -fx-background-color: #141415;" prefColumns="2">
                             <!-- Menu items will be dynamically added here -->
                         </TilePane>
