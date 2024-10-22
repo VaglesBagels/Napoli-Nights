@@ -6,23 +6,21 @@
 <?import javafx.scene.image.Image?>
 
 <!-- Root layout of the Login Page, using AnchorPane as the main layout container -->
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.LoginController"
-            style="-fx-background-color: #0e0e0e; -fx-padding: 20px; -fx-border-width: 1px; -fx-border-color: #111;">
+<AnchorPane fx:id="loginPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.LoginController"
+            style="-fx-background-color: #141415; -fx-padding: 20px; -fx-border-width: 1px; -fx-border-color: #111;">
 
-    <!-- VBox to center the Logo and Login Form -->
-    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <!-- Include the reusable header at the top of the page -->
+    <VBox fx:id="headerPane" spacing="20.0" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <fx:include source="Header.fxml" />
+    </VBox>
 
-        <!-- Napoli Nights Logo Section -->
-        <ImageView fx:id="logoImageView" fitHeight="200" fitWidth="248" preserveRatio="true"
-                   style="-fx-border-color: red; -fx-border-width: 10px; -fx-padding: 10px">
-            <image>
-                <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
-            </image>
-        </ImageView>
+    <!-- VBox to center Login Form, positioned below the header -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+          style="-fx-pref-width: 25%; -fx-pref-height: 25%;">
 
         <!-- Login Form Section -->
-        <VBox spacing="15" alignment="CENTER"
-              style="-fx-background-color: #1e1e1e; -fx-padding: 20px; -fx-border-color: lightgray;">
+        <VBox spacing="15" alignment="CENTER" maxWidth="600" maxHeight="300"
+              style="-fx-background-color: #1e1e1e; -fx-padding: 20px; -fx-border-color: lightgray; -fx-border-radius: 10px;">
 
             <!-- Login Title -->
             <Label text="Login" style="-fx-text-fill: white; -fx-font-size: 24px;"/>
@@ -35,14 +33,14 @@
                        style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
 
             <!-- Email Validation Message (Initially Hidden) -->
-            <Label fx:id="lblEmailMessage" text="* Required field is empty" visible="false"/>
+            <Label fx:id="lblEmailMessage" text="* Required field is empty" visible="false" style="-fx-text-fill: red;" />
 
             <!-- Password Field -->
             <PasswordField fx:id="passwordField" promptText="Password"
                            style="-fx-background-color: #2e2e2e; -fx-text-fill: white; -fx-border-color: #555; -fx-padding: 10px;" />
 
             <!-- Password Validation Message (Initially Hidden) -->
-            <Label fx:id="lblPasswordMessage" text="* Required field is empty" visible="false"/>
+            <Label fx:id="lblPasswordMessage" text="* Required field is empty" visible="false" style="-fx-text-fill: red;" />
 
             <!-- Login Button (Triggers login action) -->
             <Button fx:id="btnLogin" text="Login"
@@ -58,4 +56,3 @@
     </VBox>
 
 </AnchorPane>
-
