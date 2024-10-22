@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
+
 <!-- Root element representing the checkout page layout -->
 <AnchorPane fx:id="checkoutPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.CheckoutController"
             style="-fx-background-color: #141415; -fx-min-width: 800; -fx-min-height: 600;">
+
     <!-- Include the reusable header at the top of the page -->
     <VBox fx:id="headerPane" layoutX="10.0" layoutY="10.0" spacing="20.0" prefWidth="800.0"
           AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <fx:include source="Header.fxml" />
     </VBox>
+
     <!-- Main content area, wrapped in another VBox for better layout control -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="120" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
         <!-- Title for the Checkout Page -->
         <Label text="Checkout" style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" />
+
         <!-- VBox for controlling the width and layout of the order summary table -->
         <VBox alignment="CENTER" spacing="10" maxWidth="1000" style="-fx-background-color: #141415; -fx-padding: 20;">
+
             <!-- Order Summary Table to display checkout details with increased width -->
             <TableView fx:id="orderSummaryTable" prefWidth="1000" prefHeight="300" style="-fx-background-color: #141415;">
                 <columns>
@@ -31,19 +38,25 @@
                     <TableColumn text="Total (Inc)" fx:id="totalColumn" prefWidth="200"/>
                 </columns>
             </TableView>
+
             <!-- Footer displaying the total price including GST -->
             <Label fx:id="totalPriceLabel" text="Total (Inc GST): $0.00" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
+
         </VBox>
+
         <!-- Section containing action buttons (Back and Pay) -->
         <HBox alignment="CENTER" spacing="20">
             <!-- Back Button to navigate to the previous page -->
             <Button fx:id="backButton" text="Back" onAction="#handleBackButtonClick"
                     prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #84AE87;
                     -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+
             <!-- Pay Button to initiate the payment process -->
             <Button fx:id="payButton" text="Pay" onAction="#handlePayButtonClick"
                     prefHeight="50.0" prefWidth="133.0" style="-fx-background-color: #C6959B;
                     -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
         </HBox>
+
     </VBox>
+
 </AnchorPane>

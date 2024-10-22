@@ -27,11 +27,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
-
 import static com.example.napolinights.util.UIComponentBuilder.getMenuItemImageOrDefault;
 
 
@@ -483,7 +481,7 @@ public class OrderController {
             Parent checkoutPage = loader.load();
             checkoutController = loader.getController();
 
-            //passCartData();  // Pass cart data to the checkout page
+            passCartData();  // Pass cart data to the checkout page
 
             Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
             setupStage(stage, checkoutPage, "Checkout");  // Setup and show the checkout stage
@@ -496,12 +494,11 @@ public class OrderController {
     /**
      * Passes the cart data (items, quantities, prices) to the checkout page.
      */
-
-    /**
     @FXML
     public void passCartData() {
         int cartLength = orderSection.getChildren().size();
         CartItem[] items = new CartItem[cartLength];
+
         for (int i = 0; i < cartLength; i++) {
             GridPane itemBox = (GridPane) orderSection.getChildren().get(i);
             Label nameLabel = (Label) itemBox.getChildren().get(3);
@@ -510,15 +507,18 @@ public class OrderController {
             Label unitPriceLabel = (Label) itemBox.getChildren().get(5);
 
             String name = nameLabel.getText();
-            double price = parseItemPrice(priceLabel.getText());
-            int quantity = parseItemQuantity(quantityLabel.getText());
             double unitPrice = parseItemPrice(unitPriceLabel.getText());
-            items[i] = new CartItem(name, unitPrice, quantity);
-        }
-         checkoutController.receiveData(items);
-    }
-     */
+            int quantity = parseItemQuantity(quantityLabel.getText());
+            // Round GST and total price to two decimal places
+            double gst = Math.round((unitPrice * 0.10) * 100.0) / 100.0;
+            double totalInc = Math.round(((unitPrice * quantity) + (gst * quantity)) * 100.0) / 100.0;
 
+            items[i] = new CartItem(name, unitPrice, quantity, gst, totalInc);
+        }
+
+        // Send the data to the checkout controller
+        checkoutController.receiveData(items);
+    }
 
 
     /**

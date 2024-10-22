@@ -111,7 +111,7 @@ public class UserDAO implements IUserDAO {
                 throw new SQLException("Invalid password or user does not exist.");
             }
         } catch (SQLException e) {
-            throw new SQLException("Error verifying user access: " + e.getMessage(), e);
+            throw new SQLException(e.getMessage(), e);
         }
     }
 

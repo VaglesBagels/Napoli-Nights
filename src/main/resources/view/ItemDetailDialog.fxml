@@ -33,8 +33,14 @@
 
     <!-- Footer Buttons with padding -->
     <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
-        <Button fx:id="btnCancel" text="Cancel" onAction="#handleCancel"/>
-        <Button text="Add to Cart" onAction="#handleAddToCart"/>
+        <Button fx:id="btnCancel" text="Cancel" onAction="#handleCancel" prefHeight="40.0" prefWidth="133.0"
+                style="-fx-background-color: white; -fx-text-fill: grey; -fx-font-size: 15px;
+                -fx-font-weight: bold;"
+        />
+        <Button text="Add to Cart" onAction="#handleAddToCart" prefHeight="40.0" prefWidth="133.0"
+                style="-fx-background-color: white; -fx-text-fill: grey; -fx-font-size: 15px;
+                -fx-font-weight: bold;"
+        />
     </HBox>
 
 </VBox>
