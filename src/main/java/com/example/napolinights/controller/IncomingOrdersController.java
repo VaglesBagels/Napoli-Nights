@@ -16,6 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.example.napolinights.model.Order;
 import com.example.napolinights.model.OrderItem;
 import com.example.napolinights.model.MenuItem;
@@ -38,26 +45,34 @@ public class IncomingOrdersController {
 
     public IncomingOrdersController() {
         menuItemCache = new HashMap<>();
+        initDatabase();
+    }
+
+    private void initDatabase() {
+        String jdbcUrl = "jdbc:sqlite:yourdatabase.db"; // Replace with your actual SQLite database file
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:yourdatabaseurl", "username", "password");
-            this.orderDAO = new OrderDAO(connection);
-            this.menuItemDAO = new MenuItemDAO(connection);
+            // Ensure the JDBC driver is loaded
+            Class.forName("org.sqlite.JDBC");
 
-            // Pre-load all menu items into cache
+            // Establish the connection
+            Connection connection = DriverManager.getConnection(jdbcUrl);
+
+            // Initialize DAOs
+            this.orderDAO = new OrderDAO(connection);
+            this.menuItemDAO = new MenuItemDAO
+                    (connection);
+
+            // Cache all menu items
             List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItems();
             for (MenuItem menuItem : menuItems) {
                 menuItemCache.put(menuItem.getMenuItemID(), menuItem);
             }
 
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            // Handle error, possibly show an alert
         }
-    }
-
-    public IncomingOrdersController(OrderDAO orderDAO, Map<Integer, MenuItem> menuItemCache) {
-        this.orderDAO = orderDAO;
-        this.menuItemCache = menuItemCache;
     }
 
     @FXML
@@ -67,7 +82,6 @@ public class IncomingOrdersController {
 
     private String loadConfirmedOrders() {
         List<Order> confirmedOrders;
-
         try {
             confirmedOrders = orderDAO.fetchConfirmedOrders();
 
