@@ -72,8 +72,8 @@ public class OrderDAO implements IOrderDAO{
         validateOrder(order);
 
         // Prepare SQL statements
-        String insertOrderSQL = "INSERT INTO Orders (orderDate, customerName, customerContact) VALUES (?, ?, ?)";
-        String insertOrderItemSQL = "INSERT INTO OrderItems (orderID, menuID, quantity, itemPrice) VALUES (?, ?, ?, ?)";
+        String insertOrderSQL = "INSERT INTO orders (created_timestamp, customer_name, customer_contact, order_paid) VALUES (?, ?, ?, ?)";
+        String insertOrderItemSQL = "INSERT INTO order_items (order_id, menu_id, quantity, item_price, special_instructions) VALUES (?, ?, ?, ?, ?)";
 
         // Use try-with-resources for transaction management
         try (PreparedStatement orderStmt = connection.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
@@ -86,6 +86,7 @@ public class OrderDAO implements IOrderDAO{
             orderStmt.setTimestamp(1, order.getOrderDate());
             orderStmt.setString(2, order.getCustomerName());
             orderStmt.setString(3, order.getCustomerContact());
+            orderStmt.setBoolean(4, order.isPaid());
             int affectedRows = orderStmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -108,6 +109,7 @@ public class OrderDAO implements IOrderDAO{
                 orderItemStmt.setInt(2, item.getMenuID());
                 orderItemStmt.setInt(3, item.getQuantity());
                 orderItemStmt.setDouble(4, item.getItemPrice());
+                orderItemStmt.setString(5, item.getSpecialInstructions());
                 orderItemStmt.addBatch();
             }
 
@@ -120,7 +122,11 @@ public class OrderDAO implements IOrderDAO{
 
         } catch (SQLException e) {
             // Rollback transaction in case of error
-            connection.rollback();
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                e.addSuppressed(rollbackEx);  // Include rollback failure as suppressed exception
+            }
             throw e;
         } catch (IllegalArgumentException e) {
             // Convert IllegalArgumentException to SQLException for consistency with expected exceptions
