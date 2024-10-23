@@ -1,19 +1,26 @@
 package com.example.napolinights.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 public class ViewReportsController {
+
+    @FXML
+    public AnchorPane reportsPane;
+
     @FXML
     private TableView<Report> reportsTable;
 
@@ -36,6 +43,16 @@ public class ViewReportsController {
 
         List<Report> reports = fetchReportsFromDatabase();
         reportsTable.getItems().setAll(reports);
+
+        // Set padding for the reports pane to provide spacing
+        reportsPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) reportsPane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
     }
 
     private List<Report> fetchReportsFromDatabase() {

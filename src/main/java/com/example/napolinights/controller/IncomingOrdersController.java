@@ -1,12 +1,17 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.OrderDAO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -31,7 +36,13 @@ import com.example.napolinights.model.MenuItemDAO;
 
 public class IncomingOrdersController {
     @FXML
-    private ListView<String> confirmedCartListView;
+    public AnchorPane incomingOrdersPane;
+
+    @FXML
+    public VBox headerPane;
+
+    @FXML
+    private TableView<String> confirmedCartListView;
 
     @FXML
     private Button staffLandingPageButton;
@@ -78,6 +89,17 @@ public class IncomingOrdersController {
     @FXML
     private void initialize() {
         loadConfirmedOrders();
+
+
+        // Set padding for the checkout pane to provide spacing
+        incomingOrdersPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) incomingOrdersPane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
     }
 
     private String loadConfirmedOrders() {
