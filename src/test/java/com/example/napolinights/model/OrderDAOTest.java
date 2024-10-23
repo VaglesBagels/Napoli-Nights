@@ -115,6 +115,7 @@ public class OrderDAOTest {
         Order order = orders.get(0);
         assertEquals("John Doe", order.getCustomerName());
         assertEquals("123-456-7890", order.getCustomerContact());
+        assertFalse(order.isPaid());
     }
 
     @Test

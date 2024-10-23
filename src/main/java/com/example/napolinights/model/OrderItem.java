@@ -5,6 +5,7 @@ public class OrderItem {
     private final int orderID;
     private final int menuID;
     private int quantity;
+    private String specialInstructions;
     private final double itemPrice;
 
     public OrderItem(int orderID, int menuID, int quantity, double itemPrice) {
@@ -18,6 +19,7 @@ public class OrderItem {
         this.menuID = menuID;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
+        this.specialInstructions = "";
     }
 
     public OrderItem(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
@@ -43,9 +45,6 @@ public class OrderItem {
     }
 
     public double getItemPrice() {
-        if (itemPrice <= 0) {
-            throw new IllegalArgumentException("Item price must be greater than 0.");
-        }
         return itemPrice;
     }
 
@@ -57,6 +56,20 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
+    // Getter for special instructions
+    public String getSpecialInstructions() {
+        return specialInstructions;
+    }
+
+    // Setter for special instructions
+    public void setSpecialInstructions(String specialInstructions) {
+        if (specialInstructions != null) {
+            this.specialInstructions = specialInstructions.trim();
+        } else {
+            this.specialInstructions = "";
+        }
+    }
+
     @Override
     public String toString() {
         return "OrderItem{" +
@@ -65,6 +78,7 @@ public class OrderItem {
                 ", menuID=" + menuID +
                 ", quantity=" + quantity +
                 ", itemPrice=" + itemPrice +
+                ", specialInstructions='" + specialInstructions + '\'' +
                 '}';
     }
 }
