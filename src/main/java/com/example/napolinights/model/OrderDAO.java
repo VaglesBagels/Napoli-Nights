@@ -72,8 +72,8 @@ public class OrderDAO implements IOrderDAO{
         validateOrder(order);
 
         // Prepare SQL statements
-        String insertOrderSQL = "INSERT INTO Orders (created_timestamp, customer_name, customer_contact, order_paid) VALUES (?, ?, ?, ?)";
-        String insertOrderItemSQL = "INSERT INTO OrderItems (order_id, menu_id, quantity, item_price, special_instructions) VALUES (?, ?, ?, ?, ?)";
+        String insertOrderSQL = "INSERT INTO orders (created_timestamp, customer_name, customer_contact, order_paid) VALUES (?, ?, ?, ?)";
+        String insertOrderItemSQL = "INSERT INTO order_items (order_id, menu_id, quantity, item_price, special_instructions) VALUES (?, ?, ?, ?, ?)";
 
         // Use try-with-resources for transaction management
         try (PreparedStatement orderStmt = connection.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
@@ -122,7 +122,11 @@ public class OrderDAO implements IOrderDAO{
 
         } catch (SQLException e) {
             // Rollback transaction in case of error
-            connection.rollback();
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                e.addSuppressed(rollbackEx);  // Include rollback failure as suppressed exception
+            }
             throw e;
         } catch (IllegalArgumentException e) {
             // Convert IllegalArgumentException to SQLException for consistency with expected exceptions

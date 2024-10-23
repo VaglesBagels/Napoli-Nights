@@ -42,7 +42,7 @@ public class OrderDAOTest {
         // Arrange
         Order order = new Order(new Timestamp(System.currentTimeMillis()), "John Doe", "123-456-7890");
         List<OrderItem> items = new ArrayList<>();
-        items.add(new OrderItem(0, 1, 2, 19.99)); // Adding a dummy item
+        items.add(new OrderItem(1, 2, 19.99)); // Adding a dummy item
         order.setOrderItems(items);
 
         // Mocking PreparedStatement and ResultSet for generated keys
@@ -206,11 +206,8 @@ public class OrderDAOTest {
 
     @Test
     public void testFetchAllOrdersByDateInvalidDate() throws SQLException {
-        // Arrange
-        Timestamp invalidDate = null; // Passing a null timestamp to simulate an invalid date
-
         // Act & Assert
-        SQLException thrown = assertThrows(SQLException.class, () -> orderDAO.fetchAllOrdersByDate(invalidDate));
+        SQLException thrown = assertThrows(SQLException.class, () -> orderDAO.fetchAllOrdersByDate(null));
         assertEquals("The SQL statement cannot be prepared with a null date", thrown.getMessage());
     }
 }
