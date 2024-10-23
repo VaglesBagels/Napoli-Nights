@@ -29,8 +29,8 @@ public class OrderTest {
         order = new Order(orderDate, customerName, customerContact);
 
         // Create some sample order items
-        item1 = new OrderItem(1, 1, 2, 10.5);
-        item2 = new OrderItem(2, 1, 1, 5.0);
+        item1 = new OrderItem(1, 2, 10.5);
+        item2 = new OrderItem(1, 1, 5.0);
     }
 
     @Test
