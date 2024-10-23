@@ -25,7 +25,7 @@ public class StaffLandingPageController {
 
     private void openIncomingOrdersPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/IncomingOrders.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/IncomingOrders.fxml"));
             Parent ordersPage = loader.load();
             Stage stage = (Stage) viewOrdersButton.getScene().getWindow();
             stage.setMinWidth(800);
@@ -34,6 +34,8 @@ public class StaffLandingPageController {
             Scene scene = new Scene(ordersPage);
             stage.setScene(scene);
             stage.show();
+
+            IncomingOrdersController controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +43,7 @@ public class StaffLandingPageController {
 
     private void openReportsPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Reports.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ViewReports.fxml"));
             Parent reportsPage = loader.load();
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
             stage.setMinWidth(800);

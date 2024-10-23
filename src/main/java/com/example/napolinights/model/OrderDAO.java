@@ -8,7 +8,7 @@ import java.util.List;
  * DAO class for handling database operations related to Orders.
  */
 public class OrderDAO implements IOrderDAO{
-    private final Connection connection;
+    public final Connection connection;
 
     /**
      * Constructs an OrderDAO with the specified database connection.
@@ -220,6 +220,27 @@ public class OrderDAO implements IOrderDAO{
         return orders;
     }
 
+    public List<Order> fetchConfirmedOrders() throws SQLException {
+        List<Order> confirmedOrders = new ArrayList<>();
+        String query = "SELECT * FROM Orders WHERE isPaid = 1"; // Assuming 'isPaid' indicates order confirmation
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                // Retrieve order details from the result set
+                Order order = new Order(
+                        rs.getInt("orderID"),
+                        rs.getTimestamp("orderDate"),
+                        rs.getString("customerName"),
+                        rs.getString("customerContact"),
+                        fetchOrderItems(rs.getInt("orderID")),
+                        rs.getTimestamp("paidDate")
+                );
+                confirmedOrders.add(order);
+            }
+        }
+        return confirmedOrders;
+    }
 
     /**
      * Fetches a specific order by its ID.
@@ -229,6 +250,27 @@ public class OrderDAO implements IOrderDAO{
      * @return The order object if found, or null if no order exists with the given ID.
      * @throws SQLException If an SQL error occurs during the fetch operation.
      */
+    private List<OrderItem> fetchOrderItems(int orderId) throws SQLException {
+        List<OrderItem> orderItems = new ArrayList<>();
+        String query = "SELECT * FROM OrderItems WHERE orderID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, orderId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    orderItems.add(new OrderItem(
+                            rs.getInt("orderItemID"),
+                            rs.getInt("orderID"),
+                            rs.getInt("menuID"),
+                            rs.getInt("quantity"),
+                            rs.getDouble("itemPrice")
+                    ));
+                }
+            }
+        }
+        return orderItems;
+    }
+
     @Override
     public Order getOrderById(int id) throws SQLException {
         String getOrderByIdSQL = "SELECT * FROM orders WHERE order_id = ?";
@@ -298,6 +340,22 @@ public class OrderDAO implements IOrderDAO{
                 throw new IllegalArgumentException("Order item price must be greater than 0.");
             }
         }
+    }
+
+    public String fetchOrderNotes(int orderID) {
+        String sql = "SELECT notes FROM orders WHERE order_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, orderID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("notes");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error, possibly rethrow or return a default message
+        }
+        return "No special notes.";
     }
 
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.IncomingOrdersController">
+    <children>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141412" height="151.0" layoutX="-11.0" layoutY="-22.0" stroke="#ffffff00" strokeType="INSIDE" width="653.0" />
+        <ImageView fx:id="logoImageView" fitHeight="121.0" fitWidth="230.0" layoutX="247.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../com/example/napolinights/images/landing_page/napoli_nights_logo.png" />
+            </image>
+        </ImageView>
+        <AnchorPane layoutX="19.0" layoutY="172.0">
+            <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="182.0" stroke="BLACK" strokeType="INSIDE" width="602.0" />
+                <Label layoutX="63.0" layoutY="5.0" text="Item" />
+                <Label layoutX="530.0" layoutY="6.0" text="Order Status" />
+                <Label layoutX="6.0" layoutY="5.0" text="Table #" />
+                <Line endX="602.0" endY="26.5" startY="26.5" />
+                <ListView fx:id="confirmedCartListView" layoutY="27.0" prefHeight="158.0" prefWidth="602.0" />
+                <Label layoutX="325.0" layoutY="5.0" text="Notes" />
+                <Label layoutX="278.0" layoutY="6.0" text="QTY" />
+                <Line endX="5.0999755859375" endY="176.0" layoutX="53.0" layoutY="6.0" startX="5.0999755859375" startY="-5.9999847412109375" />
+                <Line endX="5.0999755859375" endY="179.39996337890625" layoutX="266.0" layoutY="6.0" startX="5.0999755859375" startY="-5.9999847412109375" />
+                <Line endX="5.0999755859375" endY="179.39996337890625" layoutX="314.0" layoutY="6.0" startX="5.0999755859375" startY="-5.9999847412109375" />
+                <Line endX="5.0999755859375" endY="179.39996337890625" layoutX="521.0" layoutY="6.0" startX="5.0999755859375" startY="-5.9999847412109375" />
+            </children>
+        </AnchorPane>
+        <Text layoutX="20.0" layoutY="159.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Orders">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Text>
+        <Button fx:id="staffLandingPageButton" onAction="#handleStaffHomePage" layoutX="20.0" layoutY="366.0" mnemonicParsing="false" text="Staff Home Page" />
+    </children>
+</AnchorPane>
