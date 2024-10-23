@@ -28,13 +28,47 @@ public class UserDAOTest {
     }
 
     @Test
-    public void testCreateUserTable() throws SQLException {
-        // Execute the method to test
-        userDAO.createUserTable();
+    public void testCreateUserTableWhenTableDoesNotExist() throws SQLException {
+        // Mock the ResultSet to simulate table existence check
+        ResultSet mockResultSet = mock(ResultSet.class);
 
-        // Verify that the statement's execute method was called
+        // Simulate that the table does not exist
+        when(mockResultSet.next()).thenReturn(false);
+
+        // Mock the Statement to return the mocked ResultSet when checking for table existence
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+
+        // Call the method being tested
+        boolean result = userDAO.createUserTable();
+
+        // Verify that the table creation SQL statement was executed since the table does not exist
         verify(mockStatement, times(1)).execute(anyString());
+
+        // Assert that the result is true, meaning the table was created
+        assertTrue(result);
     }
+
+    @Test
+    public void testCreateUserTableWhenTableExists() throws SQLException {
+        // Mock the ResultSet to simulate table existence check
+        ResultSet mockResultSet = mock(ResultSet.class);
+
+        // Simulate that the table already exists
+        when(mockResultSet.next()).thenReturn(true);
+
+        // Mock the Statement to return the mocked ResultSet when checking for table existence
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+
+        // Call the method being tested
+        boolean result = userDAO.createUserTable();
+
+        // Verify that the creation SQL statement was not executed since the table already exists
+        verify(mockStatement, times(0)).execute(anyString());
+
+        // Assert that the result is false, meaning the table already existed
+        assertFalse(result);
+    }
+
 
     @Test
     public void testAddUser() throws SQLException {

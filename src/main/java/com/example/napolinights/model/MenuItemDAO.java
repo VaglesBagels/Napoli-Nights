@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The MenuItemDAO class provides methods to interact with the menu items in the database.
- * It implements the IMenuItemDAO interface to perform CRUD operations on menu items.
+ * The {@code MenuItemDAO} class provides methods to interact with the menu items in the database.
+ * It implements the {@link IMenuItemDAO} interface to perform CRUD operations on menu items.
  */
 public class MenuItemDAO implements IMenuItemDAO {
     private final Connection connection;
 
     /**
-     * Constructs a MenuItemDAO with the specified database connection.
+     * Constructs a {@code MenuItemDAO} with the specified database connection.
      *
      * @param connection the database connection to use for operations
      */
@@ -21,10 +21,14 @@ public class MenuItemDAO implements IMenuItemDAO {
     }
 
     /**
-     * Creates the menu table in the database if it does not already exist.
+     * Creates the {@code menu} table in the database if it does not already exist.
+     *
+     * @return {@code true} if the table is created successfully for the first time;
+     *         {@code false} if the table already exists or an error occurs during the creation.
      */
-    public void createMenuTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS menu ("
+    public boolean createMenuTable() {
+        String checkTableExistsSQL = "SELECT name FROM sqlite_master WHERE type='table' AND name='menu'";
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS menu ("
                 + "menuID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "category TEXT NOT NULL, "
                 + "name TEXT NOT NULL, "
@@ -33,18 +37,29 @@ public class MenuItemDAO implements IMenuItemDAO {
                 + "imageURL TEXT"
                 + ")";
         try {
+            // Check if the table already exists
             Statement stmt = connection.createStatement();
-            stmt.execute(sql);
-            System.out.println("Menu table created");
+            ResultSet rs = stmt.executeQuery(checkTableExistsSQL);
+            if (rs.next()) {
+                // Table already exists
+                System.out.println("Menu table already exists.");
+                return false;
+            }
+
+            // Table does not exist, so create it
+            stmt.execute(createTableSQL);
+            System.out.println("Menu table created.");
+            return true;
         } catch (SQLException ex) {
             System.err.println("Error creating menu table: " + ex.getMessage());
+            return false;
         }
     }
 
     /**
      * Adds a new menu item to the database.
      *
-     * @param menuItem the menu item to be added
+     * @param menuItem the {@link MenuItem} object representing the menu item to be added.
      */
     public void addMenuItem(MenuItem menuItem) {
         String sql = "INSERT INTO menu (category, name, description, price, imageURL) VALUES (?, ?, ?, ?, ?)";
@@ -63,7 +78,7 @@ public class MenuItemDAO implements IMenuItemDAO {
     /**
      * Updates an existing menu item in the database.
      *
-     * @param menuItem the menu item with updated information
+     * @param menuItem the {@link MenuItem} object containing updated information.
      */
     public void updateMenuItem(MenuItem menuItem) {
         String sql = "UPDATE menu SET category = ?, name = ?, description = ?, price = ?, imageURL = ? WHERE menuID = ?";
@@ -83,7 +98,7 @@ public class MenuItemDAO implements IMenuItemDAO {
     /**
      * Fetches all menu items from the database.
      *
-     * @return a list of all menu items
+     * @return a {@code List} of all {@link MenuItem} objects in the database.
      */
     public List<MenuItem> fetchAllMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
@@ -110,8 +125,8 @@ public class MenuItemDAO implements IMenuItemDAO {
     /**
      * Fetches all menu items from the database that belong to the specified category.
      *
-     * @param category the category to filter the menu items
-     * @return a list of menu items in the specified category
+     * @param category the {@link Category} to filter the menu items.
+     * @return a {@code List} of {@link MenuItem} objects in the specified category.
      */
     @Override
     public List<MenuItem> fetchAllMenuItemsByCategory(Category category) {
@@ -141,8 +156,8 @@ public class MenuItemDAO implements IMenuItemDAO {
     /**
      * Fetches a menu item by its ID.
      *
-     * @param id the ID of the menu item to be fetched
-     * @return the menu item with the specified ID, or null if not found
+     * @param id the ID of the menu item to be fetched.
+     * @return the {@link MenuItem} with the specified ID, or {@code null} if not found.
      */
     public MenuItem fetchMenuItemById(int id) {
         String sql = "SELECT * FROM menu WHERE menuID = ?";
@@ -169,7 +184,7 @@ public class MenuItemDAO implements IMenuItemDAO {
     }
 
     /**
-     * Closes the database connection.
+     * Closes the database connection used by this DAO.
      */
     public void closeConnection() {
         try {

@@ -3,13 +3,15 @@ package com.example.napolinights.model;
 import java.sql.*;
 
 /**
- * Implementation of the IUserDAO interface for managing user data in a database.
+ * Implementation of the {@link IUserDAO} interface for managing user data in a database.
+ * This class provides methods to create the users table, add users, verify user login,
+ * retrieve user details, and change user passwords.
  */
 public class UserDAO implements IUserDAO {
     private final Connection connection;
 
     /**
-     * Constructs a UserDAO instance with the provided database connection.
+     * Constructs a {@code UserDAO} instance with the provided database connection.
      *
      * @param connection the database connection to use for operations
      */
@@ -18,10 +20,14 @@ public class UserDAO implements IUserDAO {
     }
 
     /**
-     * Creates the user table in the database if it does not already exist.
+     * Creates the {@code users} table in the database if it does not already exist.
+     *
+     * @return {@code true} if the table is created successfully for the first time;
+     *         {@code false} if the table already exists or an error occurs during the creation.
      */
-    public void createUserTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS users ( " +
+    public boolean createUserTable() {
+        String checkTableExistsSQL = "SELECT name FROM sqlite_master WHERE type='table' AND name='users'";
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS users ( " +
                 "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "user_first_name VARCHAR(50) NOT NULL, " +
                 "user_last_name VARCHAR(50) NOT NULL, " +
@@ -32,23 +38,34 @@ public class UserDAO implements IUserDAO {
                 "user_status BOOLEAN NOT NULL" +
                 ")";
         try {
+            // Check if the users table already exists
             Statement stmt = connection.createStatement();
-            stmt.execute(sql);
-            System.out.println("User table created");
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+            ResultSet rs = stmt.executeQuery(checkTableExistsSQL);
+            if (rs.next()) {
+                // Table already exists
+                System.out.println("Users table already exists.");
+                return false;
+            }
+
+            // Table does not exist, so create it
+            stmt.execute(createTableSQL);
+            System.out.println("Users table created.");
+            return true;
+        } catch (SQLException ex) {
+            System.err.println("Error creating users table: " + ex.getMessage());
+            return false;
         }
     }
 
     /**
      * Adds a new user to the database. The user will be added as active by default.
      *
-     * @param user The user object containing the details of the user to be added.
-     * @throws SQLException If an error occurs while interacting with the database.
+     * @param user The {@link User} object containing the details of the user to be added.
+     * @throws SQLException If an error occurs while interacting with the database or the insertion fails.
      */
     @Override
     public void addUser(User user) throws SQLException {
-        String sql = "INSERT INTO Users (user_first_name, user_last_name, mobile, email, password, user_role, user_status) " +
+        String sql = "INSERT INTO users (user_first_name, user_last_name, mobile, email, password, user_role, user_status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -65,7 +82,7 @@ public class UserDAO implements IUserDAO {
                 throw new SQLException("Adding user failed, no rows affected.");
             }
 
-            // Retrieve the generated userID
+            // Retrieve the generated user ID
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 user.setId(generatedKeys.getInt(1)); // Assume userID is an int
@@ -83,12 +100,12 @@ public class UserDAO implements IUserDAO {
      *
      * @param username The email or mobile number of the user.
      * @param password The plain-text password entered by the user.
-     * @return A User object if the login credentials and password match.
-     * @throws SQLException If user does not exist or an error occurs while reading from the database.
+     * @return A {@link User} object if the login credentials and password match.
+     * @throws SQLException If the user does not exist, the password is incorrect, or an error occurs while reading from the database.
      */
     @Override
     public User verifyUserAccess(String username, String password) throws SQLException {
-        String sql = "SELECT * FROM Users WHERE (email = ? OR mobile = ?) and password = ? and user_status = true";
+        String sql = "SELECT * FROM users WHERE (email = ? OR mobile = ?) AND password = ? AND user_status = true";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
@@ -119,13 +136,12 @@ public class UserDAO implements IUserDAO {
      * Retrieves the user details for the specified user ID.
      *
      * @param userId The unique ID of the user to retrieve.
-     * @return A User object containing the user's details.
-     * @throws SQLException If an error occurs while interacting with the database
-     *                      or if the user is not found.
+     * @return A {@link User} object containing the user's details.
+     * @throws SQLException If an error occurs while interacting with the database or if the user is not found.
      */
     @Override
     public User getUserDetailsById(int userId) throws SQLException {
-        String sql = "SELECT * FROM Users WHERE user_id = ?";
+        String sql = "SELECT * FROM users WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId); // Correct parameter index
 
@@ -155,11 +171,11 @@ public class UserDAO implements IUserDAO {
      *
      * @param userId The unique ID of the user whose password is to be changed.
      * @param newPassword The new plain-text password to be set for the user.
-     * @throws SQLException If an error occurs while interacting with the database.
+     * @throws SQLException If an error occurs while interacting with the database or if the update fails.
      */
     @Override
     public void changePassword(int userId, String newPassword) throws SQLException {
-        String sql = "UPDATE Users SET password = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET password = ? WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, User.hashPassword(newPassword));
