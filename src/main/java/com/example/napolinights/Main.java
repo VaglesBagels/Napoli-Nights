@@ -56,34 +56,38 @@ public class Main extends Application {
         CSVReader csvReader = new CSVReader();
 
         // Initialize the user, menu, and order tables in the database
-        userDAO.createUserTable();
-        menuItemDAO.createMenuTable();
+        if (userDAO.createUserTable()) {
+            // Seed user data from a CSV file and insert it into the database
+            List<User> users = csvReader.readUserDataFromCSV("user_data.csv");
+            for (User user : users) {
+                try {
+                    userDAO.addUser(user);
+                } catch (SQLException sqlEx) {
+                    System.out.println("Error occurred while adding user to database.");
+                    System.out.println(sqlEx.getMessage());
+                }
+            }
+        }
+        if (menuItemDAO.createMenuTable()) {
+            // Seed menu item data from a CSV file and insert it into the database
+            List<MenuItem> menuItems = csvReader.readMenuFromCSV("menu_data.csv");
+            for (MenuItem menuItem : menuItems) {
+                menuItemDAO.addMenuItem(menuItem);
+            }
+
+            // Optionally print all menu items to verify insertion
+            System.out.println("All Menu Items:");
+            List<MenuItem> menu = menuItemDAO.fetchAllMenuItems();
+            for (MenuItem menuItem : menu) {
+                System.out.println(menuItem);
+            }
+        }
         orderDAO.createOrdersTable();
         orderDAO.createOrderItemsTable();
 
-        // Seed user data from a CSV file and insert it into the database
-        List<User> users = csvReader.readUserDataFromCSV("user_data.csv");
-        for (User user : users) {
-            try {
-                userDAO.addUser(user);
-            } catch (SQLException sqlEx) {
-                System.out.println("Error occurred while adding user to database.");
-                System.out.println(sqlEx.getMessage());
-            }
-        }
 
-        // Seed menu item data from a CSV file and insert it into the database
-        List<MenuItem> menuItems = csvReader.readMenuFromCSV("menu_data.csv");
-        for (MenuItem menuItem : menuItems) {
-            menuItemDAO.addMenuItem(menuItem);
-        }
 
-        // Optionally print all menu items to verify insertion
-        System.out.println("All Menu Items:");
-        List<MenuItem> menu = menuItemDAO.fetchAllMenuItems();
-        for (MenuItem menuItem : menu) {
-            System.out.println(menuItem);
-        }
+
     }
 
 
