@@ -59,6 +59,6 @@ public class StaffLandingPageController {
         }*/
 
         Stage stage = (Stage) viewReportsButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Reports.fxml", stage, "Reports");  // Use the utility method
+        StageConstants.openPage("/view/ViewReports.fxml", stage, "Reports");  // Use the utility method
     }
 }
