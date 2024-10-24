@@ -11,6 +11,9 @@
     <!-- Image with fixed size -->
     <ImageView fx:id="dialogImageView" fitWidth="300" fitHeight="200" preserveRatio="true"/> <!-- Fixed size for the image -->
 
+    <!-- Id -->
+    <Label fx:id="dialogId" style="-fx-font-size: 22px;-fx-text-fill: white;"/>
+
     <!-- Title -->
     <Label fx:id="dialogTitle" style="-fx-font-size: 22px;-fx-text-fill: white;"/>
 

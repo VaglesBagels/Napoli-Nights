@@ -1,5 +1,6 @@
 package com.example.napolinights.controller;
 
+import com.example.napolinights.util.StageConstants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,7 +25,7 @@ public class StaffLandingPageController {
     }
 
     private void openIncomingOrdersPage() {
-        try {
+        /*try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/IncomingOrders.fxml"));
             Parent ordersPage = loader.load();
             Stage stage = (Stage) viewOrdersButton.getScene().getWindow();
@@ -36,11 +37,14 @@ public class StaffLandingPageController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        Stage stage = (Stage) viewOrdersButton.getScene().getWindow();  // Get the current stage
+        StageConstants.openPage("/view/IncomingOrders.fxml", stage, "Incoming Orders");  // Use the utility method
     }
 
     private void openReportsPage() {
-        try {
+        /*try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/napolinights/Reports.fxml"));
             Parent reportsPage = loader.load();
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
@@ -52,6 +56,9 @@ public class StaffLandingPageController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        Stage stage = (Stage) viewReportsButton.getScene().getWindow();  // Get the current stage
+        StageConstants.openPage("/view/Reports.fxml", stage, "Reports");  // Use the utility method
     }
 }

@@ -13,13 +13,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 
 /**
  * Controller class for the Login page. Handles user login, validation,
@@ -28,29 +28,15 @@ import java.sql.SQLException;
 public class LoginController {
 
     // FXML elements from the Login page
-    @FXML
-    private TextField emailField;
+    @FXML private TextField emailField; // The user's email
+    @FXML private Label lblEmailMessage; // Error message for the email field
+    @FXML private TextField passwordField; // The user's password
+    @FXML private Label lblPasswordMessage; // Error message for the password field
+    @FXML private Hyperlink lnkSignUp; // Hyperlink to the Sign Up page
+    @FXML private AnchorPane loginPane; // The main login pane
+    @FXML private Button btnLogin; // The login button
+    @FXML private Label lblLoginStatusMessage; // Status message for login
 
-    @FXML
-    private Label lblEmailMessage;
-
-    @FXML
-    private TextField passwordField;
-
-    @FXML
-    private Label lblPasswordMessage;
-
-    @FXML
-    private Hyperlink lnkSignUp;
-
-    @FXML
-    private AnchorPane loginPane;
-
-    @FXML
-    private Button btnLogin;
-
-    @FXML
-    private Label lblLoginStatusMessage;
 
     /**
      * Initializes the controller, sets up the table columns, and adjusts the stage size.
@@ -67,6 +53,7 @@ public class LoginController {
             stage.setMinHeight(600);
         });
     }
+
 
     /**
      * Event handler for the login button click.
@@ -99,6 +86,7 @@ public class LoginController {
             System.out.println(ex.getMessage());
         }
     }
+
 
     /**
      * Validates the email and password input fields.
@@ -136,6 +124,7 @@ public class LoginController {
         return isValid;
     }
 
+
     /**
      * Attempts to log in the user with the provided email and password.
      * @param email The email entered by the user.
@@ -147,7 +136,6 @@ public class LoginController {
         Connection connection = SqliteConnection.getInstance();
         UserDAO userDAO = new UserDAO(connection);
         User user = userDAO.verifyUserAccess(email, password);  //VerifyUserAccess Returns a User object when successful.
-        //boolean userHasAccess = userDAO.verifyUserAccess(email, password);
         if (user != null && user.isUserActive()) {
             lblLoginStatusMessage.setStyle("");
             lblLoginStatusMessage.setText(null);
@@ -161,6 +149,7 @@ public class LoginController {
         }
     }
 
+
     /**
      * Event handler for the "Forgot Password" hyperlink.
      * Currently just prints a message to the console.
@@ -170,6 +159,7 @@ public class LoginController {
         System.out.println("Handle Forgot Password here");
     }
 
+
     /**
      * Event handler for the "Sign Up" hyperlink.
      * Opens the Sign Up page when clicked.
@@ -178,6 +168,7 @@ public class LoginController {
     private void handleSignUp() {
         openSignUpPage();
     }
+
 
     /**
      * Opens the Sign Up page (SignUp.fxml).
@@ -199,6 +190,7 @@ public class LoginController {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Opens the Staff Landing Page (StaffLandingPage.fxml) after a successful login.
