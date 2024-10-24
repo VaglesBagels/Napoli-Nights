@@ -2,10 +2,7 @@ package com.example.napolinights.controller;
 
 import com.example.napolinights.CartItem;
 import com.example.napolinights.ItemSelectionCallback;
-import com.example.napolinights.model.Category;
-import com.example.napolinights.model.MenuItem;
-import com.example.napolinights.model.MenuItemDAO;
-import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.model.*;
 import com.example.napolinights.util.StyleConstants;
 import com.example.napolinights.util.UIComponentBuilder;
 import javafx.application.Platform;
@@ -29,6 +26,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import static com.example.napolinights.util.UIComponentBuilder.getMenuItemImageOrDefault;
 
@@ -200,6 +200,9 @@ public class OrderController {
         itemBox.setOnMouseClicked(this::handleMenuItemClick);
 
         // Create labels and image for the item
+        String menuId = Integer.toString(menuItem.getMenuItemID());
+        Label itemId = UIComponentBuilder.createLabel(menuId,"-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+        itemId.setVisible(false);
         Label itemTitle = UIComponentBuilder.createLabel(menuItem.getName(),"-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         Label itemDescription = UIComponentBuilder.createLabel(menuItem.getDescription(), "-fx-font-size: 14px; -fx-text-fill: white;");
         itemDescription.setWrapText(true);  // Enable text wrapping for long descriptions
@@ -229,7 +232,8 @@ public class OrderController {
 
         if (menuItem != null) {
             try {
-                showDialog(menuItem.getName(), menuItem.getDescription(),
+                String menuId = Integer.toString(menuItem.getMenuItemID());
+                showDialog(menuId, menuItem.getName(), menuItem.getDescription(),
                         String.format("$%.2f", menuItem.getPrice()), menuItem.getImageURL(), this::updateSelectedItem);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -240,13 +244,14 @@ public class OrderController {
 
     /**
      * Displays a dialog with item details when a menu item is clicked.
+     * @param id The id of the menu item.
      * @param title The name of the menu item.
      * @param description The description of the menu item.
      * @param price The price of the menu item.
      * @param imagePath The image URL of the menu item.
      * @param callback Callback to handle the selection of the item.
      */
-    private void showDialog(String title, String description, String price, String imagePath, ItemSelectionCallback callback) {
+    private void showDialog(String id, String title, String description, String price, String imagePath, ItemSelectionCallback callback) {
         try {
             // Load the FXML for the dialog
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ItemDetailDialog.fxml"));
@@ -257,11 +262,15 @@ public class OrderController {
             itemDetailDialogController.setItemSelectionCallback(callback);
 
             // Set dialog labels and image
+            Label dialogId = (Label) loader.getNamespace().get("dialogId");
             Label dialogTitle = (Label) loader.getNamespace().get("dialogTitle");
             Label dialogDescription = (Label) loader.getNamespace().get("dialogDescription");
             Label dialogPrice = (Label) loader.getNamespace().get("dialogPrice");
             ImageView dialogImageView = (ImageView) loader.getNamespace().get("dialogImageView");
             Button cancelButton = (Button) loader.getNamespace().get("btnCancel");
+
+            dialogId.setText(id);
+            dialogId.setVisible(false);
 
             dialogTitle.setText(title);
             dialogDescription.setText(description);
@@ -316,11 +325,12 @@ public class OrderController {
 
     /**
      * Updates the selected item and adds it to the checkout section.
+     * @param itemId The ID of the menu item.
      * @param itemName The name of the menu item.
      * @param itemPrice The price of the menu item.
      * @param itemQty The quantity of the menu item.
      */
-    public void updateSelectedItem(String itemName, String itemPrice, Integer itemQty) {
+    public void updateSelectedItem(String itemId, String itemName, String itemPrice, Integer itemQty) {
         // Create Label for item name and enable text wrapping
         Label nameLabel = new Label(itemName);
         nameLabel.setMaxWidth(200);  // Set maximum width for the label to fit in the fixed column size
@@ -332,6 +342,10 @@ public class OrderController {
         Label priceLabel = new Label(String.format("$%.2f", Double.parseDouble(itemPrice.replace("$", "")) * itemQty));
         priceLabel.setMinWidth(60);  // Set minimum width for consistent alignment
         priceLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        // Hidden item ID label
+        Label idLabel = new Label(itemId);
+        idLabel.setVisible(false); // This makes it invisible in the UI
 
         // Hidden unit price label
         Label unitPriceLabel = new Label(itemPrice);
@@ -380,6 +394,7 @@ public class OrderController {
         itemGrid.add(nameLabel, 3, 0);        // Column 3: Name label
         itemGrid.add(priceLabel, 4, 0);       // Column 4: Price label
         itemGrid.add(unitPriceLabel, 5, 0);   // Column 5: Hidden unit price label
+        itemGrid.add(idLabel, 6, 0);          // Column 6: Hidden item ID label
 
         // Remove link
         Hyperlink removeLink = new Hyperlink("Remove");
@@ -476,26 +491,6 @@ public class OrderController {
      */
     @FXML
     private void HandleCheckoutButton() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Checkout.fxml"));
-            Parent checkoutPage = loader.load();
-            checkoutController = loader.getController();
-
-            passCartData();  // Pass cart data to the checkout page
-
-            Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
-            setupStage(stage, checkoutPage, "Checkout");  // Setup and show the checkout stage
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * Passes the cart data (items, quantities, prices) to the checkout page.
-     */
-    @FXML
-    public void passCartData() {
         int cartLength = orderSection.getChildren().size();
         CartItem[] items = new CartItem[cartLength];
 
@@ -505,19 +500,68 @@ public class OrderController {
             Label priceLabel = (Label) itemBox.getChildren().get(4);
             Label quantityLabel = (Label) itemBox.getChildren().get(1);
             Label unitPriceLabel = (Label) itemBox.getChildren().get(5);
+            Label idLabel = (Label) itemBox.getChildren().get(6);
 
             String name = nameLabel.getText();
+            int id = parseItemId(idLabel.getText());
             double unitPrice = parseItemPrice(unitPriceLabel.getText());
             int quantity = parseItemQuantity(quantityLabel.getText());
             // Round GST and total price to two decimal places
             double gst = Math.round((unitPrice * 0.10) * 100.0) / 100.0;
             double totalInc = Math.round(((unitPrice * quantity) + (gst * quantity)) * 100.0) / 100.0;
 
-            items[i] = new CartItem(name, unitPrice, quantity, gst, totalInc);
+            items[i] = new CartItem(id, name, unitPrice, quantity, gst, totalInc);
         }
 
-        // Send the data to the checkout controller
-        checkoutController.receiveData(items);
+        int savedOrderId = saveOrderToDatabase(items);
+
+        // Load the Checkout page and pass the order ID
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Checkout.fxml"));
+            Parent checkoutPage = loader.load();
+
+            // Get the CheckoutController and pass the order ID
+            CheckoutController checkoutController = loader.getController();
+            checkoutController.setOrderID(savedOrderId);
+
+            Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
+            setupStage(stage, checkoutPage, "Checkout");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Handles the checkout button click to navigate to the checkout page.
+     */
+
+    private int saveOrderToDatabase(CartItem[] cartItems) {
+        // Save the order to the database
+        // Create an Order object
+        Order order = new Order(new Timestamp(System.currentTimeMillis()), "Actual Customer Name", "Actual Customer Contact");
+
+        // Set the list of OrderItems from cart items
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            OrderItem orderItem = new OrderItem(cartItem.getId(), cartItem.getQuantity(), cartItem.getUnitPrice()); //cartItem.getId() gets the MenuItemId
+            orderItems.add(orderItem);
+        }
+        order.setOrderItems(orderItems);
+
+        int orderID = 0;
+        // Use OrderDAO to save the order to the database
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
+        try {
+            OrderDAO orderDAO = new OrderDAO(connection); // Use a method to get the connection
+            orderID = orderDAO.addOrder(order); // Save the order and get the generated order ID
+            System.out.println("Order saved to the database with ID: " + orderID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Failed to save the order to the database.");
+        }
+
+        return orderID;
     }
 
 
@@ -528,6 +572,15 @@ public class OrderController {
      */
     private double parseItemPrice(String string) {
         return Double.parseDouble(string.replace("$", ""));
+    }
+
+    /**
+     * Parses the id string to an int.
+     * @param id The id string to parse.
+     * @return The id as an int.
+     */
+    private int parseItemId(String id) {
+        return Integer.parseInt(id);
     }
 
 

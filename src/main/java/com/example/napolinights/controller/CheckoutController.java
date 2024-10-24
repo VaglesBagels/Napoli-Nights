@@ -1,6 +1,6 @@
 package com.example.napolinights.controller;
 
-import com.example.napolinights.model.Category;
+import com.example.napolinights.model.*;
 import com.example.napolinights.util.StageConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -13,10 +13,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import com.example.napolinights.CartItem;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,18 +31,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class CheckoutController {
 
     // FXML elements for the checkout page
-    @FXML private TableView<CartItem> orderSummaryTable;  // Table to display cart items
-    @FXML private TableColumn<CartItem, String> itemNameColumn;  // Column for item name
-    @FXML private TableColumn<CartItem, Integer> quantityColumn;  // Column for quantity
-    @FXML private TableColumn<CartItem, Double> unitPriceColumn;  // Column for unit price
-    @FXML private TableColumn<CartItem, Double> gstColumn;  // Column for GST
-    @FXML private TableColumn<CartItem, Double> totalColumn;  // Column for total price including GST
+    @FXML private TableView<OrderItem> orderSummaryTable;  // Table to display order items
+    @FXML private TableColumn<OrderItem, String> itemNameColumn;  // Column for item name
+    @FXML private TableColumn<OrderItem, Integer> quantityColumn;  // Column for quantity
+    @FXML private TableColumn<OrderItem, Double> unitPriceColumn;  // Column for unit price
+    @FXML private TableColumn<OrderItem, Double> gstColumn;  // Column for GST
+    @FXML private TableColumn<OrderItem, Double> totalColumn;  // Column for total price including GST
     @FXML private Label totalPriceLabel;  // Label to display the total price including GST
     @FXML private Button backButton;  // Button to go back to the Order page
     @FXML private Button payButton;  // Button to proceed to payment
     @FXML private AnchorPane checkoutPane;  // AnchorPane to hold the checkout items
 
-    private ObservableList<CartItem> cartItems = FXCollections.observableArrayList();  // List to hold cart items
+    private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();  // List to hold order items
+
+    private int orderID;
+
+    private Order savedOrder;
+
 
     /* ===============================================
      * SECTION 1: Initialization
@@ -51,12 +59,11 @@ public class CheckoutController {
     @FXML
     private void initialize() {
         // Set up the table columns
-        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuName"));  // Updated to use menuName
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
         gstColumn.setCellValueFactory(new PropertyValueFactory<>("gst"));
-        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalInc"));
-
+        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));  // Updated to use totalPrice
         // Set padding for the checkout pane to provide spacing
         checkoutPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
 
@@ -68,36 +75,59 @@ public class CheckoutController {
         });
     }
 
-    /* ===============================================
-     * SECTION 2: Receiving and Displaying Cart Data
-     * =============================================== */
+    /**
+     * Sets the order ID for this checkout process.
+     * @param orderID The ID of the order to be retrieved.
+     */
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+        loadOrderDetails(); // Load order details using the orderID
+    }
 
     /**
-     * Receives data from the OrderController and populates the order summary table.
-     * @param items The array of cart items to be displayed in the order summary.
+     * Loads the order details from the database using the orderID.
      */
-    public void receiveData(CartItem[] items) {
-        // Clear the table first
-        orderSummaryTable.getItems().clear();
+    private void loadOrderDetails() {
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
+        try {
+            OrderDAO orderDAO = new OrderDAO(connection);
+            savedOrder = orderDAO.getOrderById(orderID);
+            if (savedOrder != null) {
+                List<OrderItem> fetchedOrderItems = orderDAO.getOrderItemsByOrderId(orderID); // Fetch order items
+                orderItems.setAll(fetchedOrderItems); // Populate observable list
 
-        // Add all the items to the table
-        cartItems.addAll(items);
-        orderSummaryTable.setItems(cartItems);
+                // Set the items in the order summary table
+                orderSummaryTable.setItems(orderItems);
 
-        // Calculate and update total price
-        updateTotalPrice();
+                // Calculate and update total price
+                updateTotalPrice();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
+    /* ===============================================
+     * SECTION 2: Displaying Cart Data
+     * =============================================== */
 
     /**
      * Calculates and updates the total price label.
      */
     private void updateTotalPrice() {
         double total = 0;
-        for (CartItem item : cartItems) {
-            total += item.getTotalInc();
+        for (OrderItem item : orderItems) {
+            double itemTotal = item.getItemPrice() * item.getQuantity();
+            double itemGST = itemTotal * StageConstants.GST; // Assuming GST is 10%
+
+            total += itemTotal + itemGST;
         }
         totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", total));
     }
+
+
+
 
     /* ===============================================
      * SECTION 3: Navigation and Button Handlers
@@ -118,9 +148,35 @@ public class CheckoutController {
      */
     @FXML
     private void handlePayButtonClick() {
-        System.out.println("Checkout pay button clicked");
+        updateOrderToDatabase(orderID);
         openOrderConfirmationPage();
     }
+
+    /**
+     * Updates the order in the database to mark it as paid.
+     *
+     * @param orderID The ID of the order to be updated.
+     */
+    private void updateOrderToDatabase(int orderID) {
+        try {
+            Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
+            OrderDAO orderDAO = new OrderDAO(connection);
+            Timestamp paidDate = new Timestamp(System.currentTimeMillis());
+            Order orderToBeUpdated = new Order(savedOrder.getOrderID(), savedOrder.getOrderDate(), savedOrder.getCustomerName(), savedOrder.getCustomerContact(), savedOrder.getOrderItems(), paidDate);
+
+            if (orderToBeUpdated != null) {
+                orderDAO.updateOrder(orderToBeUpdated);
+                System.out.println("Order with ID: " + orderID + " has been updated as paid.");
+            } else {
+                System.err.println("Order with ID: " + orderID + " not found in the database.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Failed to update the order in the database.");
+        }
+    }
+
 
     /* ===============================================
      * SECTION 4: Order Confirmation Process
@@ -133,18 +189,16 @@ public class CheckoutController {
         if (emptyCart()) {
             showEmptyCartError();
         } else {
-            setTotalPriceText();
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/OrderConfirmation.fxml"));
-                Parent orderConfirmationPage = loader.load();
-                OrderConfirmationController orderConfirmationController = loader.getController();
-                transferCartItems(orderConfirmationController);
+                Parent checkoutPage = loader.load();
 
-                Stage stage = (Stage) payButton.getScene().getWindow();
-                stage.setTitle("Order Confirmation");
-                Scene scene = new Scene(orderConfirmationPage);
-                stage.setScene(scene);
-                stage.show();
+                // Get the OrderConfirmationController and pass the order ID
+                OrderConfirmationController orderConfirmationController = loader.getController();
+                orderConfirmationController.setOrderID(orderID);
+
+                Stage stage = (Stage) this.payButton.getScene().getWindow();
+                setupStage(stage, checkoutPage, "Checkout");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -156,7 +210,7 @@ public class CheckoutController {
      * @return True if the cart is empty, false otherwise.
      */
     private boolean emptyCart() {
-        return cartItems.isEmpty();
+        return orderItems.isEmpty();
     }
 
     /**
@@ -166,21 +220,20 @@ public class CheckoutController {
         System.out.println("Cart is empty! Cannot proceed to payment.");
     }
 
-    /**
-     * Sets the total price text in the total price label.
-     */
-    private void setTotalPriceText() {
-        // Calculate and set total price
-        double totalPrice = cartItems.stream().mapToDouble(CartItem::getTotalInc).sum();
-        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", totalPrice));
-    }
+
 
     /**
-     * Transfers cart items to the OrderConfirmationController.
-     * @param orderConfirmationController The controller for the Order Confirmation page.
+     * Sets up the stage for navigation to a new page.
+     * @param stage The current stage.
+     * @param page The new page to load.
+     * @param title The title of the new page.
      */
-    private void transferCartItems(OrderConfirmationController orderConfirmationController) {
-        // Transfer cart items to the confirmation page
-        orderConfirmationController.setCartItems(cartItems);
+    private void setupStage(Stage stage, Parent page, String title) {
+        stage.setTitle(title);
+        Scene scene = new Scene(page);
+        stage.setScene(scene);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
+        stage.show();
     }
 }

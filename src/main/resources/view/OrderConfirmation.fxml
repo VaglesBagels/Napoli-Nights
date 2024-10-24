@@ -26,7 +26,7 @@
 
          <!-- Order Details below success message -->
          <Label fx:id="orderNumberLabel" text="Order Number: 473713" style="-fx-text-fill: white; -fx-font-size: 18px;" />
-         <Label text="Payment Method: Pay At Counter" style="-fx-text-fill: white; -fx-font-size: 18px;" />
+<!--         <Label text="Payment Method: Pay At Counter" style="-fx-text-fill: white; -fx-font-size: 18px;" />-->
       </VBox>
 
       <!-- VBox to control the width and layout of the table -->

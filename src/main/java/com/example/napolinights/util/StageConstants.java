@@ -13,6 +13,9 @@ import java.io.IOException;
  */
 public class StageConstants {
 
+    // Constant for GST (Goods and Services Tax)
+    public static final double GST = 0.1;  // Define GST as 10%
+
     private static final double DEFAULT_MIN_WIDTH = 800;
     private static final double DEFAULT_MIN_HEIGHT = 600;
 

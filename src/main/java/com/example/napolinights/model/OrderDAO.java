@@ -258,6 +258,46 @@ public class OrderDAO implements IOrderDAO{
         return order;
     }
 
+
+    /**
+     * Fetches all order items associated with a specific order ID.
+     * This includes joining with the menu table to get menu item details like name and unit price.
+     *
+     * @param orderId The ID of the order whose items are to be retrieved.
+     * @return A list of OrderItem objects containing order item details and related menu information.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
+    public List<OrderItem> getOrderItemsByOrderId(int orderId) throws SQLException {
+        String fetchOrderItemsSQL = "SELECT oi.order_item_id, oi.order_id, oi.menu_id, oi.quantity, oi.item_price, oi.special_instructions, " +
+                "m.name AS item_name, m.price AS menu_price " +
+                "FROM order_items oi " +
+                "JOIN menu m ON oi.menu_id = m.menuID " +
+                "WHERE oi.order_id = ?";
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(fetchOrderItemsSQL)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    OrderItem orderItem = new OrderItem(
+                            rs.getInt("order_item_id"),
+                            rs.getInt("order_id"),
+                            rs.getInt("menu_id"),
+                            rs.getInt("quantity"),
+                            rs.getDouble("item_price")
+                    );
+                    // Set additional menu details, if needed
+                    orderItem.setMenuName(rs.getString("item_name"));
+                    orderItem.setMenuPrice(rs.getDouble("menu_price"));
+
+                    orderItems.add(orderItem);
+                }
+            }
+        }
+        return orderItems;
+    }
+
+
     @Override
     public void closeConnection() {
         try {
@@ -304,6 +344,30 @@ public class OrderDAO implements IOrderDAO{
                 throw new IllegalArgumentException("Order item price must be greater than 0.");
             }
         }
+    }
+
+
+    public List<Order> fetchConfirmedOrders() throws SQLException {
+        List<Order> confirmedOrders = new ArrayList<>();
+        String query = "SELECT * FROM Orders WHERE order_paid = 1"; // Assuming 'isPaid' indicates order confirmation
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                // Retrieve order details from the result set
+                Order order = new Order(
+                        rs.getInt("orderID"),
+                        rs.getTimestamp("orderDate"),
+                        rs.getString("customerName"),
+                        rs.getString("customerContact"),
+                        getOrderItemsByOrderId(rs.getInt("orderID")),
+                        rs.getTimestamp("paidDate")
+                );
+                confirmedOrders.add(order);
+            }
+        }
+        return confirmedOrders;
+
     }
 
 }

@@ -8,6 +8,11 @@ public class OrderItem {
     private String specialInstructions;
     private final double itemPrice;
 
+    // New fields for additional menu item details
+    private String menuName;  // Menu item name
+    private double menuPrice; // Menu item original price
+    private double gst;  // GST for the item
+
     public OrderItem(int menuID, int quantity, double itemPrice) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Item quantity must be greater than 0.");
@@ -19,6 +24,7 @@ public class OrderItem {
         this.quantity = quantity;
         this.itemPrice = itemPrice;
         this.specialInstructions = "";
+        this.gst = gst;
     }
 
     public OrderItem(int orderItemID, int orderID, int menuID, int quantity, double itemPrice) {
@@ -70,6 +76,35 @@ public class OrderItem {
         }
     }
 
+    // Getters and setters for new fields
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public double getMenuPrice() {
+        return menuPrice;
+    }
+
+    public void setMenuPrice(double menuPrice) {
+        this.menuPrice = menuPrice;
+    }
+
+
+    // Method to calculate GST
+    public double getGst() {
+        return Math.round(itemPrice * quantity * 0.10 * 100.0) / 100.0; // Assuming GST is 10%, rounding to 2 decimal places
+    }
+
+
+    // Method to calculate total price including GST
+    public double getTotalPrice() {
+        return (itemPrice * quantity) + getGst();
+    }
+
     @Override
     public String toString() {
         return "OrderItem{" +
@@ -79,6 +114,8 @@ public class OrderItem {
                 ", quantity=" + quantity +
                 ", itemPrice=" + itemPrice +
                 ", specialInstructions='" + specialInstructions + '\'' +
+                ", menuName='" + menuName + '\'' +
+                ", menuPrice=" + menuPrice +
                 '}';
     }
 }

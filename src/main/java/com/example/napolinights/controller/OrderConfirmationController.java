@@ -1,7 +1,9 @@
 package com.example.napolinights.controller;
 
-import com.example.napolinights.CartItem;
-import com.example.napolinights.util.StageConstants;
+import com.example.napolinights.model.Order;
+import com.example.napolinights.model.OrderDAO;
+import com.example.napolinights.model.OrderItem;
+import com.example.napolinights.model.SqliteConnection;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -15,34 +17,30 @@ import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 public class OrderConfirmationController {
 
 
-    @FXML
-    private AnchorPane orderConfirmationPane;  // AnchorPane to hold the order confirmation items
+    @FXML private AnchorPane orderConfirmationPane;  // AnchorPane to hold the order confirmation items
+    @FXML private TableView<OrderItem> orderSummaryTable;
+    @FXML private TableColumn<OrderItem, String> itemNameColumn;
+    @FXML private TableColumn<OrderItem, Integer> quantityColumn;
+    @FXML private TableColumn<OrderItem, Double> unitPriceColumn;
+    @FXML private TableColumn<OrderItem, Double> gstColumn;
+    @FXML private TableColumn<OrderItem, Double> totalColumn;
+    @FXML private Label totalPriceLabel;  // Declare the totalPriceLabel here
+    @FXML private Label orderNumberLabel;
+    @FXML private Button closeButton;
 
-    @FXML
-    private TableView<CartItem> orderSummaryTable;
-    @FXML
-    private TableColumn<CartItem, String> itemNameColumn;
-    @FXML
-    private TableColumn<CartItem, Integer> quantityColumn;
-    @FXML
-    private TableColumn<CartItem, Double> unitPriceColumn;
-    @FXML
-    private TableColumn<CartItem, Double> gstColumn;
-    @FXML
-    private TableColumn<CartItem, Double> totalColumn;
-    @FXML
-    private Label totalPriceLabel;  // Declare the totalPriceLabel here
-    @FXML
-    private Label orderNumberLabel;
-    @FXML
-    private Button closeButton;
+    private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();  // List to hold order items
 
-    private ObservableList<CartItem> cartItems = FXCollections.observableArrayList();
+    private int orderID;
+
+    private Order updatedOrder;
 
 
     /**
@@ -51,16 +49,16 @@ public class OrderConfirmationController {
     @FXML
     private void initialize() {
         // Set up the table columns
-        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
         gstColumn.setCellValueFactory(new PropertyValueFactory<>("gst"));
-        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalInc"));
+        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
         // Set padding for the contentAnchorPane to provide spacing
         orderConfirmationPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
 
-        generateAndSetOrderNumber();
+        //generateAndSetOrderNumber();
 
         // Ensure that the stage size is adjusted after the scene is loaded
         Platform.runLater(() -> {
@@ -72,41 +70,53 @@ public class OrderConfirmationController {
 
 
     /**
-     * Set the total price on the confirmation page.
+     * Sets the order ID for this checkout process.
+     * @param orderID The ID of the order to be retrieved.
      */
-    private void updateTotalPrice() {
-        double total = 0;
-        for (CartItem item : cartItems) {
-            total += item.getTotalInc();
-        }
-        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", total));
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+        orderNumberLabel.setText("Order Number: " + orderID);
+        loadOrderDetails(); // Load order details using the orderID
     }
 
 
     /**
-     * Method to receive data from the CheckoutController and populate the table.
+     * Loads the order details from the database using the orderID.
      */
-    public void setCartItems(ObservableList<CartItem> items) {
-        // Clear the table first
-        orderSummaryTable.getItems().clear();
+    private void loadOrderDetails() {
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
+        try {
+            OrderDAO orderDAO = new OrderDAO(connection);
+            updatedOrder = orderDAO.getOrderById(orderID);
+            if (updatedOrder != null) {
+                List<OrderItem> fetchedOrderItems = orderDAO.getOrderItemsByOrderId(orderID); // Fetch order items
+                orderItems.setAll(fetchedOrderItems); // Populate observable list
 
-        // Add all the items to the table
-        cartItems.addAll(items);
-        orderSummaryTable.setItems(cartItems);
+                // Set the items in the order summary table
+                orderSummaryTable.setItems(orderItems);
 
-        // Calculate and update total price
-        updateTotalPrice();
-    }
-
-    private void generateAndSetOrderNumber() {
-        Random random = new Random();
-        int orderNumber = random.nextInt(900000) + 100000;  // Generates a random number between 100000 and 999999
-        if (orderNumberLabel != null) {
-            orderNumberLabel.setText("Order Number: " + orderNumber);
-        } else {
-            System.err.println("orderNumberLabel is null, check FXML file for correct fx:id.");
+                // Calculate and update total price
+                setTotalPriceText();
+                System.out.println("Loaded order with ID: " + orderID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+
+
+    /**
+     * Sets the total price text in the total price label.
+     */
+    private void setTotalPriceText() {
+        // Calculate and set total price
+        double totalPrice = orderItems.stream()
+                .mapToDouble(item -> item.getItemPrice() * item.getQuantity() * 1.1) // Including 10% GST
+                .sum();
+        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", totalPrice));
+    }
+
+
 
     /**
      * Method to handle the "Close" button click event.
