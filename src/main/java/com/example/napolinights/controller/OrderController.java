@@ -551,8 +551,8 @@ public class OrderController {
 
         int orderID = 0;
         // Use OrderDAO to save the order to the database
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
         try {
-            Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
             OrderDAO orderDAO = new OrderDAO(connection); // Use a method to get the connection
             orderID = orderDAO.addOrder(order); // Save the order and get the generated order ID
             System.out.println("Order saved to the database with ID: " + orderID);

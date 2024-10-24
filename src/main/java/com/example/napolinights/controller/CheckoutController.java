@@ -88,8 +88,8 @@ public class CheckoutController {
      * Loads the order details from the database using the orderID.
      */
     private void loadOrderDetails() {
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
         try {
-            Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
             OrderDAO orderDAO = new OrderDAO(connection);
             savedOrder = orderDAO.getOrderById(orderID);
             if (savedOrder != null) {
@@ -108,7 +108,6 @@ public class CheckoutController {
     }
 
 
-
     /* ===============================================
      * SECTION 2: Displaying Cart Data
      * =============================================== */
@@ -120,7 +119,8 @@ public class CheckoutController {
         double total = 0;
         for (OrderItem item : orderItems) {
             double itemTotal = item.getItemPrice() * item.getQuantity();
-            double itemGST = itemTotal * 0.1; // Assuming GST is 10%
+            double itemGST = itemTotal * StageConstants.GST; // Assuming GST is 10%
+
             total += itemTotal + itemGST;
         }
         totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", total));
@@ -189,7 +189,6 @@ public class CheckoutController {
         if (emptyCart()) {
             showEmptyCartError();
         } else {
-            setTotalPriceText();
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/OrderConfirmation.fxml"));
                 Parent checkoutPage = loader.load();
@@ -221,16 +220,6 @@ public class CheckoutController {
         System.out.println("Cart is empty! Cannot proceed to payment.");
     }
 
-    /**
-     * Sets the total price text in the total price label.
-     */
-    private void setTotalPriceText() {
-        // Calculate and set total price
-        double totalPrice = orderItems.stream()
-                .mapToDouble(item -> item.getItemPrice() * item.getQuantity() * 1.1) // Including 10% GST
-                .sum();
-        totalPriceLabel.setText(String.format("Total (Inc GST): $%.2f", totalPrice));
-    }
 
 
     /**

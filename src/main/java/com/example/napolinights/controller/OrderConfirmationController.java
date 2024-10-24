@@ -84,8 +84,8 @@ public class OrderConfirmationController {
      * Loads the order details from the database using the orderID.
      */
     private void loadOrderDetails() {
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
         try {
-            Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
             OrderDAO orderDAO = new OrderDAO(connection);
             updatedOrder = orderDAO.getOrderById(orderID);
             if (updatedOrder != null) {
