@@ -8,9 +8,12 @@ import javafx.scene.image.ImageView;
  */
 public class LogoController {
 
-    @FXML
-    private ImageView logoImageView;
+    // FXML element for the logo image view
+    @FXML private ImageView logoImageView;
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     public void initialize() {
         // Any initialization logic for the logo can go here.

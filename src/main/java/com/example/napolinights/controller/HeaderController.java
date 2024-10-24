@@ -7,8 +7,7 @@ import javafx.scene.control.Button;
 
 public class HeaderController {
 
-    @FXML
-    private Button homeButton;
+    @FXML private Button homeButton;
 
     /**
      * Handles the Home button click event.

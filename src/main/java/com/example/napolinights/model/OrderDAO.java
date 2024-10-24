@@ -8,7 +8,7 @@ import java.util.List;
  * DAO class for handling database operations related to Orders.
  */
 public class OrderDAO implements IOrderDAO{
-    public final Connection connection;
+    private final Connection connection;
 
     /**
      * Constructs an OrderDAO with the specified database connection.
@@ -72,8 +72,8 @@ public class OrderDAO implements IOrderDAO{
         validateOrder(order);
 
         // Prepare SQL statements
-        String insertOrderSQL = "INSERT INTO Orders (orderDate, customerName, customerContact) VALUES (?, ?, ?)";
-        String insertOrderItemSQL = "INSERT INTO OrderItems (orderID, menuID, quantity, itemPrice) VALUES (?, ?, ?, ?)";
+        String insertOrderSQL = "INSERT INTO orders (created_timestamp, customer_name, customer_contact, order_paid) VALUES (?, ?, ?, ?)";
+        String insertOrderItemSQL = "INSERT INTO order_items (order_id, menu_id, quantity, item_price, special_instructions) VALUES (?, ?, ?, ?, ?)";
 
         // Use try-with-resources for transaction management
         try (PreparedStatement orderStmt = connection.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
@@ -86,6 +86,7 @@ public class OrderDAO implements IOrderDAO{
             orderStmt.setTimestamp(1, order.getOrderDate());
             orderStmt.setString(2, order.getCustomerName());
             orderStmt.setString(3, order.getCustomerContact());
+            orderStmt.setBoolean(4, order.isPaid());
             int affectedRows = orderStmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -108,6 +109,7 @@ public class OrderDAO implements IOrderDAO{
                 orderItemStmt.setInt(2, item.getMenuID());
                 orderItemStmt.setInt(3, item.getQuantity());
                 orderItemStmt.setDouble(4, item.getItemPrice());
+                orderItemStmt.setString(5, item.getSpecialInstructions());
                 orderItemStmt.addBatch();
             }
 
@@ -120,7 +122,11 @@ public class OrderDAO implements IOrderDAO{
 
         } catch (SQLException e) {
             // Rollback transaction in case of error
-            connection.rollback();
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                e.addSuppressed(rollbackEx);  // Include rollback failure as suppressed exception
+            }
             throw e;
         } catch (IllegalArgumentException e) {
             // Convert IllegalArgumentException to SQLException for consistency with expected exceptions
@@ -220,27 +226,6 @@ public class OrderDAO implements IOrderDAO{
         return orders;
     }
 
-    public List<Order> fetchConfirmedOrders() throws SQLException {
-        List<Order> confirmedOrders = new ArrayList<>();
-        String query = "SELECT * FROM Orders WHERE isPaid = 1"; // Assuming 'isPaid' indicates order confirmation
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                // Retrieve order details from the result set
-                Order order = new Order(
-                        rs.getInt("orderID"),
-                        rs.getTimestamp("orderDate"),
-                        rs.getString("customerName"),
-                        rs.getString("customerContact"),
-                        fetchOrderItems(rs.getInt("orderID")),
-                        rs.getTimestamp("paidDate")
-                );
-                confirmedOrders.add(order);
-            }
-        }
-        return confirmedOrders;
-    }
 
     /**
      * Fetches a specific order by its ID.
@@ -250,27 +235,6 @@ public class OrderDAO implements IOrderDAO{
      * @return The order object if found, or null if no order exists with the given ID.
      * @throws SQLException If an SQL error occurs during the fetch operation.
      */
-    private List<OrderItem> fetchOrderItems(int orderId) throws SQLException {
-        List<OrderItem> orderItems = new ArrayList<>();
-        String query = "SELECT * FROM OrderItems WHERE orderID = ?";
-
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setInt(1, orderId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    orderItems.add(new OrderItem(
-                            rs.getInt("orderItemID"),
-                            rs.getInt("orderID"),
-                            rs.getInt("menuID"),
-                            rs.getInt("quantity"),
-                            rs.getDouble("itemPrice")
-                    ));
-                }
-            }
-        }
-        return orderItems;
-    }
-
     @Override
     public Order getOrderById(int id) throws SQLException {
         String getOrderByIdSQL = "SELECT * FROM orders WHERE order_id = ?";
@@ -293,6 +257,46 @@ public class OrderDAO implements IOrderDAO{
         }
         return order;
     }
+
+
+    /**
+     * Fetches all order items associated with a specific order ID.
+     * This includes joining with the menu table to get menu item details like name and unit price.
+     *
+     * @param orderId The ID of the order whose items are to be retrieved.
+     * @return A list of OrderItem objects containing order item details and related menu information.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
+    public List<OrderItem> getOrderItemsByOrderId(int orderId) throws SQLException {
+        String fetchOrderItemsSQL = "SELECT oi.order_item_id, oi.order_id, oi.menu_id, oi.quantity, oi.item_price, oi.special_instructions, " +
+                "m.name AS item_name, m.price AS menu_price " +
+                "FROM order_items oi " +
+                "JOIN menu m ON oi.menu_id = m.menuID " +
+                "WHERE oi.order_id = ?";
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(fetchOrderItemsSQL)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    OrderItem orderItem = new OrderItem(
+                            rs.getInt("order_item_id"),
+                            rs.getInt("order_id"),
+                            rs.getInt("menu_id"),
+                            rs.getInt("quantity"),
+                            rs.getDouble("item_price")
+                    );
+                    // Set additional menu details, if needed
+                    orderItem.setMenuName(rs.getString("item_name"));
+                    orderItem.setMenuPrice(rs.getDouble("menu_price"));
+
+                    orderItems.add(orderItem);
+                }
+            }
+        }
+        return orderItems;
+    }
+
 
     @Override
     public void closeConnection() {
@@ -342,20 +346,28 @@ public class OrderDAO implements IOrderDAO{
         }
     }
 
-    public String fetchOrderNotes(int orderID) {
-        String sql = "SELECT notes FROM orders WHERE order_id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, orderID);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("notes");
-                }
+
+    public List<Order> fetchConfirmedOrders() throws SQLException {
+        List<Order> confirmedOrders = new ArrayList<>();
+        String query = "SELECT * FROM Orders WHERE order_paid = 1"; // Assuming 'isPaid' indicates order confirmation
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                // Retrieve order details from the result set
+                Order order = new Order(
+                        rs.getInt("orderID"),
+                        rs.getTimestamp("orderDate"),
+                        rs.getString("customerName"),
+                        rs.getString("customerContact"),
+                        getOrderItemsByOrderId(rs.getInt("orderID")),
+                        rs.getTimestamp("paidDate")
+                );
+                confirmedOrders.add(order);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle error, possibly rethrow or return a default message
         }
-        return "No special notes.";
+        return confirmedOrders;
+
     }
 
 }

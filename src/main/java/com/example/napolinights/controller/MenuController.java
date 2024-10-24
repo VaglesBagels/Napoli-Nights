@@ -29,12 +29,10 @@ import java.util.stream.Collectors;
 public class MenuController {
 
     // ScrollPane to hold the VBox for scrolling through the menu items
-    @FXML
-    private ScrollPane menuScrollPane;
+    @FXML private ScrollPane menuScrollPane;
 
     // VBox to dynamically add categories and their menu items inside the ScrollPane
-    @FXML
-    private VBox contentAnchorPane;
+    @FXML private VBox contentAnchorPane;
 
     /**
      * Initializes the MenuController. Sets up the ScrollPane and loads the menu items.

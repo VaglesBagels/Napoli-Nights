@@ -32,8 +32,44 @@ public class MenuItemDAOTest {
 
     @Test
     public void testCreateMenuTable() throws SQLException {
-        menuItemDAO.createMenuTable();
+        // Mock the ResultSet to simulate table existence check
+        ResultSet mockResultSet = mock(ResultSet.class);
+
+        // When the result set is queried, simulate that the table doesn't exist
+        when(mockResultSet.next()).thenReturn(false); // Simulate table doesn't exist
+
+        // Mock the Statement
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+
+        // Call the method being tested
+        boolean result = menuItemDAO.createMenuTable();
+
+        // Verify that the table creation statement was executed since the table doesn't exist
         verify(mockStatement, times(1)).execute(anyString());
+
+        // Assert that the result is true, meaning the table was created
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCreateMenuTableWhenTableExists() throws SQLException {
+        // Mock the ResultSet to simulate table existence check
+        ResultSet mockResultSet = mock(ResultSet.class);
+
+        // Simulate the table already exists
+        when(mockResultSet.next()).thenReturn(true);
+
+        // Mock the Statement
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+
+        // Call the method being tested
+        boolean result = menuItemDAO.createMenuTable();
+
+        // Verify that the creation SQL statement was not executed since the table already exists
+        verify(mockStatement, times(0)).execute(anyString());
+
+        // Assert that the result is false, meaning the table already existed
+        assertFalse(result);
     }
 
     @Test
