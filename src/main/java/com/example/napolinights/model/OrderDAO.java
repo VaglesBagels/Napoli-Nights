@@ -349,7 +349,7 @@ public class OrderDAO implements IOrderDAO{
 
     public List<Order> fetchConfirmedOrders() throws SQLException {
         List<Order> confirmedOrders = new ArrayList<>();
-        String query = "SELECT * FROM Orders WHERE isPaid = 1"; // Assuming 'isPaid' indicates order confirmation
+        String query = "SELECT * FROM Orders WHERE order_paid = 1"; // Assuming 'isPaid' indicates order confirmation
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
