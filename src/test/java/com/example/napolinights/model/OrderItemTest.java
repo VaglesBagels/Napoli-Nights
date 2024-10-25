@@ -55,7 +55,7 @@ class OrderItemTest {
     @Test
     void testToString() {
         OrderItem orderItems = new OrderItem(10, 1, 2, 3, 10.5);
-        String expected = "OrderItem{orderItemID=10, orderID=1, menuID=2, quantity=3, itemPrice=10.5, specialInstructions=''}";
+        String expected = "OrderItem{orderItemID=10, orderID=1, menuID=2, quantity=3, itemPrice=10.5, specialInstructions='', menuName='null', menuPrice=0.0}";
 
         assertEquals(expected, orderItems.toString());
     }
@@ -104,7 +104,7 @@ class OrderItemTest {
     @Test
     void testToStringWithEdgeValues() {
         OrderItem orderItem = new OrderItem(0, 0, 0, Integer.MAX_VALUE, Double.MAX_VALUE);
-        String expected = "OrderItem{orderItemID=0, orderID=0, menuID=0, quantity=" + Integer.MAX_VALUE + ", itemPrice=" + Double.MAX_VALUE + ", specialInstructions=''}";
+        String expected = "OrderItem{orderItemID=0, orderID=0, menuID=0, quantity=" + Integer.MAX_VALUE + ", itemPrice=" + Double.MAX_VALUE + ", specialInstructions='', menuName='null', menuPrice=0.0}";
 
         assertEquals(expected, orderItem.toString(),
                 "The toString method should handle edge values correctly in its string representation");
