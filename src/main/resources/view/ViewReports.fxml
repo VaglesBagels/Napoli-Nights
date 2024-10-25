@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<!-- Root element representing the view reports page layout -->
+<AnchorPane fx:id="reportsPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.napolinights.controller.ViewReportsController"
+            style="-fx-background-color: #141415; -fx-min-width: 800; -fx-min-height: 600;">
+
+    <!-- Include the reusable header at the top of the page -->
+    <VBox fx:id="headerPane" layoutX="10.0" layoutY="10.0" prefWidth="800.0" spacing="20.0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <fx:include source="Header.fxml" />
+    </VBox>
+
+    <!-- Main content area, wrapped in another VBox for better layout control -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="120">
+
+        <!-- Title for the Reports Page -->
+        <Label  text="Daily Report" style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;"/>
+
+        <!-- Table to display reports -->
+        <TableView
+                fx:id="reportsTable" prefHeight="300" prefWidth="1000" style="-fx-background-color: #141415;">
+        </TableView>
+
+        <!-- Section containing action buttons (Home page) -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="backToStaffLandingPageButton" onAction="#handleBackToStaffLandingPage"
+                    prefHeight="50.0" prefWidth="217.0" style="-fx-background-color: #84AE87;
+                    -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" text="Staff Landing Page" />
+        </HBox>
+    </VBox>
+</AnchorPane>
+
