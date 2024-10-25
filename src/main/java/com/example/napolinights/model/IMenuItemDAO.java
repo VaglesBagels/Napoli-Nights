@@ -1,5 +1,6 @@
 package com.example.napolinights.model;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public interface IMenuItemDAO {
      *
      * @return A {@code List} of {@link MenuItem} objects representing all menu items in the database.
      */
-    List<MenuItem> fetchAllMenuItems();
+    List<MenuItem> fetchAllMenuItems() throws SQLException;
 
     /**
      * Retrieves all menu items from the {@code menu} table that belong to a specific category.

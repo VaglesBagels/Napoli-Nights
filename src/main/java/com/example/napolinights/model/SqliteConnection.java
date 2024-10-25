@@ -27,10 +27,37 @@ public class SqliteConnection {
      *
      * @return The singleton instance of the `Connection` object.
      */
-    public static Connection getInstance() {
+    /*public static Connection getInstance() {
         if (instance == null) {
             new SqliteConnection();
         }
         return instance;
+    }*/
+    public static Connection getInstance() {
+        try {
+            // Check if the connection is null or closed, and create a new one if necessary
+            if (instance == null || instance.isClosed()) {
+                new SqliteConnection();
+            }
+        } catch (SQLException sqlEx) {
+            System.err.println("Error getting database connection: " + sqlEx.getMessage());
+        }
+        return instance;
     }
+
+    /**
+     * Closes the SQLite connection if it is open.
+     */
+    public static void closeConnection() {
+        try {
+            if (instance != null && !instance.isClosed()) {
+                instance.close();
+                System.out.println("SQLite connection has been closed.");
+                instance = null;  // Set instance to null to indicate it's closed
+            }
+        } catch (SQLException sqlEx) {
+            System.err.println("Error closing database connection: " + sqlEx.getMessage());
+        }
+    }
+
 }

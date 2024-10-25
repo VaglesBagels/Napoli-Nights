@@ -1,6 +1,8 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.util.StageConstants;  // Import StageUtil class for setting stage size
+import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,6 +13,8 @@ import javafx.scene.control.Button;
  */
 public class LandingPageController {
 
+    @FXML private AnchorPane landingPagePane; // The main pane of the Landing Page
+
     // UI elements from the FXML file
     @FXML private Button menuButton;
     @FXML private Button orderButton;
@@ -18,12 +22,17 @@ public class LandingPageController {
 
 
     /**
-     * This method is called automatically after the FXML file is loaded.
-     * It can be used to initialize UI elements or logic when the page is loaded.
+     * This method is called after all the FXML elements have been initialized.
+     * It sets the minimum size of the stage to prevent resizing below a certain width and height.
      */
     @FXML
     public void initialize() {
-        System.out.println("LandingPageController initialized");
+        // Ensure that the stage size is adjusted after the scene is loaded
+        Platform.runLater(() -> {
+            Stage stage = (Stage) landingPagePane.getScene().getWindow();
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+        });
     }
 
     /**

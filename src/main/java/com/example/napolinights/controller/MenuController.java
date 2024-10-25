@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,15 +62,23 @@ public class MenuController {
     private void loadMenuItems() {
         // Get a connection to the database
         Connection connection = SqliteConnection.getInstance();
-        MenuItemDAO menuItemDAO = new MenuItemDAO(connection);
+        try {
+            MenuItemDAO menuItemDAO = new MenuItemDAO(connection);
+            // Fetch all menu items and group them by their category
+            List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItems();
+            Map<Category, List<MenuItem>> groupedMenuItems = menuItems.stream()
+                    .collect(Collectors.groupingBy(MenuItem::getCategory));
 
-        // Fetch all menu items and group them by their category
-        List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItems();
-        Map<Category, List<MenuItem>> groupedMenuItems = menuItems.stream()
-                .collect(Collectors.groupingBy(MenuItem::getCategory));
+            // Display the grouped menu items on the UI
+            displayMenuItems(groupedMenuItems);
 
-        // Display the grouped menu items on the UI
-        displayMenuItems(groupedMenuItems);
+            // Close the connection
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Failed to save the order to the database.");
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
+        }
     }
 
     /**

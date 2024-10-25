@@ -104,6 +104,8 @@ public class CheckoutController {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            SqliteConnection.closeConnection(); // Close the database connection
         }
     }
 
@@ -158,8 +160,8 @@ public class CheckoutController {
      * @param orderID The ID of the order to be updated.
      */
     private void updateOrderToDatabase(int orderID) {
+        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
         try {
-            Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
             OrderDAO orderDAO = new OrderDAO(connection);
             Timestamp paidDate = new Timestamp(System.currentTimeMillis());
             Order orderToBeUpdated = new Order(savedOrder.getOrderID(), savedOrder.getOrderDate(), savedOrder.getCustomerName(), savedOrder.getCustomerContact(), savedOrder.getOrderItems(), paidDate);
@@ -174,6 +176,8 @@ public class CheckoutController {
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Failed to update the order in the database.");
+        } finally {
+            SqliteConnection.closeConnection(); // Close the database connection
         }
     }
 

@@ -100,7 +100,7 @@ public class MenuItemDAO implements IMenuItemDAO {
      *
      * @return a {@code List} of all {@link MenuItem} objects in the database.
      */
-    public List<MenuItem> fetchAllMenuItems() {
+    public List<MenuItem> fetchAllMenuItems() throws SQLException {
         List<MenuItem> menuItems = new ArrayList<>();
         String sql = "SELECT * FROM menu";
         try {

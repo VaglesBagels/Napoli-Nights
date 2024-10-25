@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <!-- Main layout for the Landing Page using an AnchorPane -->
-<AnchorPane style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea"
+<AnchorPane fx:id="landingPagePane" style="-fx-background-color: #141415;" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.napolinights.controller.LandingPageController">
 

@@ -559,7 +559,10 @@ public class OrderController {
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Failed to save the order to the database.");
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
         }
+
 
         return orderID;
     }

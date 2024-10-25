@@ -3,6 +3,7 @@ module com.example.napolinights {
     requires javafx.fxml;
     requires java.sql;
     requires java.security.sasl;
+    requires java.desktop;
 
 
     opens com.example.napolinights to javafx.fxml;
