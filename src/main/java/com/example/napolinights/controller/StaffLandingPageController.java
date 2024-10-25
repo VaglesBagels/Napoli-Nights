@@ -32,8 +32,7 @@ public class StaffLandingPageController {
             Scene scene = new Scene(ordersPage);
             stage.setScene(scene);
             stage.show();
-
-            //IncomingOrdersController controller = loader.getController();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +42,7 @@ public class StaffLandingPageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ViewReports.fxml"));
             Parent reportsPage = loader.load();
-            Stage stage = (Stage) viewReportsButton.getScene().getWindow();
+            Stage stage = (Stage) viewReportsButton.getScene().getWindow();  // Get the current stage
             stage.setMinWidth(800);
             stage.setMinHeight(600);
             stage.setTitle("Reports");

@@ -114,9 +114,6 @@ public class IncomingOrdersController {
         }
     }
 
-    /**
-     * Class to hold data for displaying in the TableView.
-     */
     public static class OrderDisplay {
         private final Integer orderId;
         private final String orderDetails;
