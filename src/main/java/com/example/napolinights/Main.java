@@ -84,10 +84,6 @@ public class Main extends Application {
         }
         orderDAO.createOrdersTable();
         orderDAO.createOrderItemsTable();
-
-
-
-
     }
 
 
