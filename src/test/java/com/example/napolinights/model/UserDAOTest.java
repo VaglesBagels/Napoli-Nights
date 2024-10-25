@@ -135,7 +135,7 @@ public class UserDAOTest {
         SQLException exception = assertThrows(SQLException.class, () ->
                 userDAO.verifyUserAccess(username, hashedPassword));
 
-        assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
+        assertEquals("Login Failed.Please try again.", exception.getCause().getMessage());
     }
 
 
@@ -154,7 +154,7 @@ public class UserDAOTest {
         SQLException exception = assertThrows(SQLException.class, () ->
                 userDAO.verifyUserAccess(username, hashedPassword));
 
-        assertEquals("Invalid password or user does not exist.", exception.getCause().getMessage());
+        assertEquals("Login Failed.Please try again.", exception.getCause().getMessage());
     }
 
     @Test

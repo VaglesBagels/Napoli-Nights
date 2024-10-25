@@ -226,6 +226,40 @@ public class OrderDAO implements IOrderDAO{
         return orders;
     }
 
+    /**
+     * Fetches all incoming orders from the database.
+     * This method retrieves orders that have been paid, indicating they are ready for processing.
+     *
+     * @return A list of incoming orders in the database.
+     * @throws SQLException If an SQL error occurs during the fetch operation.
+     */
+    public List<Order> fetchIncomingOrders() throws SQLException {
+        String fetchIncomingOrdersSQL = "SELECT * FROM orders WHERE order_paid = 1";
+        List<Order> incomingOrders = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(fetchIncomingOrdersSQL)) {
+
+            while (rs.next()) {
+                // Create an Order object from the result set
+                Order order = new Order(
+                        rs.getTimestamp("created_timestamp"),
+                        rs.getString("customer_name"),
+                        rs.getString("customer_contact")
+                );
+                order.setOrderID(rs.getInt("order_id"));
+                order.setPaidDate(rs.getTimestamp("paid_timestamp"));
+
+                // Optionally fetch order items for the incoming order
+                List<OrderItem> orderItems = getOrderItemsByOrderId(order.getOrderID());
+                order.setOrderItems(orderItems);
+
+                // Add the order to the list of incoming orders
+                incomingOrders.add(order);
+            }
+        }
+        return incomingOrders;
+    }
 
     /**
      * Fetches a specific order by its ID.
@@ -356,12 +390,12 @@ public class OrderDAO implements IOrderDAO{
             while (rs.next()) {
                 // Retrieve order details from the result set
                 Order order = new Order(
-                        rs.getInt("orderID"),
-                        rs.getTimestamp("orderDate"),
-                        rs.getString("customerName"),
-                        rs.getString("customerContact"),
-                        getOrderItemsByOrderId(rs.getInt("orderID")),
-                        rs.getTimestamp("paidDate")
+                        rs.getInt("order_id"),
+                        rs.getTimestamp("created_timestamp"),
+                        rs.getString("customer_name"),
+                        rs.getString("customer_contact"),
+                        getOrderItemsByOrderId(rs.getInt("order_id")),
+                        rs.getTimestamp("paid_timestamp")
                 );
                 confirmedOrders.add(order);
             }

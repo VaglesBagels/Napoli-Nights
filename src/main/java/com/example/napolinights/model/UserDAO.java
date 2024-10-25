@@ -125,7 +125,7 @@ public class UserDAO implements IUserDAO {
                         rs.getBoolean("user_status")
                 );
             } else {
-                throw new SQLException("Invalid password or user does not exist.");
+                throw new SQLException("Login Failed.Please try again.");
             }
         } catch (SQLException e) {
             throw new SQLException(e.getMessage(), e);
