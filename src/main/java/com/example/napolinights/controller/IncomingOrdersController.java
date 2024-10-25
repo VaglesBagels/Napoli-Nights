@@ -1,7 +1,6 @@
 package com.example.napolinights.controller;
 
-import com.example.napolinights.model.Order;
-import com.example.napolinights.model.OrderDAO;
+import com.example.napolinights.model.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,108 +10,99 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import com.example.napolinights.model.SqliteConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class IncomingOrdersController {
-    @FXML
-    public AnchorPane incomingOrdersPane;
+    @FXML public AnchorPane incomingOrdersPane;
+    @FXML public VBox headerPane;
+    @FXML private Button staffLandingPageButton;
 
-    @FXML
-    public VBox headerPane;
+    @FXML private TableView<OrderDisplay> confirmedCartListView;
+    @FXML private TableColumn<OrderDisplay, Integer> orderIdColumn;
+    @FXML private TableColumn<OrderDisplay, String> orderDetailsColumn;
 
-    @FXML
-    private TableView<Order> tblIncomingOrders; // A TableView for displaying the orders
-
-    @FXML
-    private TableColumn<Order, Integer> colOrderNumber; // Order ID column
-
-    @FXML
-    private TableColumn<Order, Integer> colOrderItemID; // Order item ID column
-
-    @FXML
-    private TableColumn<Order, Integer> colQuantity; // Quantity column
-
-    @FXML
-    private TableColumn<Order, String> colSpecialInstructions; // Notes (special instructions) column
-
-    private OrderDAO orderDAO;
-
-    @FXML
-    private Button staffLandingPageButton;
+    private ObservableList<OrderDisplay> displayData = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
-
-        // Set up the table columns
-        colOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderID"));
-        colOrderItemID.setCellValueFactory(new PropertyValueFactory<>("orderItemID"));
-        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colSpecialInstructions.setCellValueFactory(new PropertyValueFactory<>("specialInstructions"));
-
-        // Load confirmed orders from the database
-        loadConfirmedOrders();
-
-        // Set padding for the checkout pane to provide spacing
-        incomingOrdersPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
-
-        // Ensure that the stage size is adjusted after the scene is loaded
-        Platform.runLater(() -> {
-            Stage stage = (Stage) incomingOrdersPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-        });
-    }
-
-    private void loadConfirmedOrders() {
         try {
-            // Initialize the DAO to fetch confirmed orders
-            orderDAO = new OrderDAO(SqliteConnection.getInstance());
-            List<Order> confirmedOrders = orderDAO.fetchConfirmedOrders(); // Fetch confirmed orders
+            // Set cell value factories for TableColumns
+            orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+            orderDetailsColumn.setCellValueFactory(new PropertyValueFactory<>("orderDetails"));
+            orderDetailsColumn.setPrefWidth(650);  // sets a fixed width of 200 pixels
+            orderIdColumn.setPrefWidth(60);
 
-            // Populate the TableView with the confirmed orders
-            ObservableList<Order> orderList = FXCollections.observableArrayList(confirmedOrders);
-            tblIncomingOrders.setItems(orderList);
 
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle SQL exceptions
-            // Optionally, display an error message to the user (e.g., using an alert)
+            loadConfirmedOrders();
+
+            // Set padding for the checkout pane to provide spacing
+            incomingOrdersPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+
+            // Ensure that the stage size is adjusted after the scene is loaded
+            Platform.runLater(() -> {
+                Stage stage = (Stage) incomingOrdersPane.getScene().getWindow();
+                stage.setMinWidth(800);
+                stage.setMinHeight(600);
+            });
+        } catch (Exception e) {
+            System.out.println("Error in initialize: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    private void loadConfirmedOrders() {
+        List<Order> confirmedOrders;
+        Connection connection = SqliteConnection.getInstance();
+
+        try {
+            OrderDAO orderDAO = new OrderDAO(connection);
+            confirmedOrders = orderDAO.fetchIncomingOrders();
+
+            List<OrderDisplay> orderDisplays = new ArrayList<>();
+            for (Order order : confirmedOrders) {
+                StringBuilder orderDetails = new StringBuilder();
+                for (OrderItem item : order.getOrderItems()) {
+                    orderDetails.append(String.format("Dish: %s | Qty: %d | Notes: %s%n",
+                            item.getMenuName(),
+                            item.getQuantity(),
+                            item.getSpecialInstructions()));
+                }
+
+                orderDisplays.add(new OrderDisplay(order.getOrderID(), orderDetails.toString()));
+            }
+
+            // Populate the TableView with the list of OrderDisplay objects
+            displayData.setAll(orderDisplays);
+            confirmedCartListView.setItems(displayData);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error, possibly show an alert
+        }
+    }
 
     @FXML
-    private void handleStaffHomePage () {
+    private void handleStaffHomePage() {
         System.out.println("Staff Main Page button clicked");
         openStaffHomePage();
     }
-    private void openStaffHomePage () {
+
+    private void openStaffHomePage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StaffLandingPage.fxml"));
             Parent staffLandingPage = loader.load();
-
-            // Add null check
             Stage stage = (Stage) staffLandingPageButton.getScene().getWindow();
             stage.setTitle("Staff Home Page");
             Scene scene = new Scene(staffLandingPage);
@@ -123,7 +113,25 @@ public class IncomingOrdersController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Class to hold data for displaying in the TableView.
+     */
+    public static class OrderDisplay {
+        private final Integer orderId;
+        private final String orderDetails;
+
+        public OrderDisplay(Integer orderId, String orderDetails) {
+            this.orderId = orderId;
+            this.orderDetails = orderDetails;
+        }
+
+        public Integer getOrderId() {
+            return orderId;
+        }
+
+        public String getOrderDetails() {
+            return orderDetails;
+        }
+    }
 }
-
-
-

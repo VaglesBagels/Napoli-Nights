@@ -8,19 +8,24 @@
             style="-fx-background-color: #141415; -fx-padding: 20px;">
 
     <!-- Include the reusable header at the top of the page, now inside an HBox -->
-    <VBox fx:id="headerPane" spacing="20" prefWidth="800.0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <VBox fx:id="headerPane" spacing="20" prefWidth="800.0"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <fx:include source="Header.fxml" />
     </VBox>
 
     <!-- Main content area moved down to allow space for the header -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="400" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
+        <!-- Admin Label -->
+        <Label text="ADMIN" style="-fx-font-size: 24px; -fx-text-fill: white;"/>
+
         <!-- Buttons for View Orders and Reports -->
         <HBox alignment="CENTER" spacing="40">
-            <Button fx:id="viewOrdersButton" text="Incoming Orders" prefHeight="50.0" prefWidth="200.0"
-                    style="-fx-background-color: #C6959B; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
-            <Button fx:id="viewReportsButton" text="Reports" prefHeight="50.0" prefWidth="200.0"
-                    style="-fx-background-color: #84AE87; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+            <Button fx:id="viewOrdersButton" text="Incoming Orders" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #C6959B; -fx-text-fill: white;
+                            -fx-font-size: 15px; -fx-font-weight: bold;"/>
+            <Button fx:id="viewReportsButton" text="Reports" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #84AE87; -fx-text-fill: white;
+                            -fx-font-size: 15px; -fx-font-weight: bold;"/>
         </HBox>
     </VBox>
+
 </AnchorPane>
