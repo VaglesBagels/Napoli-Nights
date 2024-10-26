@@ -20,17 +20,17 @@
     <Label style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" text="Incoming Orders" />
 
     <!-- VBox for controlling the width and layout of the order summary table -->
-    <VBox alignment="CENTER" maxWidth="1000" spacing="10" style="-fx-background-color: #141415; -fx-padding: 20;">
+    <VBox alignment="CENTER" maxWidth="800" spacing="10" style="-fx-background-color: #141415; -fx-padding: 20;">
 
         <!-- Incoming Order Table with increased width -->
-        <TableView fx:id="confirmedCartListView" prefHeight="300" prefWidth="1000" style="-fx-background-color: #141415;">
+        <TableView fx:id="confirmedCartListView" prefHeight="300" prefWidth="700" style="-fx-background-color: #141415;">
             <columns>
                 <!-- Column for item names in the order -->
                 <!-- <TableColumn fx:id="tableNumber" prefWidth="99.19998550415039" text="Table Number" />-->
                 <!-- Column for quantities of each item -->
-                <TableColumn fx:id="orderIdColumn" prefWidth="426.3999481201172" text="Order ID" />
+                <TableColumn fx:id="orderIdColumn" minWidth="50" text="Order ID" />
                 <!-- Column displaying the GST for each item -->
-                <TableColumn fx:id="orderDetailsColumn" prefWidth="76.0" text="Order Details" />
+                <TableColumn fx:id="orderDetailsColumn" minWidth="750" text="Order Details" />
             </columns>
         </TableView>
 
