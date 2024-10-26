@@ -101,6 +101,8 @@ public class OrderConfirmationController {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
         }
     }
 

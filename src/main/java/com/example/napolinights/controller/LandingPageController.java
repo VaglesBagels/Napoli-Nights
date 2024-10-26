@@ -1,6 +1,8 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.util.StageConstants;  // Import StageUtil class for setting stage size
+import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,6 +13,8 @@ import javafx.scene.control.Button;
  */
 public class LandingPageController {
 
+    @FXML private AnchorPane landingPagePane; // The main pane of the Landing Page
+
     // UI elements from the FXML file
     @FXML private Button menuButton;
     @FXML private Button orderButton;
@@ -18,13 +22,24 @@ public class LandingPageController {
 
 
     /**
-     * This method is called automatically after the FXML file is loaded.
-     * It can be used to initialize UI elements or logic when the page is loaded.
+     * This method is called after all the FXML elements have been initialized.
+     * It sets the minimum size of the stage to prevent resizing below a certain width and height.
      */
     @FXML
     public void initialize() {
-        System.out.println("LandingPageController initialized");
+        Platform.runLater(() -> {
+            Stage stage = (Stage) landingPagePane.getScene().getWindow();
+            StageConstants.setStageSize(stage);  // Use utility method for consistency
+        });
     }
+
+
+    /*
+     * ===========================
+     * Event Handlers for Buttons
+     * ===========================
+     */
+
 
     /**
      * Event handler for the "View Menu" button.
@@ -33,7 +48,7 @@ public class LandingPageController {
     @FXML
     private void handleViewMenu() {
         Stage stage = (Stage) menuButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Menu.fxml", stage, "View Menu");  // Use the utility method
+        StageConstants.openMenuPage(stage);  // Use specific utility method for menu page
     }
 
     /**
@@ -43,7 +58,7 @@ public class LandingPageController {
     @FXML
     private void handleOrder() {
         Stage stage = (Stage) orderButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Order.fxml", stage, "Order Here");  // Use the utility method
+        StageConstants.openOrderPage(stage);  // Use specific utility method for order page
     }
 
     /**
@@ -53,6 +68,6 @@ public class LandingPageController {
     @FXML
     private void handleAdminAccess() {
         Stage stage = (Stage) adminButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Login.fxml", stage, "Login");  // Use the utility method
+        StageConstants.openLoginPage(stage);  // Use specific utility method for login page
     }
 }

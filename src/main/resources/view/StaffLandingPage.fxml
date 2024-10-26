@@ -16,9 +16,6 @@
     <!-- Main content area moved down to allow space for the header -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="400" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-        <!-- Admin Label -->
-        <Label text="ADMIN" style="-fx-font-size: 24px; -fx-text-fill: white;"/>
-
         <!-- Buttons for View Orders and Reports -->
         <HBox alignment="CENTER" spacing="40">
             <Button fx:id="viewOrdersButton" text="Incoming Orders" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #C6959B; -fx-text-fill: white;

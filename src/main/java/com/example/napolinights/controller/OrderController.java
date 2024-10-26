@@ -1,10 +1,13 @@
+
 package com.example.napolinights.controller;
 
 import com.example.napolinights.CartItem;
 import com.example.napolinights.ItemSelectionCallback;
 import com.example.napolinights.model.*;
+import com.example.napolinights.model.MenuItem;
 import com.example.napolinights.util.StyleConstants;
 import com.example.napolinights.util.UIComponentBuilder;
+import com.example.napolinights.util.StageConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +16,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -39,8 +39,10 @@ import static com.example.napolinights.util.UIComponentBuilder.getMenuItemImageO
  */
 public class OrderController {
 
-    @FXML private TilePane menuItemsPane;  // To dynamically load menu items
-    @FXML private AnchorPane orderPane;  // AnchorPane to hold the menu items
+    @FXML private TilePane menuItemsPane;  // Pane for dynamically loading menu items
+    @FXML private ScrollPane menuItemsScrollPane; // ScrollPane to hold the menu items
+    @FXML private VBox menuItemsParent;    // Parent VBox for the menu items
+    @FXML private AnchorPane orderPane;    // AnchorPane to hold the menu items
     @FXML private ToolBar categoryToolBar; // Toolbar for category selection
     @FXML private VBox orderSection;       // Section for the ordered items
     @FXML private Label lblSubtotal;       // Label for displaying subtotal (Excl GST)
@@ -51,6 +53,7 @@ public class OrderController {
     @FXML private Button homeButton;
     @FXML private VBox headerPane;
 
+
     private double totalPrice = 0.00;      // Variable to store total price
     private double subtotal = 0.00;        // Variable to store subtotal (Excl GST)
     private double gst = 0.00;             // Variable to store GST
@@ -58,6 +61,10 @@ public class OrderController {
     private Hyperlink activeTab;           // Keep track of the active tab
     private CheckoutController checkoutController; // Controller for the checkout page
 
+    private static final double ITEM_BOX_WIDTH = 500.0;
+    private static final double ITEM_BOX_HEIGHT = 150.0;
+    private static final int ITEM_IMAGE_SIZE = 80;
+    private static final double HEADER_PADDING_LEFT = 10.0;
 
     // List of categories to display in the toolbar
     private List<Category> categories = List.of(
@@ -75,16 +82,13 @@ public class OrderController {
     @FXML
     private void initialize() {
         // Set padding for the contentAnchorPane to provide spacing
-        headerPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+        headerPane.setPadding(new Insets(0, 0, 0, HEADER_PADDING_LEFT)); // Left padding for header
 
-        setupCategoryLinks(); // Set up category hyperlinks in the toolbar
+        setupCategoryLinks(); // Initialize category hyperlinks
         showCategory(Category.ENTREE); // Show 'ENTREE' items by default
-        // Ensure that the stage size is adjusted after the scene is loaded
-        Platform.runLater(() -> {
-            Stage stage = (Stage) orderPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-        });
+
+        // Ensure consistent stage sizing using StageConstants
+        Platform.runLater(() -> StageConstants.setStageSize((Stage) orderPane.getScene().getWindow()));
     }
 
 
@@ -94,19 +98,19 @@ public class OrderController {
     private void setupCategoryLinks() {
         for (Category category : categories) {
             Hyperlink link = new Hyperlink(category.toString());
-            setInactiveStyle(link); // Set the default inactive style
+            setInactiveStyle(link); // Apply inactive style by default
             link.setOnAction(event -> {
                 setActiveTab(link);  // Highlight the selected category
-                showCategory(category);  // Show the selected category items
+                showCategory(category);  // Display the selected category items
             });
-            categoryToolBar.getItems().add(link);  // Add the link to the toolbar
+            categoryToolBar.getItems().add(link);  // Add each category link to the toolbar
         }
     }
 
 
     /**
-     * Updates the active category tab.
-     * @param newActiveTab The new active category hyperlink.
+     * Updates the active category tab to highlight the selected category.
+     * @param newActiveTab The newly selected category hyperlink.
      */
     private void setActiveTab(Hyperlink newActiveTab) {
         if (activeTab != null) {
@@ -122,7 +126,7 @@ public class OrderController {
      * @param tab The hyperlink to apply the active style to.
      */
     private void setActiveStyle(Hyperlink tab) {
-        tab.setStyle("-fx-text-fill: white; -fx-font-weight: bold;"); // Active tab style
+        tab.setStyle(StyleConstants.ACTIVE_TAB_STYLE); // Active tab style
     }
 
 
@@ -131,7 +135,7 @@ public class OrderController {
      * @param tab The hyperlink to apply the inactive style to.
      */
     private void setInactiveStyle(Hyperlink tab) {
-        tab.setStyle("-fx-text-fill: #00BFFF; -fx-font-weight: normal;"); // Inactive tab style
+        tab.setStyle(StyleConstants.INACTIVE_TAB_STYLE); // Inactive tab style
     }
 
 
@@ -151,9 +155,13 @@ public class OrderController {
      * @return List of menu items in the selected category.
      */
     private List<MenuItem> fetchMenuItems(Category selectedCategory) {
-        Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
-        MenuItemDAO menuItemDAO = new MenuItemDAO(connection);  // DAO to fetch menu items
-        return menuItemDAO.fetchAllMenuItemsByCategory(selectedCategory);  // Fetch items by category
+        try (Connection connection = SqliteConnection.getInstance()) {
+            MenuItemDAO menuItemDAO = new MenuItemDAO(connection);  // DAO to fetch menu items
+            return menuItemDAO.fetchAllMenuItemsByCategory(selectedCategory);  // Fetch items by category
+        } catch (SQLException e) {
+            System.err.println("Failed to fetch menu items: " + e.getMessage());
+            return List.of();
+        }
     }
 
 
@@ -187,30 +195,38 @@ public class OrderController {
     private VBox createMenuItemBox(MenuItem menuItem) {
         VBox itemBox = new VBox(10);  // Create a VBox with 10px spacing
         itemBox.setAlignment(Pos.TOP_LEFT);  // Align content to top left
-        itemBox.setStyle("-fx-border-color: lightgray; -fx-padding: 10;");  // Styling
+        itemBox.setStyle(StyleConstants.ITEM_BOX_STYLE);  // Styling constant for item box
 
         // Set consistent size for all item boxes
-        itemBox.setPrefWidth(500);
-        itemBox.setPrefHeight(150);
+        itemBox.setPrefWidth(ITEM_BOX_WIDTH);
+        itemBox.setPrefHeight(ITEM_BOX_HEIGHT);
 
-        // Set the MenuItem as user data for later retrieval
+        // Store the MenuItem in the VBox for later retrieval
         itemBox.setUserData(menuItem);
 
         // Set an event handler for item click
         itemBox.setOnMouseClicked(this::handleMenuItemClick);
 
+
         // Create labels and image for the item
         String menuId = Integer.toString(menuItem.getMenuItemID());
-        Label itemId = UIComponentBuilder.createLabel(menuId,"-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+        Label itemId = UIComponentBuilder.createLabel(menuId, "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         itemId.setVisible(false);
-        Label itemTitle = UIComponentBuilder.createLabel(menuItem.getName(),"-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
-        Label itemDescription = UIComponentBuilder.createLabel(menuItem.getDescription(), "-fx-font-size: 14px; -fx-text-fill: white;");
-        itemDescription.setWrapText(true);  // Enable text wrapping for long descriptions
-        Label itemPrice = UIComponentBuilder.createLabel(String.format("$%.2f", menuItem.getPrice()), "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
-        ImageView itemImage = UIComponentBuilder.createImageView(menuItem.getImageURL());
-        itemImage.setFitHeight(80);
-        itemImage.setFitWidth(80);
 
+        Label itemTitle = UIComponentBuilder.createLabel(
+                menuItem.getName(), StyleConstants.ITEM_NAME_STYLE);  // Item name styling
+
+        Label itemDescription = UIComponentBuilder.createLabel(
+                menuItem.getDescription(), StyleConstants.ITEM_DESC_STYLE);  // Item description styling
+        itemDescription.setWrapText(true);  // Enable text wrapping for long descriptions
+
+
+        Label itemPrice = UIComponentBuilder.createLabel(
+                String.format("$%.2f", menuItem.getPrice()), StyleConstants.ITEM_PRICE_STYLE);  // Price styling
+
+        ImageView itemImage = UIComponentBuilder.createImageView(menuItem.getImageURL());
+        itemImage.setFitHeight(ITEM_IMAGE_SIZE);
+        itemImage.setFitWidth(ITEM_IMAGE_SIZE);
         // Add components to the VBox
         itemBox.getChildren().addAll(itemImage, itemTitle, itemDescription, itemPrice);
         return itemBox;
@@ -224,18 +240,22 @@ public class OrderController {
 
     /**
      * Handles the click event on a menu item and displays its details in a dialog.
+     * Retrieves the MenuItem from the clicked VBox and passes the data to the showDialog method.
+     *
      * @param event The click event triggered by the user.
      */
     private void handleMenuItemClick(MouseEvent event) {
-        VBox clickedBox = (VBox) event.getSource(); // Get the clicked VBox
+        VBox clickedBox = (VBox) event.getSource();  // Get the clicked VBox
         MenuItem menuItem = (MenuItem) clickedBox.getUserData();  // Retrieve the associated MenuItem
 
         if (menuItem != null) {
             try {
                 String menuId = Integer.toString(menuItem.getMenuItemID());
+                // Display dialog with menu item details
                 showDialog(menuId, menuItem.getName(), menuItem.getDescription(),
                         String.format("$%.2f", menuItem.getPrice()), menuItem.getImageURL(), this::updateSelectedItem);
             } catch (Exception e) {
+                System.err.println("Error handling menu item click: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -244,7 +264,9 @@ public class OrderController {
 
     /**
      * Displays a dialog with item details when a menu item is clicked.
-     * @param id The id of the menu item.
+     * This method sets up the dialog's UI components and functionality.
+     *
+     * @param id The ID of the menu item.
      * @param title The name of the menu item.
      * @param description The description of the menu item.
      * @param price The price of the menu item.
@@ -253,15 +275,15 @@ public class OrderController {
      */
     private void showDialog(String id, String title, String description, String price, String imagePath, ItemSelectionCallback callback) {
         try {
-            // Load the FXML for the dialog
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ItemDetailDialog.fxml"));
+            // Load the dialog FXML layout
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(StyleConstants.ITEM_DETAIL_DIALOG_FXML));
             VBox dialogVBox = loader.load();
 
-            // Set dialog content
+            // Access and set dialog components via controller
             ItemDetailDialogController itemDetailDialogController = loader.getController();
-            itemDetailDialogController.setItemSelectionCallback(callback);
+            itemDetailDialogController.setItemSelectionCallback(callback);  // Set callback for item selection
 
-            // Set dialog labels and image
+            // Retrieve components from the loaded FXML
             Label dialogId = (Label) loader.getNamespace().get("dialogId");
             Label dialogTitle = (Label) loader.getNamespace().get("dialogTitle");
             Label dialogDescription = (Label) loader.getNamespace().get("dialogDescription");
@@ -269,32 +291,34 @@ public class OrderController {
             ImageView dialogImageView = (ImageView) loader.getNamespace().get("dialogImageView");
             Button cancelButton = (Button) loader.getNamespace().get("btnCancel");
 
+            // Set component values
             dialogId.setText(id);
-            dialogId.setVisible(false);
-
+            dialogId.setVisible(false);  // Hide ID label for user-facing dialog
             dialogTitle.setText(title);
             dialogDescription.setText(description);
             dialogPrice.setText(price);
 
-            // Load and set image
+            // Load and display item image with fallback to default
             String menuImagePath = getMenuItemImageOrDefault(imagePath);
             dialogImageView.setImage(new Image(menuImagePath));
 
-            // Set up the dialog stage
+            // Set up the dialog stage with constant properties
             Stage dialogStage = new Stage();
-            dialogStage.initModality(Modality.APPLICATION_MODAL);  // Make it modal
-            dialogStage.setTitle(title);
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle(StyleConstants.DIALOG_TITLE);
 
             Scene dialogScene = new Scene(dialogVBox);
             dialogStage.setScene(dialogScene);
-            dialogStage.initStyle(StageStyle.UNDECORATED);  // No window decorations
+            dialogStage.initStyle(StageStyle.valueOf(StyleConstants.DIALOG_STYLE_UNDECORATED));
 
-            // Close dialog when cancel button is clicked
+            // Close the dialog when cancel button is clicked
             cancelButton.setOnAction(e -> dialogStage.close());
 
-            dialogStage.showAndWait();  // Show dialog and wait for user action
+            // Display the dialog and wait for user action
+            dialogStage.showAndWait();
 
         } catch (IOException e) {
+            System.err.println("Error displaying item details dialog: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -309,15 +333,15 @@ public class OrderController {
      * Event handler for the "Home" button click.
      * Navigates back to the Landing Page.
      */
-
     @FXML
     private void handleHomeButtonClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LandingPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(StyleConstants.LANDING_PAGE_FXML));
             Parent landingPage = loader.load();
             Stage stage = (Stage) homeButton.getScene().getWindow();
             setupStage(stage, landingPage, "Landing Page");
         } catch (IOException e) {
+            System.err.println("Error loading Landing Page: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -331,60 +355,60 @@ public class OrderController {
      * @param itemQty The quantity of the menu item.
      */
     public void updateSelectedItem(String itemId, String itemName, String itemPrice, Integer itemQty) {
-        // Create Label for item name and enable text wrapping
+        // Label for item name with wrap and style
         Label nameLabel = new Label(itemName);
-        nameLabel.setMaxWidth(200);  // Set maximum width for the label to fit in the fixed column size
-        nameLabel.setMinWidth(200);  // Set minimum width for consistent alignment
-        nameLabel.setWrapText(true);  // Enable text wrapping
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");  // Set text color to white
+        nameLabel.setMaxWidth(StyleConstants.GRID_COLUMN_WIDTH_NAME);
+        nameLabel.setMinWidth(StyleConstants.GRID_COLUMN_WIDTH_NAME);
+        nameLabel.setWrapText(true);
+        nameLabel.setStyle(StyleConstants.ITEM_NAME_STYLE_2);
 
-        // Create Label for price
+        // Label for price, with calculated total for the quantity
         Label priceLabel = new Label(String.format("$%.2f", Double.parseDouble(itemPrice.replace("$", "")) * itemQty));
-        priceLabel.setMinWidth(60);  // Set minimum width for consistent alignment
-        priceLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;");
+        priceLabel.setMinWidth(StyleConstants.GRID_COLUMN_WIDTH_PRICE);
+        priceLabel.setStyle(StyleConstants.ITEM_PRICE_STYLE_2);
 
-        // Hidden item ID label
+        // Hidden labels for item ID and unit price (used for internal reference)
         Label idLabel = new Label(itemId);
-        idLabel.setVisible(false); // This makes it invisible in the UI
+        idLabel.setVisible(false);
 
-        // Hidden unit price label
         Label unitPriceLabel = new Label(itemPrice);
-        unitPriceLabel.setVisible(false); // This makes it invisible in the UI
+        unitPriceLabel.setVisible(false);
 
         nameLabel.setStyle(StyleConstants.ITEM_NAME_STYLE);
         priceLabel.setStyle(StyleConstants.ITEM_PRICE_STYLE);
 
-        // Increment and Decrement buttons with fixed size
+        // Increment and decrement buttons for quantity management
         Button incrementButton = new Button("+");
-        incrementButton.setStyle("-fx-font-size: 14px; -fx-background-color: white; -fx-font-weight: bold; -fx-text-fill: black;");
-        incrementButton.setPrefWidth(40);
-        incrementButton.setPrefHeight(30);
+        incrementButton.setStyle(StyleConstants.BUTTON_STYLE);
+        incrementButton.setPrefWidth(StyleConstants.GRID_COLUMN_WIDTH_BUTTON);
+        incrementButton.setPrefHeight(StyleConstants.GRID_COLUMN_HEIGHT_BUTTON);
 
         Button decrementButton = new Button("-");
-        decrementButton.setStyle("-fx-font-size: 14px; -fx-background-color: white; -fx-font-weight: bold; -fx-text-fill: black;");
-        decrementButton.setPrefWidth(40);
-        decrementButton.setPrefHeight(30);
+        decrementButton.setStyle(StyleConstants.BUTTON_STYLE);
+        decrementButton.setPrefWidth(StyleConstants.GRID_COLUMN_WIDTH_BUTTON);
+        decrementButton.setPrefHeight(StyleConstants.GRID_COLUMN_HEIGHT_BUTTON);
 
-        // Label for quantity
+        // Label to display current quantity
         Label quantityLabel = new Label(String.valueOf(itemQty));
-        quantityLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
-        GridPane.setHalignment(quantityLabel, HPos.CENTER); // Center align the quantity label within its column
+        quantityLabel.setStyle(StyleConstants.ITEM_NAME_STYLE_2);
+        GridPane.setHalignment(quantityLabel, HPos.CENTER);
 
+        // Action handlers for quantity adjustment
         incrementButton.setOnAction(e -> incrementQuantity(itemPrice, priceLabel, quantityLabel));
         decrementButton.setOnAction(e -> decrementQuantity(itemPrice, priceLabel, quantityLabel));
 
-        // GridPane for layout
+        // GridPane layout to organize item controls
         GridPane itemGrid = new GridPane();
-        itemGrid.setHgap(10);  // Horizontal gap between columns
-        itemGrid.setVgap(5);   // Vertical gap between rows
+        itemGrid.setHgap(StyleConstants.GRID_HGAP);
+        itemGrid.setVgap(StyleConstants.GRID_VGAP);
 
-        // Set fixed column widths for alignment
-        ColumnConstraints column1 = new ColumnConstraints(50);  // Decrement button
-        ColumnConstraints column2 = new ColumnConstraints(50);  // Quantity label
-        ColumnConstraints column3 = new ColumnConstraints(50);  // Increment button
-        ColumnConstraints column4 = new ColumnConstraints(200); // Name label
-        ColumnConstraints column5 = new ColumnConstraints(60);  // Price label
-        column4.setHgrow(Priority.ALWAYS);  // Allow the name label column to grow if needed
+        // Define and set up column widths for consistent alignment
+        ColumnConstraints column1 = new ColumnConstraints(StyleConstants.GRID_COLUMN_WIDTH_BUTTON_2); // Decrement button
+        ColumnConstraints column2 = new ColumnConstraints(StyleConstants.GRID_COLUMN_WIDTH_BUTTON_2); // Quantity label
+        ColumnConstraints column3 = new ColumnConstraints(StyleConstants.GRID_COLUMN_WIDTH_BUTTON_2); // Increment button
+        ColumnConstraints column4 = new ColumnConstraints(StyleConstants.GRID_COLUMN_WIDTH_NAME);   // Name label
+        ColumnConstraints column5 = new ColumnConstraints(StyleConstants.GRID_COLUMN_WIDTH_PRICE);  // Price label
+        column4.setHgrow(Priority.ALWAYS);
         itemGrid.getColumnConstraints().addAll(column1, column2, column3, column4, column5);
 
         // Add elements to the grid (column, row)
@@ -396,28 +420,25 @@ public class OrderController {
         itemGrid.add(unitPriceLabel, 5, 0);   // Column 5: Hidden unit price label
         itemGrid.add(idLabel, 6, 0);          // Column 6: Hidden item ID label
 
-        // Remove link
+        // Remove link with styling, adds removal action
         Hyperlink removeLink = new Hyperlink("Remove");
-        removeLink.setStyle("-fx-font-size: 14px; -fx-text-fill: #84AE87; -fx-font-weight: bold");
+        removeLink.setStyle(StyleConstants.REMOVE_LINK_STYLE);
         removeLink.setOnAction(e -> {
             orderSection.getChildren().remove(itemGrid);
             updateTotalPrice();
         });
         itemGrid.add(removeLink, 3, 1, 2, 1); // Column 3-4: Remove link, spanning 2 columns
-
         itemGrid.setAlignment(Pos.CENTER_LEFT); // Align grid to the left for consistent layout
-
         orderSection.getChildren().add(itemGrid);
-
         updateTotalPrice();
     }
 
 
     /**
-     * Increments the quantity of a selected item and updates the price.
+     * Increases the item quantity and updates the display price.
      * @param itemPrice The price of the item.
-     * @param priceLabel The label showing the price.
-     * @param quantityLabel The label showing the quantity.
+     * @param priceLabel The label showing the updated price.
+     * @param quantityLabel The label showing the updated quantity.
      */
     private void incrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
         int currentQuantity = Integer.parseInt(quantityLabel.getText());
@@ -429,10 +450,10 @@ public class OrderController {
 
 
     /**
-     * Decrements the quantity of a selected item, ensuring the quantity stays above 1.
+     * Decreases the item quantity (minimum 1) and updates the display price.
      * @param itemPrice The price of the item.
-     * @param priceLabel The label showing the price.
-     * @param quantityLabel The label showing the quantity.
+     * @param priceLabel The label showing the updated price.
+     * @param quantityLabel The label showing the updated quantity.
      */
     private void decrementQuantity(String itemPrice, Label priceLabel, Label quantityLabel) {
         int currentQuantity = Integer.parseInt(quantityLabel.getText());
@@ -446,11 +467,12 @@ public class OrderController {
 
 
     /**
-     * Updates the total price of all items in the order section.
+     * Updates the total price displayed based on all items in the order.
      */
     private void updateTotalPrice() {
         subtotal = 0.0;
         gst = 0.0;
+
         for (int i = 0; i < orderSection.getChildren().size(); i++) {
             GridPane itemBox = (GridPane) orderSection.getChildren().get(i);
             Label priceLabel = (Label) itemBox.getChildren().get(4);
@@ -458,10 +480,10 @@ public class OrderController {
             double unitPrice = Double.parseDouble(priceLabel.getText().replace("$", "")) / Integer.parseInt(quantityLabel.getText());
             int quantity = Integer.parseInt(quantityLabel.getText());
             subtotal += unitPrice * quantity;
-            gst += (unitPrice * 0.10) * quantity; // GST is calculated per item and then multiplied by quantity
+            gst += (unitPrice * 0.10) * quantity;
         }
-        totalPrice = subtotal + gst - discount;
 
+        totalPrice = subtotal + gst - discount;
         lblSubtotal.setText(String.format("$%.2f", subtotal));
         lblGST.setText(String.format("$%.2f", gst));
         lblDiscount.setText(String.format("$%.2f", discount));
@@ -470,8 +492,8 @@ public class OrderController {
 
 
     /**
-     * Updates the price of a single item based on its quantity.
-     * @param itemPrice The price of the item.
+     * Updates the display price of a single item based on its quantity.
+     * @param itemPrice The unit price of the item.
      * @param quantity The quantity of the item.
      * @param priceLabel The label showing the updated price.
      */
@@ -482,20 +504,25 @@ public class OrderController {
 
 
 
+
     /* ===============================================
      * SECTION 4: Checkout Process
      * =============================================== */
 
     /**
-     * Handles the checkout button click to navigate to the checkout page.
+     * Handles the checkout button click to gather order details
+     * and navigate to the checkout page.
      */
     @FXML
-    private void HandleCheckoutButton() {
+    private void handleCheckoutButton() {
         int cartLength = orderSection.getChildren().size();
         CartItem[] items = new CartItem[cartLength];
 
+        // Loop through items in the order section and populate CartItem array
         for (int i = 0; i < cartLength; i++) {
             GridPane itemBox = (GridPane) orderSection.getChildren().get(i);
+
+            // Retrieve item details from GridPane cells
             Label nameLabel = (Label) itemBox.getChildren().get(3);
             Label priceLabel = (Label) itemBox.getChildren().get(4);
             Label quantityLabel = (Label) itemBox.getChildren().get(1);
@@ -506,51 +533,55 @@ public class OrderController {
             int id = parseItemId(idLabel.getText());
             double unitPrice = parseItemPrice(unitPriceLabel.getText());
             int quantity = parseItemQuantity(quantityLabel.getText());
+
             // Round GST and total price to two decimal places
             double gst = Math.round((unitPrice * 0.10) * 100.0) / 100.0;
             double totalInc = Math.round(((unitPrice * quantity) + (gst * quantity)) * 100.0) / 100.0;
 
             items[i] = new CartItem(id, name, unitPrice, quantity, gst, totalInc);
+
         }
 
+
+        // Save order details in the database and get the generated order ID
         int savedOrderId = saveOrderToDatabase(items);
 
-        // Load the Checkout page and pass the order ID
+        // Load and navigate to the Checkout page, passing the order ID
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Checkout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(StyleConstants.CHECKOUT_PAGE_FXML));
             Parent checkoutPage = loader.load();
 
-            // Get the CheckoutController and pass the order ID
+            // Pass the order ID to the CheckoutController
             CheckoutController checkoutController = loader.getController();
             checkoutController.setOrderID(savedOrderId);
 
             Stage stage = (Stage) this.checkoutButton.getScene().getWindow();
-            setupStage(stage, checkoutPage, "Checkout");
+            setupStage(stage, checkoutPage, StyleConstants.CHECKOUT_PAGE_TITLE);
         } catch (IOException e) {
+            System.err.println("Error loading Checkout page: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
     /**
-     * Handles the checkout button click to navigate to the checkout page.
+     * Saves the order and items to the database.
+     * @param cartItems Array of CartItem objects containing item details.
+     * @return The ID of the saved order.
      */
-
     private int saveOrderToDatabase(CartItem[] cartItems) {
-        // Save the order to the database
-        // Create an Order object
-        Order order = new Order(new Timestamp(System.currentTimeMillis()), "Actual Customer Name", "Actual Customer Contact");
+        // Create an Order object with current timestamp and customer details
+        Order order = new Order(new Timestamp(System.currentTimeMillis()), "Customer Name", "Customer Contact");
 
-        // Set the list of OrderItems from cart items
+        // Populate OrderItems based on cart items
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
-            OrderItem orderItem = new OrderItem(cartItem.getId(), cartItem.getQuantity(), cartItem.getUnitPrice()); //cartItem.getId() gets the MenuItemId
+            OrderItem orderItem = new OrderItem(cartItem.getId(), cartItem.getQuantity(), cartItem.getUnitPrice());
             orderItems.add(orderItem);
         }
         order.setOrderItems(orderItems);
 
         int orderID = 0;
-        // Use OrderDAO to save the order to the database
+        // Save the order using OrderDAO
         Connection connection = SqliteConnection.getInstance(); // Get a connection to the database
         try {
             OrderDAO orderDAO = new OrderDAO(connection); // Use a method to get the connection
@@ -559,25 +590,26 @@ public class OrderController {
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Failed to save the order to the database.");
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
         }
-
         return orderID;
     }
 
 
     /**
-     * Parses the price string to a double.
-     * @param string The price string to parse.
-     * @return The price as a double.
+     * Parses a price string to a double.
+     * @param priceStr The price string to parse.
+     * @return The parsed price as a double.
      */
-    private double parseItemPrice(String string) {
-        return Double.parseDouble(string.replace("$", ""));
+    private double parseItemPrice(String priceStr) {
+        return Double.parseDouble(priceStr.replace("$", ""));
     }
 
     /**
-     * Parses the id string to an int.
-     * @param id The id string to parse.
-     * @return The id as an int.
+     * Parses an ID string to an integer.
+     * @param id The ID string to parse.
+     * @return The parsed ID as an integer.
      */
     private int parseItemId(String id) {
         return Integer.parseInt(id);
@@ -585,18 +617,17 @@ public class OrderController {
 
 
     /**
-     * Parses the quantity string to an integer.
-     * @param string The quantity string to parse.
-     * @return The quantity as an integer.
+     * Parses a quantity string to an integer.
+     * @param qtyStr The quantity string to parse.
+     * @return The parsed quantity as an integer.
      */
-    private int parseItemQuantity(String string) {
-        return Integer.parseInt(string);
+    private int parseItemQuantity(String qtyStr) {
+        return Integer.parseInt(qtyStr);
     }
 
-
     /**
-     * Sets up the stage for navigation to a new page.
-     * @param stage The current stage.
+     * Sets up the stage with specified scene and title for navigation.
+     * @param stage The stage to set up.
      * @param page The new page to load.
      * @param title The title of the new page.
      */
@@ -610,7 +641,3 @@ public class OrderController {
     }
 
 }
-
-
-
-

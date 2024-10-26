@@ -1,11 +1,9 @@
 package com.example.napolinights.util;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 /**
@@ -16,11 +14,22 @@ public class StageConstants {
     // Constant for GST (Goods and Services Tax)
     public static final double GST = 0.1;  // Define GST as 10%
 
+    // Default stage dimensions
     private static final double DEFAULT_MIN_WIDTH = 800;
     private static final double DEFAULT_MIN_HEIGHT = 600;
 
+    // Paths to FXML files
+    public static final String MENU_PAGE_PATH = "/view/Menu.fxml";
+    public static final String ORDER_PAGE_PATH = "/view/Order.fxml";
+    public static final String LOGIN_PAGE_PATH = "/view/Login.fxml";
+
+    // Page titles
+    public static final String MENU_PAGE_TITLE = "View Menu";
+    public static final String ORDER_PAGE_TITLE = "Order Here";
+    public static final String LOGIN_PAGE_TITLE = "Login";
+
     /**
-     * Set the minimum width and height for the given stage.
+     * Sets the minimum width and height for the given stage.
      *
      * @param stage the stage to set the size for.
      */
@@ -58,8 +67,32 @@ public class StageConstants {
             Parent page = loader.load();
             configureStage(stage, page, title);
         } catch (IOException e) {
-            System.out.println("Error occurred while opening the " + title + " page.");
+            System.err.println("Error occurred while opening the " + title + " page.");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Opens the menu page in the provided stage.
+     * @param stage The stage to display the menu page.
+     */
+    public static void openMenuPage(Stage stage) {
+        openPage(MENU_PAGE_PATH, stage, MENU_PAGE_TITLE);
+    }
+
+    /**
+     * Opens the order page in the provided stage.
+     * @param stage The stage to display the order page.
+     */
+    public static void openOrderPage(Stage stage) {
+        openPage(ORDER_PAGE_PATH, stage, ORDER_PAGE_TITLE);
+    }
+
+    /**
+     * Opens the login page in the provided stage.
+     * @param stage The stage to display the login page.
+     */
+    public static void openLoginPage(Stage stage) {
+        openPage(LOGIN_PAGE_PATH, stage, LOGIN_PAGE_TITLE);
     }
 }

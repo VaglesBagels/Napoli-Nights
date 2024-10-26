@@ -23,8 +23,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class IncomingOrdersController {
+
     @FXML public AnchorPane incomingOrdersPane;
     @FXML public VBox headerPane;
     @FXML private Button staffLandingPageButton;
@@ -41,9 +41,6 @@ public class IncomingOrdersController {
             // Set cell value factories for TableColumns
             orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
             orderDetailsColumn.setCellValueFactory(new PropertyValueFactory<>("orderDetails"));
-            orderDetailsColumn.setPrefWidth(650);  // sets a fixed width of 200 pixels
-            orderIdColumn.setPrefWidth(60);
-
 
             loadConfirmedOrders();
 
@@ -90,6 +87,8 @@ public class IncomingOrdersController {
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle error, possibly show an alert
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
         }
     }
 
@@ -114,6 +113,9 @@ public class IncomingOrdersController {
         }
     }
 
+    /**
+     * Class to hold data for displaying in the TableView.
+     */
     public static class OrderDisplay {
         private final Integer orderId;
         private final String orderDetails;

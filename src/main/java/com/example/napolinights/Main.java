@@ -34,9 +34,12 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // Seed the database with initial data
-        seedDatabase();
-
+        try {
+            // Seed the database with initial data
+            seedDatabase();
+        } catch (SQLException sqlEx) {
+            System.err.println("Error occurred while seeding the database: " + sqlEx.getMessage());
+        }
         // Open the landing page
         openLandingPage(primaryStage);
     }
@@ -45,7 +48,7 @@ public class Main extends Application {
      * Seeds the database with initial data for users, menu items, and orders.
      * This includes creating necessary tables and inserting data from CSV files.
      */
-    private void seedDatabase() {
+    private void seedDatabase() throws SQLException {
         // Get a connection to the SQLite database
         Connection connection = SqliteConnection.getInstance();
 
@@ -73,13 +76,6 @@ public class Main extends Application {
             List<MenuItem> menuItems = csvReader.readMenuFromCSV("menu_data.csv");
             for (MenuItem menuItem : menuItems) {
                 menuItemDAO.addMenuItem(menuItem);
-            }
-
-            // Optionally print all menu items to verify insertion
-            System.out.println("All Menu Items:");
-            List<MenuItem> menu = menuItemDAO.fetchAllMenuItems();
-            for (MenuItem menuItem : menu) {
-                System.out.println(menuItem);
             }
         }
         orderDAO.createOrdersTable();
