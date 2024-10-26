@@ -15,18 +15,24 @@ public class StageConstants {
     public static final double GST = 0.1;  // Define GST as 10%
 
     // Default stage dimensions
-    private static final double DEFAULT_MIN_WIDTH = 800;
-    private static final double DEFAULT_MIN_HEIGHT = 600;
+    public static final double DEFAULT_MIN_WIDTH = 800;
+    public static final double DEFAULT_MIN_HEIGHT = 600;
 
     // Paths to FXML files
     public static final String MENU_PAGE_PATH = "/view/Menu.fxml";
     public static final String ORDER_PAGE_PATH = "/view/Order.fxml";
     public static final String LOGIN_PAGE_PATH = "/view/Login.fxml";
+    public static final String STAFF_LANDING_PAGE_PATH = "/view/StaffLandingPage.fxml";
+    public static final String INCOMING_ORDERS_PAGE_PATH = "/view/IncomingOrders.fxml";
+    public static final String VIEW_REPORTS_PAGE_PATH = "/view/ViewReports.fxml";
 
     // Page titles
     public static final String MENU_PAGE_TITLE = "View Menu";
     public static final String ORDER_PAGE_TITLE = "Order Here";
     public static final String LOGIN_PAGE_TITLE = "Login";
+    public static final String STAFF_LANDING_PAGE_TITLE = "Staff Landing Page";
+    public static final String INCOMING_ORDERS_PAGE_TITLE = "Incoming Orders";
+    public static final String VIEW_REPORTS_PAGE_TITLE = "Reports";
 
     /**
      * Sets the minimum width and height for the given stage.
@@ -94,5 +100,29 @@ public class StageConstants {
      */
     public static void openLoginPage(Stage stage) {
         openPage(LOGIN_PAGE_PATH, stage, LOGIN_PAGE_TITLE);
+    }
+
+    /**
+     * Opens the Incoming Orders page in the provided stage.
+     * @param stage The stage to display the login page.
+     */
+    public static void openIncomingOrdersPage(Stage stage) {
+        openPage(INCOMING_ORDERS_PAGE_PATH, stage, INCOMING_ORDERS_PAGE_TITLE);
+    }
+
+    /**
+     * Opens the View Reports page in the provided stage.
+     * @param stage The stage to display the login page.
+     */
+    public static void openViewReportsPage(Stage stage) {
+        openPage(VIEW_REPORTS_PAGE_PATH, stage, VIEW_REPORTS_PAGE_TITLE);
+    }
+
+    /**
+     * Opens the Staff Landing page in the provided stage.
+     * @param stage The stage to display the login page.
+     */
+    public static void openStaffLandingPage(Stage stage) {
+        openPage(STAFF_LANDING_PAGE_PATH, stage, STAFF_LANDING_PAGE_TITLE);
     }
 }
