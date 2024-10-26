@@ -635,8 +635,8 @@ public class OrderController {
         stage.setTitle(title);
         Scene scene = new Scene(page);
         stage.setScene(scene);
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        stage.setMinWidth(StageConstants.DEFAULT_MIN_WIDTH);
+        stage.setMinHeight(StageConstants.DEFAULT_MIN_HEIGHT);
         stage.show();
     }
 

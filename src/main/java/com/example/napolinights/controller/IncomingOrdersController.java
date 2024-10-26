@@ -1,14 +1,12 @@
 package com.example.napolinights.controller;
 
 import com.example.napolinights.model.*;
+import com.example.napolinights.util.StageConstants;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -17,56 +15,70 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for displaying incoming orders in the 'Incoming Orders' page.
+ * This includes fetching order data from the database, displaying it in a TableView,
+ * and providing navigation to the staff's main page.
+ */
 public class IncomingOrdersController {
 
-    @FXML public AnchorPane incomingOrdersPane;
-    @FXML public VBox headerPane;
-    @FXML private Button staffLandingPageButton;
+    @FXML public AnchorPane incomingOrdersPane; // Root pane for the incoming orders page
+    @FXML public VBox headerPane; // Header section for page layout
+    @FXML private Button staffLandingPageButton; // Button to navigate to Staff Landing Page
 
+    // TableView and columns to display confirmed orders
     @FXML private TableView<OrderDisplay> confirmedCartListView;
     @FXML private TableColumn<OrderDisplay, Integer> orderIdColumn;
     @FXML private TableColumn<OrderDisplay, String> orderDetailsColumn;
 
+    // Observable list to hold order display data for the TableView
     private ObservableList<OrderDisplay> displayData = FXCollections.observableArrayList();
 
+    /**
+     * Initializes the Incoming Orders page by setting up table columns, loading order data,
+     * and adjusting the stage dimensions and layout.
+     */
     @FXML
     private void initialize() {
         try {
-            // Set cell value factories for TableColumns
+            // Configure table columns to display order details
             orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
             orderDetailsColumn.setCellValueFactory(new PropertyValueFactory<>("orderDetails"));
 
+            // Load and display confirmed orders
             loadConfirmedOrders();
 
-            // Set padding for the checkout pane to provide spacing
+            // Apply padding for page layout consistency
             incomingOrdersPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
 
-            // Ensure that the stage size is adjusted after the scene is loaded
-            Platform.runLater(() -> {
-                Stage stage = (Stage) incomingOrdersPane.getScene().getWindow();
-                stage.setMinWidth(800);
-                stage.setMinHeight(600);
-            });
+            // Set consistent stage size using StageConstants utility
+            Platform.runLater(() -> StageConstants.setStageSize((Stage) incomingOrdersPane.getScene().getWindow()));
+
         } catch (Exception e) {
             System.out.println("Error in initialize: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * Fetches confirmed orders from the database, formats order details for display,
+     * and populates the TableView.
+     */
     private void loadConfirmedOrders() {
         List<Order> confirmedOrders;
         Connection connection = SqliteConnection.getInstance();
 
         try {
+            // Retrieve confirmed orders from database
             OrderDAO orderDAO = new OrderDAO(connection);
             confirmedOrders = orderDAO.fetchIncomingOrders();
 
+            // Convert each Order into an OrderDisplay for TableView compatibility
             List<OrderDisplay> orderDisplays = new ArrayList<>();
             for (Order order : confirmedOrders) {
                 StringBuilder orderDetails = new StringBuilder();
@@ -80,7 +92,7 @@ public class IncomingOrdersController {
                 orderDisplays.add(new OrderDisplay(order.getOrderID(), orderDetails.toString()));
             }
 
-            // Populate the TableView with the list of OrderDisplay objects
+            // Update TableView with formatted order display data
             displayData.setAll(orderDisplays);
             confirmedCartListView.setItems(displayData);
 
@@ -92,29 +104,25 @@ public class IncomingOrdersController {
         }
     }
 
+    /**
+     * Event handler for the button that navigates back to the Staff Landing Page.
+     */
     @FXML
     private void handleStaffHomePage() {
         System.out.println("Staff Main Page button clicked");
         openStaffHomePage();
     }
 
+    /**
+     * Navigates to the Staff Landing Page using the utility method in StageConstants.
+     */
     private void openStaffHomePage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StaffLandingPage.fxml"));
-            Parent staffLandingPage = loader.load();
-            Stage stage = (Stage) staffLandingPageButton.getScene().getWindow();
-            stage.setTitle("Staff Home Page");
-            Scene scene = new Scene(staffLandingPage);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) staffLandingPageButton.getScene().getWindow();  // Retrieve the current stage
+        StageConstants.openViewReportsPage(stage);  // Navigate to Staff Landing page using utility
     }
 
     /**
-     * Class to hold data for displaying in the TableView.
+     * Class representing data structure for displaying order details in the TableView.
      */
     public static class OrderDisplay {
         private final Integer orderId;

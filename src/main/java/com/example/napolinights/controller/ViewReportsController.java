@@ -1,32 +1,32 @@
 package com.example.napolinights.controller;
 
+import com.example.napolinights.util.StageConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Controller for the 'View Reports' page, which displays a table
+ * of daily reports including order counts and revenue totals.
+ */
 public class ViewReportsController {
+    // FXML-linked UI components for interaction
+    @FXML public AnchorPane reportsPane;
+    @FXML private TableView<Report> reportsTable;
+    @FXML private Button backToStaffLandingPageButton;
 
-    @FXML
-    public AnchorPane reportsPane;
-
-    @FXML
-    private TableView<Report> reportsTable;
-
-    @FXML
-    private Button backToStaffLandingPageButton;
-
+    /**
+     * Initializes the controller, setting up the reports table with columns and
+     * fetching data to populate it. Also configures layout padding and stage dimensions.
+     */
     @FXML
     public void initialize() {
         // Initialize columns
@@ -39,22 +39,25 @@ public class ViewReportsController {
         TableColumn<Report, Double> revenueColumn = new TableColumn<>("Revenue");
         revenueColumn.setCellValueFactory(new PropertyValueFactory<>("revenue"));
 
+        // Add columns to the table
         reportsTable.getColumns().addAll(dateColumn, orderCountColumn, revenueColumn);
 
+        // Fetch reports data and populate the table
         List<Report> reports = fetchReportsFromDatabase();
         reportsTable.getItems().setAll(reports);
 
-        // Set padding for the reports pane to provide spacing
+        // Set padding for the reports pane for layout consistency
         reportsPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
 
-        // Ensure that the stage size is adjusted after the scene is loaded
-        Platform.runLater(() -> {
-            Stage stage = (Stage) reportsPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-        });
+        // Set stage size for consistent dimensions
+        Platform.runLater(() -> StageConstants.setStageSize((Stage) reportsPane.getScene().getWindow()));
     }
 
+    /**
+     * Fetching report data.
+     *
+     * @return A list of report data.
+     */
     private List<Report> fetchReportsFromDatabase() {
         // Implement database query here
         // Sample return
@@ -64,6 +67,10 @@ public class ViewReportsController {
         );
     }
 
+    /**
+     * Inner class representing a report record with date, order count, and revenue.
+     * Used to populate rows in the reportsTable.
+     */
     public static class Report {
         private LocalDate date;
         private int orderCount;
@@ -88,18 +95,12 @@ public class ViewReportsController {
         }
     }
 
+    /**
+     * Handles the action of returning to the Staff Landing Page when the 'Back' button is clicked.
+     */
     @FXML
     private void handleBackToStaffLandingPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StaffLandingPage.fxml"));
-            Parent staffLandingPage = loader.load();
-            Stage stage = (Stage) backToStaffLandingPageButton.getScene().getWindow();
-            stage.setTitle("Staff Landing Page");
-            Scene scene = new Scene(staffLandingPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) backToStaffLandingPageButton.getScene().getWindow();  // Retrieve the current stage
+        StageConstants.openStaffLandingPage(stage);  // Navigate to Staff Landing page using utility
     }
 }
