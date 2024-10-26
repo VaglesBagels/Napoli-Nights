@@ -4,6 +4,7 @@ import com.example.napolinights.model.Category;
 import com.example.napolinights.model.MenuItem;
 import com.example.napolinights.model.MenuItemDAO;
 import com.example.napolinights.model.SqliteConnection;
+import com.example.napolinights.util.StageConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * Controller for the Menu Page. Handles the display of menu items
- * categorized by type, and ensures the user interface adapts to the
+ * categorized by type and ensures the user interface adapts to the
  * specified layout with scrolling enabled.
  */
 public class MenuController {
@@ -39,7 +40,7 @@ public class MenuController {
      * Initializes the MenuController. Sets up the ScrollPane and loads the menu items.
      */
     public void initialize() {
-        // Set padding for the contentAnchorPane to provide spacing
+        // Configure padding for the contentAnchorPane to provide spacing
         contentAnchorPane.setPadding(new Insets(10, 50, 10, 50)); // Top, right, bottom, left padding
 
         // Ensure the ScrollPane fits the width of its content
@@ -48,11 +49,10 @@ public class MenuController {
         // Load the menu items from the database
         loadMenuItems();
 
-        // Ensure that the stage size is adjusted after the scene is loaded
+        // Ensure the stage size is adjusted using the StageConstants utility
         Platform.runLater(() -> {
             Stage stage = (Stage) menuScrollPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
+            StageConstants.setStageSize(stage); // Use utility method for consistency
         });
     }
 
@@ -60,24 +60,23 @@ public class MenuController {
      * Loads the menu items from the database and groups them by category.
      */
     private void loadMenuItems() {
-        // Get a connection to the database
         Connection connection = SqliteConnection.getInstance();
         try {
             MenuItemDAO menuItemDAO = new MenuItemDAO(connection);
-            // Fetch all menu items and group them by their category
             List<MenuItem> menuItems = menuItemDAO.fetchAllMenuItems();
+
+            // Group menu items by category
             Map<Category, List<MenuItem>> groupedMenuItems = menuItems.stream()
                     .collect(Collectors.groupingBy(MenuItem::getCategory));
 
-            // Display the grouped menu items on the UI
+            // Display grouped items in the UI
             displayMenuItems(groupedMenuItems);
 
-            // Close the connection
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println("Failed to save the order to the database.");
+            System.err.println("Failed to retrieve menu items from the database.");
         } finally {
-            SqliteConnection.closeConnection(); // Close the connection
+            SqliteConnection.closeConnection(); // Close the database connection
         }
     }
 
@@ -109,49 +108,46 @@ public class MenuController {
         sortedMenuItems.forEach((category, items) -> {
             // Create a Label for the category and style it
             Label categoryLabel = new Label(category.name());
-            categoryLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20 0 10 0; -fx-text-fill: white;");
-            contentAnchorPane.getChildren().add(categoryLabel); // Add the category label to the VBox
+            categoryLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; " +
+                                   "-fx-padding: 20 0 10 0; -fx-text-fill: white;");
+            contentAnchorPane.getChildren().add(categoryLabel);
 
             // Create a GridPane for the items in each category
             GridPane gridPane = new GridPane();
-            gridPane.setHgap(40);  // Set the horizontal gap between grid columns
-            gridPane.setVgap(20);  // Set the vertical gap between grid rows
-            gridPane.setPadding(new Insets(10, 0, 20, 0));  // Set padding around the grid
+            gridPane.setHgap(40);  // Horizontal gap between columns
+            gridPane.setVgap(20);  // Vertical gap between rows
+            gridPane.setPadding(new Insets(10, 0, 20, 0));  // Padding around the grid
 
-            // Add constraints for the columns to ensure uniform widths
+            // Set column constraints for a uniform grid layout
             for (int i = 0; i < 3; i++) {
-                gridPane.getColumnConstraints().add(new ColumnConstraints(500));  // Fixed width for each column
+                gridPane.getColumnConstraints().add(new ColumnConstraints(500)); // Fixed width per column
             }
 
-            // Display menu items in the GridPane
-            int row = 0; // Track the current row
-            int col = 0; // Track the current column
-            int maxColumns = 3;  // Number of items per row
-
+            // Populate grid with menu items
+            int row = 0, col = 0, maxColumns = 3;
             for (MenuItem item : items) {
-                // Create a VBox for each menu item (contains name, description, and price)
-                VBox itemBox = new VBox(5);  // Set vertical spacing between elements
+                VBox itemBox = new VBox(5);
                 itemBox.setAlignment(Pos.TOP_LEFT);
 
-                // Add the item name to the VBox
+                // Name label for the menu item
                 Label nameLabel = new Label(item.getName());
                 nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
                 itemBox.getChildren().add(nameLabel);
 
-                // Add the item description to the VBox
+                // Description label for the menu item
                 Label descLabel = new Label(item.getDescription());
                 descLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
                 itemBox.getChildren().add(descLabel);
 
-                // Add the item price to the VBox
+                // Price label for the menu item
                 Label priceLabel = new Label(String.format("$%.2f", item.getPrice()));
                 priceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
                 itemBox.getChildren().add(priceLabel);
 
-                // Add the VBox to the grid at the current row and column
+                // Add the itemBox to the grid at the current row and column
                 gridPane.add(itemBox, col, row);
 
-                // Increment the column, if maxColumns is reached, move to the next row
+                // Move to next column; if at max, reset column and move to next row
                 col++;
                 if (col == maxColumns) {
                     col = 0;
@@ -159,7 +155,7 @@ public class MenuController {
                 }
             }
 
-            // Add the GridPane to the VBox (contentAnchorPane)
+            // Add the GridPane to the contentAnchorPane
             contentAnchorPane.getChildren().add(gridPane);
         });
     }

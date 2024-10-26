@@ -77,13 +77,6 @@ public class Main extends Application {
             for (MenuItem menuItem : menuItems) {
                 menuItemDAO.addMenuItem(menuItem);
             }
-
-            // Optionally print all menu items to verify insertion
-            System.out.println("All Menu Items:");
-            List<MenuItem> menu = menuItemDAO.fetchAllMenuItems();
-            for (MenuItem menuItem : menu) {
-                System.out.println(menuItem);
-            }
         }
         orderDAO.createOrdersTable();
         orderDAO.createOrderItemsTable();

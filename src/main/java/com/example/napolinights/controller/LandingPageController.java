@@ -27,13 +27,19 @@ public class LandingPageController {
      */
     @FXML
     public void initialize() {
-        // Ensure that the stage size is adjusted after the scene is loaded
         Platform.runLater(() -> {
             Stage stage = (Stage) landingPagePane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
+            StageConstants.setStageSize(stage);  // Use utility method for consistency
         });
     }
+
+
+    /*
+     * ===========================
+     * Event Handlers for Buttons
+     * ===========================
+     */
+
 
     /**
      * Event handler for the "View Menu" button.
@@ -42,7 +48,7 @@ public class LandingPageController {
     @FXML
     private void handleViewMenu() {
         Stage stage = (Stage) menuButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Menu.fxml", stage, "View Menu");  // Use the utility method
+        StageConstants.openMenuPage(stage);  // Use specific utility method for menu page
     }
 
     /**
@@ -52,7 +58,7 @@ public class LandingPageController {
     @FXML
     private void handleOrder() {
         Stage stage = (Stage) orderButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Order.fxml", stage, "Order Here");  // Use the utility method
+        StageConstants.openOrderPage(stage);  // Use specific utility method for order page
     }
 
     /**
@@ -62,6 +68,6 @@ public class LandingPageController {
     @FXML
     private void handleAdminAccess() {
         Stage stage = (Stage) adminButton.getScene().getWindow();  // Get the current stage
-        StageConstants.openPage("/view/Login.fxml", stage, "Login");  // Use the utility method
+        StageConstants.openLoginPage(stage);  // Use specific utility method for login page
     }
 }
