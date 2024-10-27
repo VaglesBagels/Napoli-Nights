@@ -4,20 +4,17 @@ import com.example.napolinights.model.SqliteConnection;
 import com.example.napolinights.model.UserDAO;
 import com.example.napolinights.model.User;
 
+import com.example.napolinights.util.StageConstants;
+import com.example.napolinights.util.StyleConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 
 /**
  * Controller for handling the user Sign-Up process.
@@ -26,63 +23,32 @@ import java.sql.SQLException;
 public class SignUpController {
 
     // FXML UI elements
-    @FXML
-    private ImageView logoImageView; // ImageView for the logo
+    @FXML private TextField emailField;             // User's email input
+    @FXML private Label lblEmailMessage;            // Validation message for email
+    @FXML private PasswordField passwordField;      // User's password input
+    @FXML private Label lblPasswordMessage;         // Validation message for password
+    @FXML private TextField firstNameField;         // User's first name input
+    @FXML private Label lblFirstNameMessage;        // Validation message for first name
+    @FXML private TextField lastNameField;          // User's last name input
+    @FXML private Label lblLastNameMessage;         // Validation message for last name
+    @FXML private TextField mobileField;            // User's mobile number input
+    @FXML private Label lblMobileMessage;           // Validation message for mobile number
+    @FXML private Label lblSignUpStatusMessage;     // Overall sign-up status message
+    @FXML private Hyperlink lnkLogin;               // Link to login page
+    @FXML private AnchorPane signUpPane;            // Main container for the sign-up page
 
-    @FXML
-    private TextField emailField; // TextField for user's email
-
-    @FXML
-    private Label lblEmailMessage; // Label for email validation message
-
-    @FXML
-    private PasswordField passwordField; // PasswordField for user's password
-
-    @FXML
-    private Label lblPasswordMessage; // Label for password validation message
-
-    @FXML
-    private TextField firstNameField; // TextField for user's first name
-
-    @FXML
-    private Label lblFirstNameMessage; // Label for first name validation message
-
-    @FXML
-    private TextField lastNameField; // TextField for user's last name
-
-    @FXML
-    private Label lblLastNameMessage; // Label for last name validation message
-
-    @FXML
-    private TextField mobileField; // TextField for user's mobile number
-
-    @FXML
-    private Label lblMobileMessage; // Label for mobile validation message
-
-    @FXML
-    private Label lblSignUpStatusMessage; // Label for overall sign-up status message
-
-    @FXML
-    private Hyperlink lnkLogin; // Hyperlink to navigate to the login page
-
-    @FXML
-    private AnchorPane signUpPane;
 
     /**
-     * Initializes the controller, sets up the table columns, and adjusts the stage size.
+     * Initializes the controller, applying padding and setting default stage size.
      */
     @FXML
     private void initialize() {
-        // Set padding for the login pane to provide spacing
-        signUpPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
+        signUpPane.setPadding(new Insets(0, 0, 0, 10)); // Left padding for layout
 
-        // Ensure that the stage size is adjusted after the scene is loaded
-        Platform.runLater(() -> {
-            Stage stage = (Stage) signUpPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-        });
+        // Ensure consistent stage sizing using StageConstants
+        Platform.runLater(() -> StageConstants.setStageSize((Stage) signUpPane.getScene().getWindow()));
     }
+
 
     /**
      * Handles the sign-up process when the user submits the form.
@@ -109,6 +75,13 @@ public class SignUpController {
             } else {
                 System.out.println("Sign-up failed due to validation errors.");
             }
+        } catch (SQLException sqlEx) {
+            if (sqlEx.getMessage().contains("UNIQUE constraint failed")) {
+                // Provide a general message without specifying which field caused the constraint violation
+                setSignUpStatusMessage("An account with this information already exists.");
+            } else {
+                setSignUpStatusMessage("An error occurred while saving user data. Please try again.");
+            }
         } catch (Exception ex) {
             System.out.println("Sign Up Failed. An error occurred during Sign-Up. Please try again.");
             System.out.println(ex.getMessage());
@@ -122,81 +95,38 @@ public class SignUpController {
     private boolean validateFields(String email, String password, String firstName, String lastName, String mobile) {
         boolean isValid = true;
 
-        // Validate email field
-        if (email.trim().isEmpty()) {
-            emailField.setStyle("-fx-border-color: red;");
-            lblEmailMessage.setStyle("-fx-text-fill: red");
-            lblEmailMessage.setVisible(true);
-            isValid = false;
-        } else {
-            emailField.setStyle("");
-            lblEmailMessage.setStyle("");
-            lblEmailMessage.setVisible(false);
-        }
-
-        // Validate password field
-        if (password.trim().isEmpty()) {
-            passwordField.setStyle("-fx-border-color: red;");
-            lblPasswordMessage.setStyle("-fx-text-fill: red");
-            lblPasswordMessage.setVisible(true);
-            isValid = false;
-        } else {
-            passwordField.setStyle("");
-            lblPasswordMessage.setStyle("");
-            lblPasswordMessage.setVisible(false);
-        }
-
-        // Validate first name field
-        if (firstName.trim().isEmpty()) {
-            firstNameField.setStyle("-fx-border-color: red;");
-            lblFirstNameMessage.setStyle("-fx-text-fill: red");
-            lblFirstNameMessage.setVisible(true);
-            isValid = false;
-        } else {
-            firstNameField.setStyle("");
-            lblFirstNameMessage.setStyle("");
-            lblFirstNameMessage.setVisible(false);
-        }
-
-        // Validate last name field
-        if (lastName.trim().isEmpty()) {
-            lastNameField.setStyle("-fx-border-color: red;");
-            lblLastNameMessage.setStyle("-fx-text-fill: red");
-            lblLastNameMessage.setVisible(true);
-            isValid = false;
-        } else {
-            lastNameField.setStyle("");
-            lblLastNameMessage.setStyle("");
-            lblLastNameMessage.setVisible(false);
-        }
-
-        // Validate mobile field (must be non-empty and a valid mobile number format)
-        if (mobile.trim().isEmpty() || !mobile.matches("\\d{10}")) {
-            mobileField.setStyle("-fx-border-color: red;");
-            lblMobileMessage.setStyle("-fx-text-fill: red");
-            lblMobileMessage.setText("Mobile number must be 10 digits");
-            lblMobileMessage.setVisible(true);
-            isValid = false;
-        } else {
-            mobileField.setStyle("");
-            lblMobileMessage.setStyle("");
-            lblMobileMessage.setVisible(false);
-        }
-
-        // Ensure the password is at least 6 characters long
-        if (password.trim().length() < 6) {
-            passwordField.setStyle("-fx-border-color: red;");
-            lblPasswordMessage.setStyle("-fx-text-fill: red");
-            lblPasswordMessage.setText("Password must be at least 6 characters");
-            lblPasswordMessage.setVisible(true);
-            isValid = false;
-        } else {
-            passwordField.setStyle("");
-            lblPasswordMessage.setStyle("");
-            lblPasswordMessage.setVisible(false);
-        }
+        isValid &= validateField(emailField, lblEmailMessage, !email.trim().isEmpty(), "Email is required.");
+        isValid &= validateField(passwordField, lblPasswordMessage, !password.trim().isEmpty() && password.length() >= StyleConstants.MIN_PASSWORD_LENGTH,
+                "Password must be at least " + StyleConstants.MIN_PASSWORD_LENGTH + " characters.");
+        isValid &= validateField(firstNameField, lblFirstNameMessage, !firstName.trim().isEmpty(), "First name is required.");
+        isValid &= validateField(lastNameField, lblLastNameMessage, !lastName.trim().isEmpty(), "Last name is required.");
+        isValid &= validateField(mobileField, lblMobileMessage, !mobile.trim().isEmpty() && mobile.matches("\\d{10}"),
+                "Mobile number must be 10 digits.");
 
         return isValid;
+    }
+
+    /**
+     * Validates a single input field, applying error styling and setting message if invalid.
+     * @param field The input field to validate.
+     * @param messageLabel The label to display the validation message.
+     * @param condition Condition to validate the field against.
+     * @param message Message to display if validation fails.
+     * @return true if the field passes validation, false otherwise.
+     */
+    private boolean validateField(TextField field, Label messageLabel, boolean condition, String message) {
+        if (!condition) {
+            field.setStyle(StyleConstants.BORDER_ERROR_STYLE);
+            messageLabel.setText(message);
+            messageLabel.setStyle(StyleConstants.ERROR_STYLE);
+            messageLabel.setVisible(true);
+            return false;
+        } else {
+            field.setStyle("");
+            messageLabel.setText("");
+            messageLabel.setVisible(false);
+            return true;
+        }
     }
 
     /**
@@ -207,30 +137,23 @@ public class SignUpController {
         openLoginPage();
     }
 
-    /**
-     * Navigates to the home page (if the logic is implemented).
-     */
-    @FXML
-    private void onHomeButtonClick() {
-        // Add navigation to home page logic here
-    }
 
     /**
      * Saves user data to the database.
      *
      * @param user The user object to be saved.
      */
-    private void saveUserData(User user) {
-        System.out.println("User data saved!");
+    private void saveUserData(User user) throws SQLException {
         Connection connection = SqliteConnection.getInstance();
-        UserDAO userDAO = new UserDAO(connection);
-
         try {
+            UserDAO userDAO = new UserDAO(connection);
             userDAO.addUser(user);
-            System.out.println("User data saved to the database!");
         } catch (SQLException ex) {
             System.out.println("Error encountered while signing up the user!");
             System.out.println(ex.getMessage());
+            throw ex;
+        } finally {
+            SqliteConnection.closeConnection(); // Close the connection
         }
     }
 
@@ -238,36 +161,19 @@ public class SignUpController {
      * Opens the login page (Login.fxml) after successful sign-up.
      */
     private void openLoginPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
-            Parent menuPage = loader.load();
-            Stage stage = (Stage) this.lnkLogin.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setTitle("Sign Up here");
-            Scene scene = new Scene(menuPage);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) this.lnkLogin.getScene().getWindow();  // Get the current stage
+        StageConstants.openLoginPage(stage);  // Use specific utility method for login page
     }
 
     /**
      * Sets the sign-up status message.
      * Displays error messages when needed.
-     *
      * @param errorMessage The error message to display.
      */
     private void setSignUpStatusMessage(String errorMessage) {
-        if (errorMessage != null) {
-            lblSignUpStatusMessage.setText(errorMessage);
-            lblSignUpStatusMessage.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-            lblSignUpStatusMessage.setVisible(true);
-        } else {
-            lblSignUpStatusMessage.setStyle("");
-            lblSignUpStatusMessage.setText(null);
-            lblSignUpStatusMessage.setVisible(false);
-        }
+        lblSignUpStatusMessage.setText(errorMessage);
+        lblSignUpStatusMessage.setStyle(StyleConstants.ERROR_STYLE);
+        lblSignUpStatusMessage.setVisible(errorMessage != null && !errorMessage.isEmpty());
     }
+
 }
