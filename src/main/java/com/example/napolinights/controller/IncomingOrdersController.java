@@ -118,7 +118,7 @@ public class IncomingOrdersController {
      */
     private void openStaffHomePage() {
         Stage stage = (Stage) staffLandingPageButton.getScene().getWindow();  // Retrieve the current stage
-        StageConstants.openViewReportsPage(stage);  // Navigate to Staff Landing page using utility
+        StageConstants.openStaffLandingPage(stage);  // Navigate to Staff Landing page using utility
     }
 
     /**

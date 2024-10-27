@@ -43,8 +43,12 @@ public class StyleConstants {
     public static final String ITEM_DETAIL_DIALOG_FXML = "/view/ItemDetailDialog.fxml";
     public static final String LANDING_PAGE_FXML = "/view/LandingPage.fxml";
     public static final String CHECKOUT_PAGE_FXML = "/view/Checkout.fxml";
-    public static final String LANDING_PAGE_TITLE = "Landing Page";
+    public static final String ORDER_CONFIRMATION_PAGE_FXML = "/view/OrderConfirmation.fxml";
     public static final String CHECKOUT_PAGE_TITLE = "Checkout";
+    public static final String ERROR_STYLE = "-fx-text-fill: red; -fx-font-weight: bold;";
+    public static final String BORDER_ERROR_STYLE = "-fx-border-color: red;";
+    public static final int MIN_PASSWORD_LENGTH = 6;
+
 
 
 }

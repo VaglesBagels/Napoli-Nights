@@ -2,12 +2,12 @@ package com.example.napolinights.controller;
 
 import com.example.napolinights.model.*;
 import com.example.napolinights.util.StageConstants;
+import com.example.napolinights.util.StyleConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -25,28 +25,27 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
- * Controller for handling actions on the Checkout Page.
- * This includes displaying the order summary, handling navigation, and managing checkout functionality.
+ * Controller for handling actions on the Checkout Page, including
+ * displaying the order summary, managing checkout functionality,
+ * and navigating to the order confirmation or other pages.
  */
 public class CheckoutController {
 
-    // FXML elements for the checkout page
-    @FXML private TableView<OrderItem> orderSummaryTable;  // Table to display order items
+    // FXML-linked components for UI interaction
+    @FXML private AnchorPane checkoutPane;                // Root pane for checkout page
+    @FXML private TableView<OrderItem> orderSummaryTable; // Table to display order items
     @FXML private TableColumn<OrderItem, String> itemNameColumn;  // Column for item name
-    @FXML private TableColumn<OrderItem, Integer> quantityColumn;  // Column for quantity
-    @FXML private TableColumn<OrderItem, Double> unitPriceColumn;  // Column for unit price
-    @FXML private TableColumn<OrderItem, Double> gstColumn;  // Column for GST
-    @FXML private TableColumn<OrderItem, Double> totalColumn;  // Column for total price including GST
-    @FXML private Label totalPriceLabel;  // Label to display the total price including GST
-    @FXML private Button backButton;  // Button to go back to the Order page
-    @FXML private Button payButton;  // Button to proceed to payment
-    @FXML private AnchorPane checkoutPane;  // AnchorPane to hold the checkout items
+    @FXML private TableColumn<OrderItem, Integer> quantityColumn; // Column for item quantity
+    @FXML private TableColumn<OrderItem, Double> unitPriceColumn; // Column for unit price
+    @FXML private TableColumn<OrderItem, Double> gstColumn;       // Column for GST
+    @FXML private TableColumn<OrderItem, Double> totalColumn;     // Column for total price including GST
+    @FXML private Label totalPriceLabel;                  // Label to display total price including GST
+    @FXML private Button backButton;                      // Button to navigate back to the order page
+    @FXML private Button payButton;                       // Button to confirm payment
 
-    private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();  // List to hold order items
-
-    private int orderID;
-
-    private Order savedOrder;
+    private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList(); // Observable list of order items
+    private int orderID;                                  // ID of the current order
+    private Order savedOrder;                             // Order data retrieved from the database
 
 
     /* ===============================================
@@ -54,25 +53,26 @@ public class CheckoutController {
      * =============================================== */
 
     /**
-     * Initializes the controller, sets up the table columns, and adjusts the stage size.
+     * Initializes the checkout page controller by setting up table columns,
+     * loading order data, and applying consistent stage size settings.
      */
     @FXML
     private void initialize() {
-        // Set up the table columns
-        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuName"));  // Updated to use menuName
+        setupTableColumns(); // Set up the columns in the order summary table
+        checkoutPane.setPadding(new Insets(0, 0, 0, StyleConstants.GRID_HGAP)); // Apply padding to the checkout pane
+        // Ensure the stage has consistent dimensions using StageConstants utility
+        Platform.runLater(() -> StageConstants.setStageSize((Stage) checkoutPane.getScene().getWindow()));
+    }
+
+    /**
+     * Sets up table columns to bind with OrderItem properties for display in the order summary.
+     */
+    private void setupTableColumns() {
+        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("menuName"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
         gstColumn.setCellValueFactory(new PropertyValueFactory<>("gst"));
-        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));  // Updated to use totalPrice
-        // Set padding for the checkout pane to provide spacing
-        checkoutPane.setPadding(new Insets(0, 0, 0, 10)); // Top, right, bottom, left padding
-
-        // Ensure that the stage size is adjusted after the scene is loaded
-        Platform.runLater(() -> {
-            Stage stage = (Stage) checkoutPane.getScene().getWindow();
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-        });
+        totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
     }
 
     /**
@@ -129,8 +129,6 @@ public class CheckoutController {
     }
 
 
-
-
     /* ===============================================
      * SECTION 3: Navigation and Button Handlers
      * =============================================== */
@@ -142,7 +140,7 @@ public class CheckoutController {
     private void handleBackButtonClick() {
         // Use the StageConstants utility to open the Order Page
         Stage stage = (Stage) backButton.getScene().getWindow();
-        StageConstants.openPage("/view/Order.fxml", stage, "Order Page");
+        StageConstants.openOrderPage(stage);
     }
 
     /**
@@ -194,15 +192,15 @@ public class CheckoutController {
             showEmptyCartError();
         } else {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/OrderConfirmation.fxml"));
-                Parent checkoutPage = loader.load();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(StyleConstants.ORDER_CONFIRMATION_PAGE_FXML));
+                Parent confirmationPage = loader.load();
 
                 // Get the OrderConfirmationController and pass the order ID
                 OrderConfirmationController orderConfirmationController = loader.getController();
                 orderConfirmationController.setOrderID(orderID);
 
                 Stage stage = (Stage) this.payButton.getScene().getWindow();
-                setupStage(stage, checkoutPage, "Checkout");
+                StageConstants.configureStage(stage, confirmationPage, StyleConstants.CHECKOUT_PAGE_TITLE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -224,20 +222,4 @@ public class CheckoutController {
         System.out.println("Cart is empty! Cannot proceed to payment.");
     }
 
-
-
-    /**
-     * Sets up the stage for navigation to a new page.
-     * @param stage The current stage.
-     * @param page The new page to load.
-     * @param title The title of the new page.
-     */
-    private void setupStage(Stage stage, Parent page, String title) {
-        stage.setTitle(title);
-        Scene scene = new Scene(page);
-        stage.setScene(scene);
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
-        stage.show();
-    }
 }
